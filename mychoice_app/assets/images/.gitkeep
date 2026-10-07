@@ -1,0 +1,5 @@
+# This file ensures the images folder is tracked by Git
+# Place your image assets here:
+# - logo_mychoice.png
+# - logo_mychoice_white.png (optional)
+# - avatar_default.png
