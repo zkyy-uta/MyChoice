@@ -143,12 +143,12 @@ class AppColors {
   static const Color borderDark = Color(0xFFDEE2E6); // Grey-300
 
   /// Shadows
-  static Color shadow = const Color(0xFF5546A0).withOpacity(0.15);
-  static Color shadowLight = const Color(0xFF8B7EF2).withOpacity(0.08);
+  static Color shadow = const Color(0xFF5546A0).withValues(alpha: 0.15);
+  static Color shadowLight = const Color(0xFF8B7EF2).withValues(alpha: 0.08);
 
   /// Overlay
-  static Color overlay = const Color(0xFF000000).withOpacity(0.5);
-  static Color overlayLight = const Color(0xFF000000).withOpacity(0.3);
+  static Color overlay = const Color(0xFF000000).withValues(alpha: 0.5);
+  static Color overlayLight = const Color(0xFF000000).withValues(alpha: 0.3);
 
   /// Divider
   static const Color divider = Color(0xFFE9ECEF);

@@ -7,9 +7,6 @@ import 'app_colors.dart';
 class AppTypography {
   AppTypography._();
 
-  // Base font family
-  static const String _fontFamily = 'Lexend';
-
   // ==================== SCREEN TITLE ====================
 
   /// Screen Title - Extra Bold

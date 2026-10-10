@@ -25,21 +25,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       subtitle: 'Clarity Before You Decide.',
       description:
           'MyChoice membantu kamu membandingkan berbagai pilihan berdasarkan kebutuhan, prioritas, dan kondisi kamu.',
-      illustration: 'assets/illustrations/onboarding_welcome.png', // Placeholder - Replace with actual illustration
+      illustration:
+          'assets/illustrations/onboarding_welcome.png', // Placeholder - Replace with actual illustration
     ),
     OnboardingData(
       title: '🔍 Understand Your Needs',
       subtitle: 'Know What Matters Most',
       description:
           'Bingung menentukan apa yang paling penting? MyChoice membantu memahami kebutuhan kamu dan menyarankan kriteria yang relevan.',
-      illustration: 'assets/illustrations/onboarding_understand.png', // Placeholder
+      illustration:
+          'assets/illustrations/onboarding_understand.png', // Placeholder
     ),
     OnboardingData(
       title: '⚖️ Compare Your Options',
       subtitle: 'Compare Without the Confusion',
       description:
           'Bandingkan beberapa pilihan berdasarkan kriteria yang benar-benar penting buat kamu.',
-      illustration: 'assets/illustrations/onboarding_compare.png', // Placeholder
+      illustration:
+          'assets/illustrations/onboarding_compare.png', // Placeholder
     ),
     OnboardingData(
       title: '✨ Understand the Result',
@@ -108,7 +111,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Text(
                       'Skip',
                       style: AppTypography.buttonMedium.copyWith(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                   ),

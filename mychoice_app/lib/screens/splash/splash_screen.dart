@@ -96,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
                       width: 200,
                       height: 200,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: const Icon(
@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen>
                 Text(
                   'Clarity Before You Decide',
                   style: AppTypography.body.copyWith(
-                    color: AppColors.primary88.withOpacity(0.8),
+                    color: AppColors.primary88.withValues(alpha: 0.8),
                     fontSize: 16,
                   ),
                 ),

@@ -149,7 +149,7 @@ class FrostedGradientBackground extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  AppColors.primary88.withOpacity(0.3),
+                  AppColors.primary88.withValues(alpha: 0.3),
                   Colors.transparent,
                 ],
               ),
@@ -166,7 +166,7 @@ class FrostedGradientBackground extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  AppColors.primary88.withOpacity(0.2),
+                  AppColors.primary88.withValues(alpha: 0.2),
                   Colors.transparent,
                 ],
               ),

@@ -124,6 +124,75 @@
   - `/login` → Login
   - `/register` → Register
   - `/dashboard` → Dashboard
+  - `/create-decision` → Create Decision Screen
+
+---
+
+## 🚀 Fase 2: Decision Flow - **IN PROGRESS** 🔄
+
+### ✅ Completed
+
+#### MF-2 & MF-3: Create Decision Screen (All-in-One)
+- [x] **Choose Category** section
+  - 3 kategori cards (Technology, Education, Fashion)
+  - Icon & label untuk setiap kategori
+  - Selected state dengan border & background highlight
+  
+- [x] **Choose Subcategory** section
+  - Dynamic chips berdasarkan kategori terpilih
+  - Technology: Laptop, Smartphone, Tablet, Monitor, PC
+  - Education: Course, Certification, Bootcamp, University
+  - Fashion: Dress, Shoes, Accessories, Bags
+  - Colored chips dengan selected state
+
+- [x] **Options Compared** section
+  - Search field untuk cari opsi
+  - List opsi yang tersedia dengan "+ Add" button
+  - Selected options dengan delete button
+  - Counter "Options Compared (X)"
+  - Mock data: ASUS, Lenovo, Acer, HP, Dell laptops
+
+- [x] **Criteria** section
+  - Checkbox list untuk kriteria (Price, Performance, Battery, Weight, Storage)
+  - Toggle on/off kriteria
+  - "Add Criteria" button (coming soon)
+
+- [x] **Set Priorities** section
+  - Slider untuk setiap kriteria aktif
+  - Display persentase (0-100%)
+  - Real-time total calculation
+  - Visual feedback (green if 100%, red if not)
+
+- [x] **Make a Decision** button
+  - Validation total prioritas = 100%
+  - Error snackbar jika tidak 100%
+
+- [x] **Navigation Integration**
+  - Dashboard → Create Decision (via button & bottom nav)
+  - Back button ke Dashboard
+  - Route `/create-decision` registered
+
+- **File:** `lib/screens/decision/create_decision_screen.dart`
+
+### 🔄 Todo - Fase 2 Lanjutan
+
+1. **Result Screen (MF-4)**
+   - Ranking hasil dengan skor SAW
+   - Best recommendation highlight
+   - Detail breakdown per kriteria
+   - Action buttons: Save, Compare, What-If
+
+2. **Backend Integration**
+   - Replace mock data dengan API calls
+   - Dynamic category & subcategory loading
+   - Dynamic options dari katalog
+   - Save decision ke database
+
+3. **Additional Features**
+   - Search functionality di options
+   - Add Criteria custom (user-defined)
+   - Edit/Delete saved decisions
+   - Share hasil keputusan
 
 ---
 
@@ -133,7 +202,8 @@
 |----------|-------|---------|----------|
 | **Design System** | 4 files | 4 files | 100% ✅ |
 | **Screens (Phase 1)** | 5 screens | 5 screens | 100% ✅ |
-| **Total Files Created** | ~15 files | ~15 files | 100% ✅ |
+| **Screens (Phase 2)** | 1 screen | 1 screen | 100% ✅ |
+| **Total Files Created** | ~16 files | ~16 files | 100% ✅ |
 
 ---
 
@@ -193,27 +263,23 @@ Backend belum terimplementasi, jadi:
 
 ## 📅 Next Steps - Fase 2
 
-### Priority: Decision Flow Screens
+### Priority: Decision Flow Screens (IN PROGRESS)
 
-1. **Category Selection Screen**
-   - 3 kategori cards: Technology, Education, Fashion
-   - Visual icons untuk setiap kategori
-   - Navigation ke Choice Management
+1. ✅ **Create Decision Screen (MF-2 & MF-3)** - SELESAI!
+   - Category selection (Technology, Education, Fashion)
+   - Subcategory selection (dynamic chips)
+   - Options comparison (add/remove)
+   - Criteria selection (checkboxes)
+   - Priority setting (sliders dengan validasi 100%)
+   - Navigation dari Dashboard
 
-2. **Choice Management Screen**
-   - Pilih dari katalog
-   - Tambah pilihan manual
-   - AI assistance untuk struktur data
-   - Max 3 choices (Basic) / 10 (Premium)
+2. **Result Screen (MF-4)** - NEXT
+   - Ranking pilihan dengan skor SAW
+   - Decision Engine calculation display
+   - AI Explanation
+   - Action buttons: Compare, Simulate, Save
 
-3. **Criteria Input Screen**
-   - Input kriteria manual
-   - AI suggest kriteria
-   - Tipe: Benefit/Cost
-   - Bobot slider (total 100%)
-   - Validasi total bobot
-
-4. **Result Screen**
+3. **Comparison Screen**
    - Ranking pilihan dengan skor
    - Decision Engine SAW calculation
    - AI Explanation
@@ -269,5 +335,5 @@ Backend belum terimplementasi, jadi:
 
 ---
 
-**Last Updated:** December 2024
-**Status:** Phase 1 Complete ✅ | Ready for Phase 2 🚀
+**Last Updated:** January 2025
+**Status:** Phase 2 Started (MF-2 & MF-3 Complete ✅) | Result Screen Next 🚀

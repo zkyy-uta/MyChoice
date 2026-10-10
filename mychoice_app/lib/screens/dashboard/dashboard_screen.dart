@@ -26,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _selectedIndex = index;
     });
 
-    // TODO: Navigate to different screens based on index
+    // Navigate to different screens based on index
     switch (index) {
       case 0:
         // Home - already here
@@ -51,10 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _createNewDecision() {
-    // TODO: Navigate to category selection
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Create Decision feature coming soon')),
-    );
+    Navigator.of(context).pushNamed('/create-decision');
   }
 
   void _showComingSoon(String feature) {
@@ -111,7 +108,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Text(
                                 'Hello!',
                                 style: AppTypography.body.copyWith(
-                                  color: Colors.white.withOpacity(0.9),
+                                  color: Colors.white.withValues(alpha: 0.9),
                                 ),
                               ),
                               Text(
@@ -139,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Text(
                       'Ready to make a better choice?',
                       style: AppTypography.body.copyWith(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.lg),
@@ -454,9 +451,9 @@ class _OngoingDecisionCard extends StatelessWidget {
       width: 280,
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,7 +463,7 @@ class _OngoingDecisionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.2),
+                  color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -488,10 +485,17 @@ class _OngoingDecisionCard extends StatelessWidget {
             style: AppTypography.small.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 4),
-          Text(title, style: AppTypography.sectionInnerTitle),
+          Text(
+            title,
+            style: AppTypography.sectionInnerTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           Text(
             subtitle,
             style: AppTypography.small.copyWith(color: AppColors.textSecondary),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -507,26 +511,15 @@ class _OngoingDecisionCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpacing.sm),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.xs,
-                  ),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      'Continue',
-                      style: AppTypography.smallSemibold.copyWith(color: color),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.arrow_forward, size: 14, color: color),
-                  ],
+              const SizedBox(width: AppSpacing.xs),
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.arrow_forward, size: 14, color: color),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
               ),
             ],
@@ -554,7 +547,7 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
       ),
       child: Column(
@@ -616,7 +609,7 @@ class _RecentDecisionCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
