@@ -40,8 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _showComingSoon('Insight');
         break;
       case 3:
-        // History
-        _showComingSoon('History');
+        Navigator.of(context).pushNamed('/history');
         break;
       case 4:
         // Profile

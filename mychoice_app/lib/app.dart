@@ -6,6 +6,7 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/decision/create_decision_screen.dart';
+import 'screens/history/history_screen.dart';
 
 /// MyChoice App
 /// Main application widget with routing and theme configuration
@@ -28,6 +29,7 @@ class MyChoiceApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/dashboard': (context) => const DashboardScreen(),
         '/create-decision': (context) => const CreateDecisionScreen(),
+        '/history': (context) => const HistoryScreen(),
       },
     );
   }

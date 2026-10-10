@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
+import 'result_screen.dart';
 
 /// Create New Decision Screen (MF-2 & MF-3)
 /// All-in-one screen for creating a decision:
@@ -113,10 +114,14 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
       return;
     }
 
-    // TODO: Navigate to result screen
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Making decision...')));
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ResultScreen(
+          category: _selectedCategory ?? 'Technology',
+          subcategory: _selectedSubcategory ?? 'Laptop',
+        ),
+      ),
+    );
   }
 
   @override
