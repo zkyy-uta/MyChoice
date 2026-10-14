@@ -47,24 +47,24 @@ class HistoryDetailScreen extends StatelessWidget {
 
   final HistoryDecision decision;
 
-  void _onNavigation(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        Navigator.of(context).pushNamed('/dashboard');
-      case 1:
-        Navigator.of(context).pushNamed('/create-decision');
-      case 2:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Insight feature coming soon')),
-        );
-      case 3:
-        Navigator.of(context).maybePop();
-      case 4:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile feature coming soon')),
-        );
-    }
-  }
+  // void _onNavigation(BuildContext context, int index) {
+  //   switch (index) {
+  //     case 0:
+  //       Navigator.of(context).pushNamed('/dashboard');
+  //     case 1:
+  //       Navigator.of(context).pushNamed('/create-decision');
+  //     case 2:
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Insight feature coming soon')),
+  //       );
+  //     case 3:
+  //       Navigator.of(context).maybePop();
+  //     case 4:
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Profile feature coming soon')),
+  //       );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
