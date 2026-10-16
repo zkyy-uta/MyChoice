@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+import 'detail_analysis_screen.dart';
 
 /// A single score returned by the SAW decision engine.
 /// The UI only displays values; scoring must happen in the backend.
@@ -95,7 +96,10 @@ class _ResultScreenState extends State<ResultScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 19, vertical: 9),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 19,
+                vertical: 9,
+              ),
               child: Row(
                 children: [
                   SizedBox(
@@ -147,7 +151,10 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    const Divider(color: AppColors.grey300, thickness: 0.8),
+                    const Divider(
+                      color: AppColors.grey300,
+                      thickness: 0.8,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Category',
@@ -207,7 +214,10 @@ class _ResultScreenState extends State<ResultScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.78),
                           borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 1.5,
+                          ),
                           boxShadow: const [
                             BoxShadow(
                               color: Color(0x26777078),
@@ -266,6 +276,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         final index = entry.key;
                         final choice = entry.value;
                         const medals = ['🥇', '🥈', '🥉'];
+
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 3),
                           child: Row(
@@ -303,7 +314,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     ] else ...[
                       Center(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
                           child: Text(
                             'No ranking results available.',
                             style: AppTypography.body,
@@ -312,17 +323,20 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                     ],
                     const SizedBox(height: 20),
-                    const Divider(color: AppColors.grey400),
+                    const Divider(
+                      color: AppColors.grey400,
+                    ),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: _glassButton(
                         icon: Icons.compare_arrows_rounded,
                         label: 'View Comparison',
-                        subtitle: 'Compare the data and scores for each option',
+                        subtitle:
+                            'Compare the data and scores for each option',
                         onPressed: sorted.length > 1
                             ? (widget.onComparison ??
-                                  () => _unavailable('Comparison'))
+                                () => _unavailable('Comparison'))
                             : null,
                         wide: true,
                       ),
@@ -335,9 +349,16 @@ class _ResultScreenState extends State<ResultScreen> {
                             icon: Icons.lightbulb_outline_rounded,
                             label: 'Analysis Details',
                             subtitle: 'Why these results?',
-                            onPressed:
-                                widget.onAnalysis ??
-                                () => _unavailable('Analysis Details'),
+                            onPressed: widget.onAnalysis ??
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DetailAnalysisScreen(),
+                                    ),
+                                  );
+                                },
                           ),
                         ),
                         const SizedBox(width: 13),
@@ -346,8 +367,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             icon: Icons.autorenew_rounded,
                             label: 'What-If',
                             subtitle: 'Try another scenario',
-                            onPressed:
-                                widget.onWhatIf ??
+                            onPressed: widget.onWhatIf ??
                                 () => _unavailable('What-If'),
                           ),
                         ),
@@ -384,7 +404,9 @@ class _ResultScreenState extends State<ResultScreen> {
                                   size: 18,
                                 ),
                           label: Text(
-                            saved ? 'Decision Saved' : 'Save Decision',
+                            saved
+                                ? 'Decision Saved'
+                                : 'Save Decision',
                             style: AppTypography.buttonMedium,
                           ),
                         ),
@@ -417,11 +439,19 @@ class _ResultScreenState extends State<ResultScreen> {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(50),
         child: Container(
-          constraints: BoxConstraints(minHeight: wide ? 55 : 58),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          constraints: BoxConstraints(
+            minHeight: wide ? 55 : 58,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 8,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
-            border: Border.all(color: Colors.white, width: 1.5),
+            border: Border.all(
+              color: Colors.white,
+              width: 1.5,
+            ),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -430,7 +460,11 @@ class _ResultScreenState extends State<ResultScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 14, color: purple),
+                  Icon(
+                    icon,
+                    size: 14,
+                    color: purple,
+                  ),
                   const SizedBox(width: 3),
                   Flexible(
                     child: Text(
