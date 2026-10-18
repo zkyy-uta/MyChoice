@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
+// import '../../core/widgets/bottom_navigation.dart';
 
 /// A single score returned by the SAW decision engine.
 /// The UI only displays values; scoring must happen in the backend.
@@ -80,6 +81,30 @@ class _ResultScreenState extends State<ResultScreen> {
       if (mounted) setState(() => saving = false);
     }
   }
+
+  // void _onNavigation(int index) {
+  //   if (widget.onTabSelected != null) {
+  //     widget.onTabSelected!(index);
+  //     return;
+  //   }
+
+  //   switch (index) {
+  //     case 0:
+  //       Navigator.of(context).pushNamed('/dashboard');
+  //     case 1:
+  //       Navigator.of(context).pushNamed('/create-decision');
+  //     case 2:
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Insight feature coming soon')),
+  //       );
+  //     case 3:
+  //       Navigator.of(context).pushNamed('/history');
+  //     case 4:
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Profile feature coming soon')),
+  //       );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -397,7 +422,10 @@ class _ResultScreenState extends State<ResultScreen> {
           ],
         ),
       ),
-      // bottomNavigationBar: _navigation(),
+      // bottomNavigationBar: BottomNavigation(
+      //   selectedIndex: 1,
+      //   onSelected: _onNavigation,
+      // ),
     );
   }
 
