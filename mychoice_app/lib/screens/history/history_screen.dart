@@ -38,7 +38,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       date: 'October 3, 2026',
       recordedAt: DateTime(2026, 10, 3),
       priorities: {'Learning': 40, 'Culture': 30, 'Location': 20, 'Salary': 10},
-      status: 'In Progress',
+      status: 'Decision Made',
     ),
     HistoryDecision(
       category: 'Technology',
@@ -47,7 +47,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       dateGroup: 'Yesterday',
       date: 'October 2, 2026',
       recordedAt: DateTime(2026, 10, 2),
-      status: 'Reviewed',
+      status: 'Decision Made',
     ),
     HistoryDecision(
       category: 'Fashion',
@@ -214,12 +214,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   const SizedBox(height: AppSpacing.md),
                   _FilterSection(
                     title: 'Status',
-                    options: const [
-                      'All',
-                      'Decision Made',
-                      'In Progress',
-                      'Reviewed',
-                    ],
+                    options: const ['All', 'Decision Made'],
                     selected: _statusFilter,
                     onSelected: (value) {
                       setState(() => _statusFilter = value);
@@ -248,9 +243,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       case 3:
         break;
       case 4:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile feature coming soon')),
-        );
+        Navigator.of(context).pushNamed('/profile');
     }
   }
 
@@ -269,7 +262,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         bottom: false,
         child: Column(
           children: [
-            _HistoryHeader(onBack: () => Navigator.of(context).maybePop()),
+            const _HistoryHeader(),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(
@@ -488,39 +481,21 @@ class _ActiveFilterChip extends StatelessWidget {
 }
 
 class _HistoryHeader extends StatelessWidget {
-  const _HistoryHeader({required this.onBack});
-
-  final VoidCallback onBack;
+  const _HistoryHeader();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 42,
-            child: IconButton(
-              tooltip: 'Back',
-              onPressed: onBack,
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 18,
-                color: AppColors.textPurple,
-              ),
-            ),
+      padding: const EdgeInsets.fromLTRB(12, 32, 12, 7),
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          'Decision History',
+          textAlign: TextAlign.center,
+          style: AppTypography.sectionInnerTitle.copyWith(
+            color: AppColors.textPurple,
           ),
-          Expanded(
-            child: Text(
-              'Decision History',
-              textAlign: TextAlign.center,
-              style: AppTypography.sectionInnerTitle.copyWith(
-                color: AppColors.textPurple,
-              ),
-            ),
-          ),
-          const SizedBox(width: 42),
-        ],
+        ),
       ),
     );
   }

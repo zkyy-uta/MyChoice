@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
@@ -32,7 +34,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   };
   final Map<String, double> _priorities = {
     'Price': 30,
-    'Performance': 25,
+    'Performance': 35,
     'Battery': 20,
     'Storage': 15,
   };
@@ -103,7 +105,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     return _priorities.values.fold(0, (sum, value) => sum + value);
   }
 
-  void _makeDecision() {
+  Future<void> _makeDecision() async {
     if (_totalPriority != 100) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -113,6 +115,26 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
       );
       return;
     }
+
+    final shouldCalculate = await showDialog<bool>(
+      context: context,
+      builder: (_) => _DecisionReviewDialog(
+        category: _selectedCategory,
+        subcategory: _selectedSubcategory,
+        options: List.unmodifiable(_selectedOptions),
+        criteria: Map.unmodifiable(_selectedCriteria),
+        priorities: Map.unmodifiable(_priorities),
+        totalPriority: _totalPriority,
+      ),
+    );
+    if (shouldCalculate != true || !mounted) return;
+
+    final calculationComplete = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const _ProcessingDecisionDialog(),
+    );
+    if (calculationComplete != true || !mounted) return;
 
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -389,7 +411,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             contentPadding: EdgeInsets.zero,
             dense: true,
           );
-        }).toList(),
+        }),
         const SizedBox(height: AppSpacing.sm),
         Align(
           alignment: Alignment.centerLeft,
@@ -470,6 +492,371 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DecisionReviewDialog extends StatelessWidget {
+  const _DecisionReviewDialog({
+    required this.category,
+    required this.subcategory,
+    required this.options,
+    required this.criteria,
+    required this.priorities,
+    required this.totalPriority,
+  });
+
+  final String? category;
+  final String? subcategory;
+  final List<String> options;
+  final Map<String, bool> criteria;
+  final Map<String, double> priorities;
+  final double totalPriority;
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedCriteria = criteria.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    return Dialog(
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420, maxHeight: 620),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  tooltip: 'Close',
+                  onPressed: () => Navigator.of(context).pop(false),
+                  icon: const Icon(Icons.close, color: AppColors.textPurple),
+                ),
+              ),
+              Text(
+                'Almost done! 🎉',
+                style: AppTypography.smallSemibold.copyWith(
+                  color: AppColors.textPurple,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Double-check your choices and priorities before MyChoice calculates your results.',
+                style: AppTypography.small.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const Divider(height: 22),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _ReviewSection(
+                        title: 'Category',
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.laptop_mac,
+                              size: 19,
+                              color: AppColors.textPurple,
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                '${category ?? 'Not selected'}  ›  ${subcategory ?? 'Not selected'}',
+                                style: AppTypography.small.copyWith(
+                                  color: AppColors.textPurple,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _ReviewSection(
+                        title: 'Options Compared',
+                        child: options.isEmpty
+                            ? Text(
+                                'No options selected',
+                                style: AppTypography.small.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for (var index = 0;
+                                      index < options.length;
+                                      index++)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3),
+                                      child: Text(
+                                        '${index + 1}. ${options[index]}',
+                                        style: AppTypography.small.copyWith(
+                                          color: AppColors.textPurple,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                      ),
+                      const SizedBox(height: 12),
+                      _ReviewSection(
+                        title: 'Criteria',
+                        child: Column(
+                          children: [
+                            for (final criterion in selectedCriteria)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      criterion,
+                                      style: AppTypography.small.copyWith(
+                                        color: AppColors.textPurple,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${(priorities[criterion] ?? 0).toInt()}%',
+                                      style: AppTypography.small.copyWith(
+                                        color: AppColors.textPurple,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            const Divider(height: 14),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Total: ${totalPriority.toInt()}%',
+                                  style: AppTypography.smallSemibold.copyWith(
+                                    color: AppColors.textPurple,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Edit Data'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Start Calculation'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ReviewSection extends StatelessWidget {
+  const _ReviewSection({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: AppTypography.sectionInnerTitle.copyWith(
+            fontSize: 15,
+            color: AppColors.textPurple,
+          ),
+        ),
+        const SizedBox(height: 6),
+        child,
+      ],
+    );
+  }
+}
+
+class _ProcessingDecisionDialog extends StatefulWidget {
+  const _ProcessingDecisionDialog();
+
+  @override
+  State<_ProcessingDecisionDialog> createState() =>
+      _ProcessingDecisionDialogState();
+}
+
+class _ProcessingDecisionDialogState extends State<_ProcessingDecisionDialog> {
+  static const _steps = [
+    'Reviewing alternative data',
+    'Determining criteria weights',
+    'Performing normalization',
+    'Calculating final scores',
+  ];
+
+  Timer? _timer;
+  int _completedSteps = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(milliseconds: 850), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        _completedSteps++;
+        if (_completedSteps == _steps.length) timer.cancel();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isComplete = _completedSteps == _steps.length;
+
+    return Dialog(
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 420),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 18, 20, 22),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  tooltip: 'Close',
+                  onPressed: () => Navigator.of(context).pop(false),
+                  icon: const Icon(Icons.close, color: AppColors.textPurple),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (!isComplete)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: SizedBox(
+                        width: 19,
+                        height: 19,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary88,
+                        ),
+                      ),
+                    )
+                  else
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: AppColors.success80,
+                        size: 21,
+                      ),
+                    ),
+                  Text(
+                    'Processing Decisions',
+                    style: AppTypography.sectionInnerTitle.copyWith(
+                      color: AppColors.textPurple,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'MyChoice is comparing options based on your priorities.',
+                textAlign: TextAlign.center,
+                style: AppTypography.small.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 22),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: LinearProgressIndicator(
+                  value: _completedSteps / _steps.length,
+                  minHeight: 12,
+                  backgroundColor: AppColors.primary20,
+                  color: AppColors.primary88,
+                ),
+              ),
+              const SizedBox(height: 22),
+              for (var index = 0; index < _steps.length; index++)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        index < _completedSteps
+                            ? Icons.check
+                            : Icons.circle_outlined,
+                        size: 18,
+                        color: index < _completedSteps
+                            ? AppColors.textPurple
+                            : AppColors.primary88,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        _steps[index],
+                        style: AppTypography.small.copyWith(
+                          color: AppColors.textPurple,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (isComplete) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text('Decision Results'),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

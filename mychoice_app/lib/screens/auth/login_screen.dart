@@ -263,6 +263,23 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
+                        const SizedBox(height: AppSpacing.md), // TOMBOL PANEL ADMIN (SEMENTARA) -----------------------------------------------
+                          OutlinedButton.icon(
+                            onPressed: _isLoading
+                                ? null
+                                : () => Navigator.of(
+                                    context,
+                                  ).pushReplacementNamed('/admin'),
+                            icon: const Icon(Icons.admin_panel_settings_outlined),
+                            label: const Text('Masuk sebagai Admin'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.primaryDark,
+                              side: const BorderSide(
+                                color: AppColors.primary60,
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                          ),
                           const SizedBox(height: AppSpacing.xxl),
 
                           // Sign Up Link
