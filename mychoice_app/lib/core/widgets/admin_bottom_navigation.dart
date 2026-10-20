@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -5,26 +6,40 @@ import '../theme/app_typography.dart';
 import '../theme/app_spacing.dart';
 
 class AdminBottomNavigation extends StatelessWidget {
-  const AdminBottomNavigation({required this.selectedIndex, super.key});
+  const AdminBottomNavigation({
+    required this.selectedIndex,
+    super.key,
+  });
 
   final int selectedIndex;
 
   void _select(BuildContext context, int index) {
     if (index == 0) {
+      // Home
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin');
       }
     } else if (index == 1) {
+      // Users
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/users');
       }
+    } else if (index == 2) {
+      // Catalogue
+      if (selectedIndex != index) {
+        Navigator.of(context).pushReplacementNamed('/admin/catalogue');
+      }
     } else if (index == 4) {
+      // Profile
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/profile');
       }
     } else {
+      // Reports masih dalam pengembangan
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('This feature is coming soon')),
+        const SnackBar(
+          content: Text('This feature is coming soon'),
+        ),
       );
     }
   }
@@ -52,7 +67,10 @@ class AdminBottomNavigation extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 8,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -87,7 +105,8 @@ class AdminBottomNavigation extends StatelessWidget {
                             Text(
                               items[index].$2,
                               maxLines: 1,
-                              style: AppTypography.extraSmallSemibold.copyWith(
+                              style: AppTypography.extraSmallSemibold
+                                  .copyWith(
                                 color: animatedColor,
                               ),
                             ),
