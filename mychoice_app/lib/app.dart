@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'core/theme/app_theme.dart';
 import 'features/auth/data/datasources/mock_auth_datasource.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -127,6 +126,9 @@ class MyChoiceApp extends StatelessWidget {
               const MyDecisionDataScreen(),
         },
       ),
+ CreateDecisionScreen(),
+        '/history': (context) => const HistoryScreen(),
+      },
     );
   }
 }
