@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -18,7 +17,7 @@ class DetailAnalysisScreen extends StatelessWidget {
   static const purple = AppColors.primary88;
   static const darkPurple = AppColors.textPurple;
 
-  static const List<_ScoreContribution> contributions = [
+  static const List<_ScoreContribution> _contributions = [
     _ScoreContribution(
       name: 'Performance',
       value: 0.3325,
@@ -40,40 +39,31 @@ class DetailAnalysisScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
       backgroundColor: AppColors.surfaceLight,
-      body: Stack(
-        children: [
-          const _BackgroundGlow(),
-
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(context),
-
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(
-                      27,
-                      22,
-                      27,
-                      20,
-                    ),
-                    child: _buildContent(),
-                  ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(
+                  27,
+                  22,
+                  27,
+                  20,
                 ),
-
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 39,
-                  ),
-                  child: _buildComparisonButton(context),
-                ),
-              ],
+                child: _buildContent(),
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 39,
+              ),
+              child: _buildComparisonButton(context),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -179,7 +169,7 @@ class DetailAnalysisScreen extends StatelessWidget {
 
         const SizedBox(height: 15),
 
-        ...contributions.map(
+        ..._contributions.map(
           (item) => _buildContributionRow(item),
         ),
 
@@ -225,9 +215,15 @@ class DetailAnalysisScreen extends StatelessWidget {
   Widget _buildContributionRow(
     _ScoreContribution item,
   ) {
-    const maxValue = 0.3325;
-
-    final barWidth = 110.0 * (item.value / maxValue);
+    // Lebar setiap bar disesuaikan dengan desain Figma.
+    // Nilai skor tetap menggunakan data aslinya.
+    final double barWidth = {
+          'Performance': 110.0,
+          'Price': 87.0,
+          'Battery': 38.0,
+          'Storage': 23.0,
+        }[item.name] ??
+        0.0;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -323,81 +319,4 @@ class _ScoreContribution {
 
   final String name;
   final double value;
-}
-
-class _BackgroundGlow extends StatelessWidget {
-  const _BackgroundGlow();
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: AppColors.surfaceLight,
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFFEFF2F4),
-                  Color(0xFFF1F3F5),
-                  Color(0xFFE9EDF0),
-                ],
-              ),
-            ),
-          ),
-
-          Positioned(
-            top: -90,
-            left: 55,
-            child: _glow(
-              size: 240,
-              color: const Color(0xFFAAADE0),
-            ),
-          ),
-
-          Positioned(
-            bottom: -90,
-            left: -55,
-            child: _glow(
-              size: 250,
-              color: const Color(0xFF9B8AD2),
-            ),
-          ),
-
-          Positioned(
-            bottom: -70,
-            right: -75,
-            child: _glow(
-              size: 220,
-              color: const Color(0xFFAEBBE9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _glow({
-    required double size,
-    required Color color,
-  }) {
-    return ImageFiltered(
-      imageFilter: ImageFilter.blur(
-        sigmaX: 45,
-        sigmaY: 45,
-      ),
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color.withValues(
-            alpha: 0.55,
-          ),
-        ),
-      ),
-    );
-  }
 }

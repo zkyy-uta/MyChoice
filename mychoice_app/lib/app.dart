@@ -9,25 +9,17 @@ import 'screens/auth/forgot_password_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/decision/create_decision_screen.dart';
 import 'screens/history/history_screen.dart';
-import 'features/auth/presentation/providers/auth_provider.dart';
-import 'features/auth/data/datasources/mock_auth_datasource.dart';
-import 'features/auth/data/repositories/auth_repository_impl.dart';
-import 'features/dashboard/presentation/screens/guest_home_screen.dart';
-import 'features/category_selection/presentation/screens/public_catalog_screen.dart';
-import 'features/category_selection/presentation/screens/catalog_item_detail_screen.dart';
-import 'features/category_selection/presentation/providers/category_provider.dart';
-import 'features/category_selection/data/datasources/category_datasource.dart';
-import 'features/category_selection/data/repositories/category_repository_impl.dart';
-import 'features/decision_engine/presentation/screens/result_screen.dart';
-import 'features/decision_engine/presentation/providers/result_provider.dart';
-import 'features/decision_engine/domain/usecases/calculate_saw_usecase.dart';
-import 'features/decision_engine/data/repositories/decision_engine_repository_impl.dart';
-import 'features/what_if_simulation/domain/usecases/recalculate_simulation_usecase.dart';
-import 'features/what_if_simulation/presentation/providers/simulation_provider.dart';
-import 'features/what_if_simulation/presentation/screens/what_if_screen.dart';
-import 'features/comparison/presentation/providers/comparison_provider.dart';
-import 'features/comparison/presentation/screens/comparison_screen.dart';
-import 'features/priority_setting/domain/usecases/auto_balance_usecase.dart';
+import 'screens/admin/dashboard/admin_dashboard_screen.dart';
+import 'screens/admin/profile/admin_profile_screen.dart';
+import 'screens/admin/catalogue/catalogue_screen.dart';
+import 'screens/admin/users/user_management_screen.dart';
+import 'screens/profile/personal_information_screen.dart';
+import 'screens/profile/language_screen.dart';
+import 'screens/profile/my_decision_data_screen.dart';
+import 'screens/profile/notification_settings_screen.dart';
+import 'screens/profile/premium_plan_screen.dart';
+import 'screens/profile/profile_screen.dart';
+import 'screens/profile/security_screen.dart';
 
 /// MyChoice App
 /// Main application widget with routing and theme configuration
@@ -88,32 +80,17 @@ class MyChoiceApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
 
-        // Routes
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const SplashScreen(),
-          '/onboarding': (context) => const OnboardingScreen(),
-          '/login': (context) => const LoginScreen(),
-          '/register': (context) => const RegisterScreen(),
-          '/forgot-password': (context) => const ForgotPasswordScreen(),
-          '/dashboard': (context) => const DashboardScreen(),
-          '/guest-home': (context) => const GuestHomeScreen(),
-          '/create-decision': (context) => const CreateDecisionScreen(),
-          '/result': (context) => const ResultScreen(),
-          '/history': (context) => const HistoryScreen(),
-          '/public-catalog': (context) => const PublicCatalogScreen(),
-          '/catalog-item-detail': (context) {
-            final categoryId =
-                ModalRoute.of(context)?.settings.arguments as String?;
-            return CatalogItemDetailScreen(
-              categoryId: categoryId ?? 'technology',
-            );
-          },
-          // Phase 7 routes
-          '/what-if': (context) => const WhatIfScreen(),
-          '/comparison': (context) => const ComparisonScreen(),
-        },
-      ),
+      // Routes
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/create-decision': (context) => const CreateDecisionScreen(),
+        '/history': (context) => const HistoryScreen(),
+      },
     );
   }
 }
