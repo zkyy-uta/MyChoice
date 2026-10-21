@@ -1,0 +1,118 @@
+{
+  "categories": [
+    {
+      "id": "technology",
+      "name": "Technology",
+      "description": "Electronics and computing devices",
+      "icon": "technology",
+      "subcategories": [
+        {
+          "id": "laptop",
+          "name": "Laptop",
+          "description": "Portable computers"
+        },
+        {
+          "id": "smartphone",
+          "name": "Smartphone",
+          "description": "Mobile phones"
+        },
+        {
+          "id": "tablet",
+          "name": "Tablet",
+          "description": "Tablet computers"
+        },
+        {
+          "id": "monitor",
+          "name": "Monitor",
+          "description": "Display screens"
+        },
+        {
+          "id": "gaming_pc",
+          "name": "Gaming PC",
+          "description": "High-performance computers"
+        },
+        {
+          "id": "processor",
+          "name": "Processor",
+          "description": "CPU units"
+        },
+        {
+          "id": "graphics_card",
+          "name": "Graphics Card",
+          "description": "GPU units"
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "name": "Education",
+      "description": "Learning and courses",
+      "icon": "education",
+      "subcategories": [
+        {
+          "id": "course",
+          "name": "Course",
+          "description": "Online courses"
+        },
+        {
+          "id": "certification",
+          "name": "Certification",
+          "description": "Professional certifications"
+        },
+        {
+          "id": "bootcamp",
+          "name": "Bootcamp",
+          "description": "Intensive training programs"
+        },
+        {
+          "id": "university",
+          "name": "University",
+          "description": "Higher education institutions"
+        },
+        {
+          "id": "training_program",
+          "name": "Training Program",
+          "description": "Professional development programs"
+        }
+      ]
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion",
+      "description": "Clothing and accessories",
+      "icon": "fashion",
+      "subcategories": [
+        {
+          "id": "dress",
+          "name": "Dress",
+          "description": "Dresses and gowns"
+        },
+        {
+          "id": "shoes",
+          "name": "Shoes",
+          "description": "Footwear"
+        },
+        {
+          "id": "accessories",
+          "name": "Accessories",
+          "description": "Bags, belts, scarves"
+        },
+        {
+          "id": "bags",
+          "name": "Bags",
+          "description": "Handbags and backpacks"
+        },
+        {
+          "id": "jewelry",
+          "name": "Jewelry",
+          "description": "Watches, rings, necklaces"
+        },
+        {
+          "id": "outerwear",
+          "name": "Outerwear",
+          "description": "Jackets and coats"
+        }
+      ]
+    }
+  ]
+}

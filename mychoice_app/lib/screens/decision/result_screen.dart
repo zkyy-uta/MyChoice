@@ -334,10 +334,10 @@ class _ResultScreenState extends State<ResultScreen> {
                         label: 'View Comparison',
                         subtitle:
                             'Compare the data and scores for each option',
-                        onPressed: sorted.length > 1
-                            ? (widget.onComparison ??
-                                () => _unavailable('Comparison'))
-                            : null,
+                        onPressed: () {
+                              // Siapkan data perbandingan melalui ComparisonProvider.
+                              Navigator.of(context).pushNamed('/comparison');
+                            },
                         wide: true,
                       ),
                     ),
@@ -367,9 +367,11 @@ class _ResultScreenState extends State<ResultScreen> {
                             icon: Icons.autorenew_rounded,
                             label: 'What-If',
                             subtitle: 'Try another scenario',
-                            onPressed: widget.onWhatIf ??
-                                () => _unavailable('What-If'),
-                          ),
+                            onPressed: () {
+                            // Siapkan hasil SAW asli melalui SimulationProvider.
+                            Navigator.of(context).pushNamed('/what-if');
+                          },
+                        ),
                         ),
                       ],
                     ),
