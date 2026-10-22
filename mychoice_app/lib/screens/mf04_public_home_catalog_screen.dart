@@ -370,10 +370,40 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
   Future<void> _showLimitNotice() => showDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: const Text('Batas pilihan tercapai'),
+      backgroundColor: AppColors.surfaceLight,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      title: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: AppColors.primary20,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: AppColors.primaryDark,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Batas pilihan tercapai',
+              style: TextStyle(
+                color: AppColors.textPurple,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
       content: Text(
-        '${widget.isPremium ? 'Premium' : 'Basic'} maksimal '
-        '${widget.maxChoices} pilihan.',
+        widget.isPremium
+            ? 'Paket Premium maksimal ${widget.maxChoices} opsi.'
+            : 'Paket Basic maksimal ${widget.maxChoices} opsi. '
+                  'Upgrade ke Premium untuk memilih hingga 10 opsi.',
+        style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
       ),
       actions: [
         TextButton(
@@ -382,6 +412,13 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
         ),
         if (!widget.isPremium)
           FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.primaryGradient,
+              foregroundColor: AppColors.textWhite,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
             onPressed: () {
               Navigator.of(dialogContext).pop();
               Navigator.of(context).pushNamed('/profile/premium-plan');

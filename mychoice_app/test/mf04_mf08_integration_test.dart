@@ -29,6 +29,38 @@ void main() {
     await tester.binding.setSurfaceSize(null);
   });
 
+  testWidgets('Basic MF04 blocks a fourth choice and shows Premium notice', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1000));
+    await tester.pumpWidget(
+      const MaterialApp(home: Mf04PublicHomeCatalogScreen()),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Technology'));
+    await tester.pumpAndSettle();
+
+    for (var index = 0; index < 3; index++) {
+      await tester.tap(find.byType(CheckboxListTile).at(index));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.byType(CheckboxListTile).at(3));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Batas pilihan tercapai'), findsOneWidget);
+    expect(
+      find.text(
+        'Paket Basic maksimal 3 opsi. '
+        'Upgrade ke Premium untuk memilih hingga 10 opsi.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Pilihan dibandingkan (3/3)'), findsOneWidget);
+
+    await tester.binding.setSurfaceSize(null);
+  });
+
   testWidgets('result screen opens MF08 with its ranked choices', (
     tester,
   ) async {
