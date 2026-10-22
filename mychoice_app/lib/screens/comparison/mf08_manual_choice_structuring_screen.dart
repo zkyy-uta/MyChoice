@@ -437,6 +437,18 @@ class ComparisonChoice {
   final Map<String, double> criteriaContributions;
 }
 
+class Mf08ComparisonArguments {
+  const Mf08ComparisonArguments({
+    required this.choices,
+    this.category = 'Technology',
+    this.subcategory = 'Laptop',
+  });
+
+  final List<ComparisonChoice> choices;
+  final String category;
+  final String subcategory;
+}
+
 class _ComparisonEmptyState extends StatelessWidget {
   const _ComparisonEmptyState();
 

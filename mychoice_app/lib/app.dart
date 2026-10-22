@@ -27,6 +27,8 @@ import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/decision/create_decision_screen.dart';
 import 'screens/history/history_screen.dart';
+import 'screens/mf04_public_home_catalog_screen.dart';
+import 'screens/comparison/mf08_manual_choice_structuring_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/profile/language_screen.dart';
 import 'screens/profile/my_decision_data_screen.dart';
@@ -105,9 +107,24 @@ class MyChoiceApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/forgot-password': (context) => const ForgotPasswordScreen(),
           '/dashboard': (context) => const DashboardScreen(),
+          '/public-catalog': (context) => const Mf04PublicHomeCatalogScreen(),
           '/create-decision': (context) => const CreateDecisionScreen(),
           '/history': (context) => const HistoryScreen(),
           '/comparison': (context) => const ComparisonScreen(),
+          '/mf08-comparison': (context) {
+            final arguments = ModalRoute.of(context)?.settings.arguments;
+            if (arguments is! Mf08ComparisonArguments) {
+              throw FlutterError(
+                'The /mf08-comparison route requires '
+                'Mf08ComparisonArguments.',
+              );
+            }
+            return Mf08ComparisonScreen(
+              choices: arguments.choices,
+              category: arguments.category,
+              subcategory: arguments.subcategory,
+            );
+          },
           '/what-if': (context) => const WhatIfScreen(),
           '/admin': (context) => const AdminDashboardScreen(),
           '/admin/users': (context) => const UserManagementScreen(),
