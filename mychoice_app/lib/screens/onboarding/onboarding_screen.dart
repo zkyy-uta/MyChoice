@@ -230,6 +230,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: AppSpacing.sm),
+                    TextButton.icon(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/public-catalog'),
+                      icon: const Icon(Icons.explore_outlined),
+                      label: const Text('Jelajahi katalog tanpa login'),
+                    ),
                   ],
                 ),
               ),

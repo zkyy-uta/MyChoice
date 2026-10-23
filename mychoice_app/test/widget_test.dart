@@ -19,6 +19,36 @@ void main() {
     expect(find.text('MyChoice'), findsOneWidget);
   });
 
+  testWidgets('Basic decision blocks a fourth option and shows upgrade popup', (
+    WidgetTester tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1200));
+    await tester.pumpWidget(const MaterialApp(home: CreateDecisionScreen()));
+
+    for (var index = 0; index < 3; index++) {
+      await tester.tap(find.text('+ Add').first);
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.text('+ Add').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Options Compared (3)'), findsOneWidget);
+    expect(find.text('Batas pilihan tercapai'), findsOneWidget);
+    expect(
+      find.text(
+        'Paket Basic hanya dapat membandingkan maksimal 3 pilihan. '
+        'Untuk menambahkan pilihan ke-4, diperlukan paket Premium. '
+        'Hapus salah satu pilihan atau upgrade ke Premium.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('3 pilihan'), findsOneWidget);
+    expect(find.text('Hingga 10'), findsOneWidget);
+    expect(find.text('Upgrade Premium'), findsOneWidget);
+
+    await tester.binding.setSurfaceSize(null);
+  });
+
   testWidgets('decision creation reviews, processes, and opens results', (
     WidgetTester tester,
   ) async {

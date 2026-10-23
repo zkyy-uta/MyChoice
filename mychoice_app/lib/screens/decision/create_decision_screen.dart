@@ -17,7 +17,9 @@ import 'result_screen.dart';
 /// - Select Criteria
 /// - Set Priorities
 class CreateDecisionScreen extends StatefulWidget {
-  const CreateDecisionScreen({super.key});
+  const CreateDecisionScreen({super.key, this.isPremium = false});
+
+  final bool isPremium;
 
   @override
   State<CreateDecisionScreen> createState() => _CreateDecisionScreenState();
@@ -79,12 +81,171 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   }
 
   void _addOption(String option) {
+    if (_selectedOptions.contains(option)) return;
+    final maxOptions = widget.isPremium ? 10 : 3;
+    if (_selectedOptions.length >= maxOptions) {
+      _showOptionLimitDialog(maxOptions);
+      return;
+    }
     setState(() {
-      if (!_selectedOptions.contains(option)) {
-        _selectedOptions.add(option);
-      }
+      _selectedOptions.add(option);
     });
   }
+
+  Future<void> _showOptionLimitDialog(int maxOptions) => showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      backgroundColor: AppColors.surfaceLight,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      title: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: AppColors.primary20,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: AppColors.primaryDark,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Batas pilihan tercapai',
+              style: TextStyle(
+                color: AppColors.textPurple,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.isPremium
+                ? 'Paket Premium dapat membandingkan maksimal '
+                      '$maxOptions pilihan.'
+                : 'Paket Basic hanya dapat membandingkan maksimal 3 pilihan. '
+                      'Untuk menambahkan pilihan ke-4, diperlukan paket '
+                      'Premium. Hapus salah satu pilihan atau upgrade ke '
+                      'Premium.',
+            style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
+          ),
+          if (!widget.isPremium) ...[
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'BASIC',
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          '3 pilihan',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    color: AppColors.primaryGradient,
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 14,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary20,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.primary60),
+                    ),
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'PREMIUM',
+                          style: TextStyle(
+                            color: AppColors.primaryDark,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Hingga 10',
+                          style: TextStyle(
+                            color: AppColors.textPurple,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(),
+          child: Text(widget.isPremium ? 'Tutup' : 'Nanti saja'),
+        ),
+        if (!widget.isPremium)
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.primaryGradient,
+              foregroundColor: AppColors.textWhite,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              Navigator.of(context).pushNamed('/profile/premium-plan');
+            },
+            child: const Text('Upgrade Premium'),
+          ),
+      ],
+    ),
+  );
 
   void _removeOption(String option) {
     setState(() {
@@ -849,9 +1010,11 @@ class _DecisionReviewDialog extends StatelessWidget {
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  for (var index = 0;
-                                      index < options.length;
-                                      index++)
+                                  for (
+                                    var index = 0;
+                                    index < options.length;
+                                    index++
+                                  )
                                     Padding(
                                       padding: const EdgeInsets.only(top: 3),
                                       child: Text(
