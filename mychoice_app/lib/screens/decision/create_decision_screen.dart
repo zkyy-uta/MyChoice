@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_typography.dart';
-import '../../core/theme/app_spacing.dart';
+import 'package:provider/provider.dart';
+import 'package:mychoice_app/core/theme/app_colors.dart';
+import 'package:mychoice_app/core/theme/app_typography.dart';
+import 'package:mychoice_app/core/theme/app_spacing.dart';
+import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mychoice_app/features/auth/presentation/widgets/authentication_gate_dialog.dart';
 import 'result_screen.dart';
 
 /// Create New Decision Screen (MF-2 & MF-3)
@@ -48,11 +51,11 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     'Dell Inspiron 15',
   ];
 
-  // Categories
-  final Map<String, IconData> _categories = {
-    'Technology': Icons.laptop_mac,
-    'Education': Icons.school,
-    'Fashion': Icons.checkroom,
+  // Categories with icon assets
+  final Map<String, String> _categoryIcons = {
+    'Technology': 'assets/icons/laptop.png',
+    'Education': 'assets/icons/education.png',
+    'Fashion': 'assets/icons/fashion.png',
   };
 
   // Subcategories by category
@@ -106,6 +109,17 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   }
 
   Future<void> _makeDecision() async {
+    // Authentication gate: redirect to login/register if not authenticated
+    final auth = context.read<AuthProvider>();
+    if (!auth.isAuthenticated) {
+      await AuthenticationGateDialog.show(
+        context,
+        title: 'Sign In Required',
+        message: 'Please sign in or create an account to save your decision.',
+      );
+      return;
+    }
+
     if (_totalPriority != 100) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -153,16 +167,21 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: AppColors.textPurple,
+          ),
         ),
         title: Text(
           'Create New Decision',
           style: AppTypography.sectionTitle.copyWith(
             color: AppColors.textPurple,
+            fontWeight: FontWeight.w800,
           ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
@@ -171,10 +190,11 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           children: [
             // Subtitle
             Text(
-              'Make a Decision: Select the options you want to compare and set your priorities based on your personal needs',
+              'Make a Decision: Select the options you want to compare and set your priorities based on your needs.',
               style: AppTypography.small.copyWith(
                 color: AppColors.textSecondary,
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xxl),
 
@@ -202,13 +222,38 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             _buildSectionTitle('Criteria'),
             const SizedBox(height: AppSpacing.xs),
             Text(
-              'Suggested criteria for comparing your options',
+              'Suggested criteria for comparing your options:',
               style: AppTypography.small.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),
             const SizedBox(height: AppSpacing.md),
             _buildCriteriaCheckboxes(),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Add criteria coming soon')),
+                  );
+                },
+                icon: const Icon(Icons.add, size: 20, color: AppColors.primary88),
+                label: Text(
+                  '+ Add Criteria',
+                  style: AppTypography.buttonMedium.copyWith(
+                    color: AppColors.primary88,
+                  ),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.border),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: AppSpacing.xxl),
 
             // 5. Set Priorities
@@ -232,6 +277,13 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
               height: 56,
               child: ElevatedButton(
                 onPressed: _makeDecision,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primaryDark,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+                  ),
+                ),
                 child: Text(
                   'Make a Decision',
                   style: AppTypography.buttonLarge,
@@ -241,6 +293,25 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             const SizedBox(height: AppSpacing.xxl),
           ],
         ),
+      ),
+      bottomNavigationBar: _MainBottomNav(
+        selectedIndex: 1,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.of(context).pushNamed('/dashboard');
+              break;
+            case 2:
+              Navigator.of(context).pushNamed('/insight');
+              break;
+            case 3:
+              Navigator.of(context).pushNamed('/history');
+              break;
+            case 4:
+              Navigator.of(context).pushNamed('/profile');
+              break;
+          }
+        },
       ),
     );
   }
@@ -254,14 +325,14 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
 
   Widget _buildCategoryCards() {
     return Row(
-      children: _categories.entries.map((entry) {
+      children: _categoryIcons.entries.map((entry) {
         final isSelected = _selectedCategory == entry.key;
         return Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: _CategoryCard(
               label: entry.key,
-              icon: entry.value,
+              iconAsset: entry.value,
               isSelected: isSelected,
               onTap: () => _selectCategory(entry.key),
             ),
@@ -294,6 +365,13 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
         border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -303,21 +381,63 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             style: AppTypography.small.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.md),
-
-          // Search field
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Search for options',
-              prefixIcon: const Icon(Icons.search, size: 20),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search for options',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      size: 20,
+                      color: AppColors.textTertiary,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderSide: const BorderSide(color: AppColors.primary88),
+                    ),
+                  ),
+                ),
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
-                borderSide: const BorderSide(color: AppColors.border),
+              const SizedBox(width: AppSpacing.sm),
+              SizedBox(
+                height: 44,
+                child: OutlinedButton(
+                  onPressed: () {},
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.add, size: 18, color: AppColors.textPurple),
+                      const SizedBox(width: 4),
+                      Text(
+                        '+ Add',
+                        style: AppTypography.smallSemibold.copyWith(
+                          color: AppColors.textPurple,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: AppSpacing.md),
 
@@ -410,22 +530,11 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
             dense: true,
+            activeColor: AppColors.primary88,
+            checkColor: Colors.white,
           );
         }),
         const SizedBox(height: AppSpacing.sm),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton.icon(
-            onPressed: () {
-              // TODO: Add custom criteria
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Add criteria coming soon')),
-              );
-            },
-            icon: const Icon(Icons.add, size: 20),
-            label: Text('Add Criteria', style: AppTypography.buttonMedium),
-          ),
-        ),
       ],
     );
   }
@@ -454,7 +563,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                 value: entry.value,
                 min: 0,
                 max: 100,
-                divisions: 20,
+                divisions: 100,
+                activeColor: AppColors.primary88,
+                inactiveColor: AppColors.border,
                 onChanged: (value) => _updatePriority(entry.key, value),
               ),
             ],
@@ -494,6 +605,150 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         ],
       ),
     );
+  }
+}
+
+/// Category Card Widget with image asset
+class _CategoryCard extends StatelessWidget {
+  final String label;
+  final String iconAsset;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CategoryCard({
+    required this.label,
+    required this.iconAsset,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary20 : Colors.white,
+          borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+          border: Border.all(
+            color: isSelected ? AppColors.primary88 : AppColors.border,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadowLight,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.9),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadowLight,
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                iconAsset,
+                width: 32,
+                height: 32,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    _getFallbackIcon(label),
+                    size: 32,
+                    color: isSelected ? AppColors.primary88 : AppColors.textSecondary,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              label,
+              style: AppTypography.small.copyWith(
+                color: isSelected ? AppColors.primary88 : AppColors.textPrimary,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getFallbackIcon(String label) {
+    switch (label) {
+      case 'Technology':
+        return Icons.laptop_mac;
+      case 'Education':
+        return Icons.school;
+      case 'Fashion':
+        return Icons.checkroom;
+      default:
+        return Icons.category;
+    }
+  }
+}
+
+/// Subcategory Chip Widget
+class _SubcategoryChip extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _SubcategoryChip({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? _getColor(label) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? Colors.transparent : AppColors.border,
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppTypography.small.copyWith(
+            color: isSelected ? Colors.white : AppColors.textPrimary,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Color _getColor(String label) {
+    final colors = [
+      AppColors.primary88,
+      AppColors.categoryEducation,
+      AppColors.secondary80,
+      AppColors.info80,
+      AppColors.categoryTechnology,
+    ];
+    return colors[label.hashCode % colors.length];
   }
 }
 
@@ -862,105 +1117,129 @@ class _ProcessingDecisionDialogState extends State<_ProcessingDecisionDialog> {
   }
 }
 
-/// Category Card Widget
-class _CategoryCard extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
+/// Main Bottom Navigation — Home, Decision, Insight, History, Profile
+class _MainBottomNav extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onTap;
 
-  const _CategoryCard({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
+  const _MainBottomNav({
+    required this.selectedIndex,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary20 : Colors.white,
-          borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-          border: Border.all(
-            color: isSelected ? AppColors.primary88 : AppColors.border,
-            width: isSelected ? 2 : 1,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 16,
+            offset: const Offset(0, -4),
           ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 40,
-              color: isSelected ? AppColors.primary88 : AppColors.textSecondary,
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              label,
-              style: AppTypography.small.copyWith(
-                color: isSelected ? AppColors.primary88 : AppColors.textPrimary,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+        ],
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _NavItem(
+                icon: Icons.home,
+                label: 'Home',
+                isSelected: selectedIndex == 0,
+                onTap: () => onTap(0),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              _NavItem(
+                icon: Icons.add_circle_outline,
+                label: 'Decision',
+                isSelected: selectedIndex == 1,
+                onTap: () => onTap(1),
+                isAction: true,
+              ),
+              _NavItem(
+                icon: Icons.bar_chart,
+                label: 'Insight',
+                isSelected: selectedIndex == 2,
+                onTap: () => onTap(2),
+              ),
+              _NavItem(
+                icon: Icons.history,
+                label: 'History',
+                isSelected: selectedIndex == 3,
+                onTap: () => onTap(3),
+              ),
+              _NavItem(
+                icon: Icons.person_outline,
+                label: 'Profile',
+                isSelected: selectedIndex == 4,
+                onTap: () => onTap(4),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Subcategory Chip Widget
-class _SubcategoryChip extends StatelessWidget {
+class _NavItem extends StatelessWidget {
+  final IconData icon;
   final String label;
   final bool isSelected;
+  final bool isAction;
   final VoidCallback onTap;
 
-  const _SubcategoryChip({
+  const _NavItem({
+    required this.icon,
     required this.label,
     required this.isSelected,
+    this.isAction = false,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? _getColor(label) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? Colors.transparent : AppColors.border,
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: isAction
+                  ? AppColors.primaryDark
+                  : (isSelected
+                      ? AppColors.primary88.withValues(alpha: 0.15)
+                      : Colors.transparent),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: isAction
+                  ? Colors.white
+                  : (isSelected ? AppColors.primary88 : AppColors.textTertiary),
+              size: AppSpacing.iconMd,
+            ),
           ),
-        ),
-        child: Text(
-          label,
-          style: AppTypography.small.copyWith(
-            color: isSelected ? Colors.white : AppColors.textPrimary,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: AppTypography.extraSmallSemibold.copyWith(
+              color: isAction
+                  ? AppColors.primaryDark
+                  : (isSelected ? AppColors.primary88 : AppColors.textTertiary),
+            ),
           ),
-        ),
+        ],
       ),
     );
-  }
-
-  Color _getColor(String label) {
-    // Different colors for each subcategory
-    final colors = [
-      AppColors.primary88,
-      AppColors.categoryEducation,
-      AppColors.secondary80,
-      AppColors.info80,
-      AppColors.categoryTechnology,
-    ];
-    return colors[label.hashCode % colors.length];
   }
 }

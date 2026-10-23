@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'core/theme/app_colors.dart';
+import 'core/theme/app_typography.dart';
 import 'features/auth/data/datasources/mock_auth_datasource.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
@@ -26,6 +28,9 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/decision/create_decision_screen.dart';
+import 'features/dashboard/presentation/screens/guest_home_screen.dart';
+import 'features/guest/presentation/screens/guest_explore_screen.dart';
+import 'features/guest/presentation/screens/guest_category_detail_screen.dart';
 import 'screens/history/history_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/profile/language_screen.dart';
@@ -105,9 +110,14 @@ class MyChoiceApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/forgot-password': (context) => const ForgotPasswordScreen(),
           '/dashboard': (context) => const DashboardScreen(),
+          '/guest-home': (context) => const GuestHomeScreen(),
+          '/guest-explore': (context) => const GuestExploreScreen(),
+          '/guest-category-detail': (context) =>
+              const GuestCategoryDetailScreen(categoryName: 'Technology'),
           '/create-decision': (context) => const CreateDecisionScreen(),
           '/history': (context) => const HistoryScreen(),
           '/comparison': (context) => const ComparisonScreen(),
+          '/insight': (context) => const _ComingSoonScreen(title: 'Insight'),
           '/what-if': (context) => const WhatIfScreen(),
           '/admin': (context) => const AdminDashboardScreen(),
           '/admin/users': (context) => const UserManagementScreen(),
@@ -126,6 +136,43 @@ class MyChoiceApp extends StatelessWidget {
           '/profile/my-decision-data': (context) =>
               const MyDecisionDataScreen(),
         },
+      ),
+    );
+  }
+}
+
+/// Placeholder screen for features coming soon
+class _ComingSoonScreen extends StatelessWidget {
+  final String title;
+
+  const _ComingSoonScreen({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.construction,
+              size: 64,
+              color: AppColors.textTertiary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '$title coming soon',
+              style: AppTypography.sectionTitle.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

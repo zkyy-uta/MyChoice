@@ -81,6 +81,13 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/illustrations/
+    - assets/icons/pc_desktop.png
+    - assets/icons/tablet.png
+    - assets/icons/monitor.png
+    - assets/icons/smartphone.png
+    - assets/icons/fashion.png
+    - assets/icons/education.png
+    - assets/icons/laptop.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
