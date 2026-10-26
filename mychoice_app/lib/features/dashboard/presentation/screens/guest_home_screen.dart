@@ -278,7 +278,7 @@ class GuestHomeScreen extends StatelessWidget {
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/create-decision');
+                Navigator.of(context).pushNamed('/guest-create-decision');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -447,9 +447,7 @@ class _GuestNavItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: isSelected
-                  ? AppColors.primary88.withValues(alpha: 0.15)
-                  : Colors.transparent,
+              color: AppColors.primary88.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(

@@ -84,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _navigateToAuth() {
-    Navigator.of(context).pushReplacementNamed('/login');
+    Navigator.of(context).pushReplacementNamed('/guest-home');
   }
 
   @override
@@ -231,12 +231,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ],
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    TextButton.icon(
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed('/public-catalog'),
-                      icon: const Icon(Icons.explore_outlined),
-                      label: const Text('Jelajahi katalog tanpa login'),
-                    ),
                   ],
                 ),
               ),

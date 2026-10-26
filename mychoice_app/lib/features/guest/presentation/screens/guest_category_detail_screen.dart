@@ -44,8 +44,11 @@ class GuestCategoryDetailScreen extends StatelessWidget {
                           color: AppColors.textPrimary,
                           fontWeight: FontWeight.w800,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
+                    // Spacer to keep title centered despite back button
+                    const SizedBox(width: 40),
                   ],
                 ),
               ),

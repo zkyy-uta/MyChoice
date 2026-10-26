@@ -316,14 +316,28 @@ class _WeightSliderRow extends StatelessWidget {
               ),
             ],
           ),
-          Slider(
-            value: value.clamp(0.0, 100.0),
-            min: 0.0,
-            max: 100.0,
-            divisions: 100,
-            activeColor: AppColors.primary88,
-            inactiveColor: AppColors.border,
-            onChanged: onChanged,
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              activeTrackColor: AppColors.primary88,
+              inactiveTrackColor: AppColors.border,
+              thumbColor: Colors.white,
+              overlayColor: AppColors.primary88.withValues(alpha: 0.2),
+              valueIndicatorColor: AppColors.primary88,
+              valueIndicatorTextStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            child: Slider(
+              value: value.clamp(0.0, 100.0),
+              min: 0.0,
+              max: 100.0,
+              divisions: 100,
+              activeColor: AppColors.primary88,
+              inactiveColor: AppColors.border,
+              onChanged: onChanged,
+            ),
           ),
         ],
       ),
@@ -392,109 +406,112 @@ class _SimulationResultModal extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSpacing.dialogRadius),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.dialogPadding),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Simulation Result',
-                  style: AppTypography.sectionTitle.copyWith(
-                    color: AppColors.textPurple,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.close,
-                    color: AppColors.textPurple,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // Original Ranking
-            _RankingSection(
-              title: 'Original Ranking',
-              ranking: original.ranking,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-
-            // New Ranking
-            _RankingSection(
-              title: 'New Ranking',
-              ranking: simulated.ranking,
-            ),
-            const SizedBox(height: AppSpacing.md),
-
-            // Note
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: BoxDecoration(
-                color: AppColors.primary20,
-                borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      insetPadding: const EdgeInsets.all(20),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.dialogPadding),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(
-                    Icons.info_outline,
-                    color: AppColors.primary88,
-                    size: 20,
+                  Text(
+                    'Simulation Result',
+                    style: AppTypography.sectionTitle.copyWith(
+                      color: AppColors.textPurple,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Changing your priorities changed the ranking.',
-                          style: AppTypography.small.copyWith(
-                            color: AppColors.textPrimary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'Note: This simulation does not change your original decision.',
-                          style: AppTypography.small.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(
+                      Icons.close,
+                      color: AppColors.textPurple,
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
+              const SizedBox(height: AppSpacing.lg),
 
-            // Try Another Scenario button
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: onTryAgain,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryDark,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-                  ),
+              // Original Ranking
+              _RankingSection(
+                title: 'Original Ranking',
+                ranking: original.ranking,
+              ),
+              const SizedBox(height: AppSpacing.lg),
+
+              // New Ranking
+              _RankingSection(
+                title: 'New Ranking',
+                ranking: simulated.ranking,
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Note
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.primary20,
+                  borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
                 ),
-                child: Text(
-                  'Try Another Scenario',
-                  style: AppTypography.buttonLarge,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
+                      color: AppColors.primary88,
+                      size: 20,
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '💡 Changing your priorities changed the ranking.',
+                            style: AppTypography.small.copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          Text(
+                            'Note: This simulation does not change your original decision.',
+                            style: AppTypography.small.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.lg),
+
+              // Try Another Scenario button
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: onTryAgain,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryDark,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+                    ),
+                  ),
+                  child: Text(
+                    'Try Another Scenario',
+                    style: AppTypography.buttonLarge,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -583,12 +600,22 @@ class _RankItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name,
-                  style: AppTypography.body.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    if (isFirst) const Text('🥇 '),
+                    if (rank == 2) const Text('🥈 '),
+                    if (rank == 3) const Text('🥉 '),
+                    Expanded(
+                      child: Text(
+                        name,
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
                 Text(
                   '${score.toStringAsFixed(2)}',

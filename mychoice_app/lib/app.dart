@@ -29,6 +29,7 @@ import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/decision/create_decision_screen.dart';
 import 'features/dashboard/presentation/screens/guest_home_screen.dart';
+import 'features/guest/presentation/screens/guest_create_decision_screen.dart';
 import 'features/guest/presentation/screens/guest_explore_screen.dart';
 import 'features/guest/presentation/screens/guest_category_detail_screen.dart';
 import 'screens/history/history_screen.dart';
@@ -116,6 +117,8 @@ class MyChoiceApp extends StatelessWidget {
           '/guest-explore': (context) => const GuestExploreScreen(),
           '/guest-category-detail': (context) =>
               const GuestCategoryDetailScreen(categoryName: 'Technology'),
+          '/guest-create-decision': (context) =>
+              const GuestCreateDecisionScreen(),
           '/public-catalog': (context) => const Mf04PublicHomeCatalogScreen(),
           '/create-decision': (context) => const CreateDecisionScreen(),
           '/history': (context) => const HistoryScreen(),

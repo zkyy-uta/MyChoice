@@ -14,149 +14,144 @@ class GuestExploreScreen extends StatelessWidget {
     return Scaffold(
       body: AnimatedGradientBackground(
         child: SafeArea(
-          child: Column(
-            children: [
-              // ── App Bar ────────────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: AppColors.textPrimary,
-                        size: AppSpacing.iconSm,
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Expanded(
-                      child: Text(
-                        'Explore',
-                        style: AppTypography.screenTitle.copyWith(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── App Bar ────────────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Icon(
+                          Icons.arrow_back_ios,
                           color: AppColors.textPrimary,
-                          fontWeight: FontWeight.w800,
+                          size: AppSpacing.iconSm,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.sm),
-
-              // Subtitle
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                ),
-                child: Text(
-                  'Discover options for your next decision.',
-                  style: AppTypography.body.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: AppSpacing.md),
-
-              // ── Search Field ───────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(AppSpacing.cardRadiusLarge),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.shadowLight,
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          'Explore',
+                          style: AppTypography.screenTitle.copyWith(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
+                      // Spacer to keep title centered despite back button
+                      const SizedBox(width: 40),
                     ],
                   ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search categories or items...',
-                      hintStyle: AppTypography.inputHint.copyWith(
-                        color: AppColors.textTertiary,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: AppColors.textPurple,
-                        size: AppSpacing.iconSm,
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.md,
-                        vertical: AppSpacing.md,
-                      ),
-                    ),
-                  ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.lg),
+                const SizedBox(height: AppSpacing.sm),
 
-              // ── Browse Categories ──────────────────────────────────────
-              Expanded(
-                child: SingleChildScrollView(
+                // Subtitle
+                Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.md,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Browse Categories header
-                      Text(
-                        'Browse Categories',
-                        style: AppTypography.sectionTitle.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      ..._buildCategoryTiles(context),
-
-                      const SizedBox(height: AppSpacing.xxl),
-
-                      // Popular Subcategories
-                      Text(
-                        'Popular Subcategories',
-                        style: AppTypography.sectionTitle.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      _buildSubcategoryChips(),
-
-                      const SizedBox(height: AppSpacing.xxl),
-
-                      // Recommended Options
-                      Text(
-                        'Recommended Options',
-                        style: AppTypography.sectionTitle.copyWith(
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-
-                      _buildRecommendedOptions(context),
-
-                      const SizedBox(height: AppSpacing.huge),
-                    ],
+                  child: Text(
+                    'Discover options for your next decision.',
+                    style: AppTypography.body.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
 
-              // ── CTA Card ───────────────────────────────────────────────
-              _buildCTACard(context),
+                const SizedBox(height: AppSpacing.md),
 
-              const SizedBox(height: AppSpacing.xxl),
-            ],
+                // ── Search Field ───────────────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(AppSpacing.cardRadiusLarge),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.shadowLight,
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search categories or items...',
+                        hintStyle: AppTypography.inputHint.copyWith(
+                          color: AppColors.textTertiary,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: AppColors.textPurple,
+                          size: AppSpacing.iconSm,
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.md,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.lg),
+
+                // ── Browse Categories ──────────────────────────────────────
+                Text(
+                  'Browse Categories',
+                  style: AppTypography.sectionTitle.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                ..._buildCategoryListTiles(context),
+
+                const SizedBox(height: AppSpacing.xxl),
+
+                // Popular Subcategories
+                Text(
+                  'Popular Subcategories',
+                  style: AppTypography.sectionTitle.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                _buildSubcategoryChips(),
+
+                const SizedBox(height: AppSpacing.xxl),
+
+                // Recommended Options
+                Text(
+                  'Recommended Options',
+                  style: AppTypography.sectionTitle.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                _buildRecommendedOptionsGrid(context),
+
+                const SizedBox(height: AppSpacing.huge),
+
+                // ── CTA Card (at bottom of scrollable content) ─────────────
+                _buildCTACard(context),
+
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+            ),
           ),
         ),
       ),
@@ -173,7 +168,7 @@ class GuestExploreScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildCategoryTiles(BuildContext context) {
+  List<Widget> _buildCategoryListTiles(BuildContext context) {
     final categories = [
       {
         'title': 'Technology',
@@ -337,7 +332,7 @@ class GuestExploreScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendedOptions(BuildContext context) {
+  Widget _buildRecommendedOptionsGrid(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -465,7 +460,7 @@ class GuestExploreScreen extends StatelessWidget {
             height: 56,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/create-decision');
+                Navigator.of(context).pushNamed('/guest-create-decision');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

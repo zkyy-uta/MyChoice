@@ -396,30 +396,29 @@ class _NavBarItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.sm,
-          vertical: AppSpacing.sm,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: AppColors.primary88.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
               icon,
               color: isSelected ? AppColors.primary88 : AppColors.textTertiary,
               size: AppSpacing.iconMd,
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: AppTypography.extraSmallSemibold.copyWith(
-                color: isSelected
-                    ? AppColors.primary88
-                    : AppColors.textTertiary,
-              ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: AppTypography.extraSmallSemibold.copyWith(
+              color: isSelected ? AppColors.primary88 : AppColors.textTertiary,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,21 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:mychoice_app/core/theme/app_colors.dart';
 import 'package:mychoice_app/core/theme/app_typography.dart';
 import 'package:mychoice_app/core/theme/app_spacing.dart';
-import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
-import 'package:mychoice_app/features/auth/presentation/widgets/authentication_gate_dialog.dart';
 import 'result_screen.dart';
 
 /// Create New Decision Screen (MF-2 & MF-3)
-/// All-in-one screen for creating a decision:
-/// - Choose Category
-/// - Choose Subcategory
-/// - Add Options
-/// - Select Criteria
-/// - Set Priorities
+/// For authenticated users only — full access to create and save decisions.
 class CreateDecisionScreen extends StatefulWidget {
   const CreateDecisionScreen({super.key, this.isPremium = false});
 
@@ -30,6 +22,8 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   String? _selectedCategory;
   String? _selectedSubcategory;
   final List<String> _selectedOptions = [];
+  final Set<String> _tappedOptions = {}; // Options user tapped to select (before adding)
+  final TextEditingController _newCriteriaController = TextEditingController();
   final Map<String, bool> _selectedCriteria = {
     'Price': true,
     'Performance': true,
@@ -270,16 +264,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   }
 
   Future<void> _makeDecision() async {
-    // Authentication gate: redirect to login/register if not authenticated
-    final auth = context.read<AuthProvider>();
-    if (!auth.isAuthenticated) {
-      await AuthenticationGateDialog.show(
-        context,
-        title: 'Sign In Required',
-        message: 'Please sign in or create an account to save your decision.',
-      );
-      return;
-    }
+    // User already authenticated — no gate needed for logged-in users
 
     if (_totalPriority != 100) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -319,6 +304,12 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _newCriteriaController.dispose();
+    super.dispose();
   }
 
   @override
@@ -394,24 +385,30 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             SizedBox(
               width: double.infinity,
               height: 44,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Add criteria coming soon')),
-                  );
-                },
-                icon: const Icon(Icons.add, size: 20, color: AppColors.primary88),
-                label: Text(
-                  '+ Add Criteria',
-                  style: AppTypography.buttonMedium.copyWith(
-                    color: AppColors.primary88,
-                  ),
-                ),
+              child: OutlinedButton(
+                onPressed: _showAddCriteriaDialog,
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: AppColors.border),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
                   ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.add,
+                      size: 20,
+                      color: AppColors.textPurple,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Add Criteria',
+                      style: AppTypography.buttonMedium.copyWith(
+                        color: AppColors.textPurple,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -519,6 +516,106 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     );
   }
 
+  void _toggleTapOption(String option) {
+    setState(() {
+      if (_tappedOptions.contains(option)) {
+        _tappedOptions.remove(option);
+      } else {
+        _tappedOptions.add(option);
+      }
+    });
+  }
+
+  void _addTappedOptions() {
+    setState(() {
+      for (final option in _tappedOptions) {
+        if (!_selectedOptions.contains(option)) {
+          _selectedOptions.add(option);
+        }
+      }
+      _tappedOptions.clear();
+    });
+  }
+
+  void _showAddCriteriaDialog() {
+    _newCriteriaController.clear();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.dialogRadius),
+        ),
+        title: Text(
+          'Add New Criteria',
+          style: AppTypography.sectionInnerTitle.copyWith(
+            color: AppColors.textPurple,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _newCriteriaController,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: 'Enter criteria name (e.g., Price, Quality)',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                  borderSide: const BorderSide(color: AppColors.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                  borderSide: const BorderSide(color: AppColors.primary88),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.md,
+                ),
+              ),
+              onSubmitted: (_) => _saveNewCriteria(context),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              'Cancel',
+              style: AppTypography.smallSemibold.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => _saveNewCriteria(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary88,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+              ),
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _saveNewCriteria(BuildContext context) {
+    final name = _newCriteriaController.text.trim();
+    if (name.isEmpty || _selectedCriteria.containsKey(name)) {
+      Navigator.of(context).pop();
+      return;
+    }
+    setState(() {
+      _selectedCriteria[name] = false; // Not selected by default
+      _priorities[name] = 0; // Weight starts at 0
+    });
+    Navigator.of(context).pop();
+  }
+
   Widget _buildOptionsSection() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
@@ -576,25 +673,17 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
               SizedBox(
                 height: 44,
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: _tappedOptions.isEmpty ? null : _addTappedOptions,
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.border),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.add, size: 18, color: AppColors.textPurple),
-                      const SizedBox(width: 4),
-                      Text(
-                        '+ Add',
-                        style: AppTypography.smallSemibold.copyWith(
-                          color: AppColors.textPurple,
-                        ),
-                      ),
-                    ],
+                  child: const Icon(
+                    Icons.add,
+                    size: 20,
+                    color: AppColors.textPurple,
                   ),
                 ),
               ),
@@ -602,26 +691,65 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Available options list
+          // Available options list - tap to select, then click + to add
           ..._availableOptions.map((option) {
             final isAdded = _selectedOptions.contains(option);
+            final isTapped = _tappedOptions.contains(option);
             return Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: Row(
-                children: [
-                  Expanded(child: Text(option, style: AppTypography.body)),
-                  TextButton(
-                    onPressed: isAdded ? null : () => _addOption(option),
-                    child: Text(
-                      isAdded ? 'Added' : '+ Add',
-                      style: AppTypography.smallSemibold.copyWith(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: isAdded ? null : () => _toggleTapOption(option),
+                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isAdded
+                          ? AppColors.primary20
+                          : (isTapped
+                              ? AppColors.primary88.withValues(alpha: 0.1)
+                              : Colors.transparent),
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      border: Border.all(
                         color: isAdded
-                            ? AppColors.textTertiary
-                            : AppColors.primary88,
+                            ? AppColors.primary88
+                            : (isTapped ? AppColors.primary88 : AppColors.border),
+                        width: isAdded || isTapped ? 1.5 : 1,
                       ),
                     ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            option,
+                            style: AppTypography.body.copyWith(
+                              color: isAdded
+                                  ? AppColors.primary88
+                                  : AppColors.textPrimary,
+                              fontWeight: isAdded ? FontWeight.w600 : FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        if (isAdded)
+                          const Icon(
+                            Icons.check_circle,
+                            color: AppColors.primary88,
+                            size: 20,
+                          )
+                        else if (isTapped)
+                          const Icon(
+                            Icons.radio_button_checked,
+                            color: AppColors.primary88,
+                            size: 20,
+                          ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
             );
           }),
@@ -1377,11 +1505,7 @@ class _NavItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(AppSpacing.sm),
             decoration: BoxDecoration(
-              color: isAction
-                  ? AppColors.primaryDark
-                  : (isSelected
-                      ? AppColors.primary88.withValues(alpha: 0.15)
-                      : Colors.transparent),
+              color: AppColors.primary88.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(
