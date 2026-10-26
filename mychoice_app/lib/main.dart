@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'app.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Set preferred orientations (portrait only)
@@ -19,6 +20,12 @@ void main() {
       systemNavigationBarColor: Colors.white,
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
+  );
+
+  // api supabase
+  await Supabase.initialize(
+    url: 'https://mwthzxveegbjpiujolzb.supabase.co',
+    publishableKey: 'sb_publishable_O5K1gJ3di3RIf17TJ48rFg_Mfo87PJn',
   );
 
   runApp(const MyChoiceApp());

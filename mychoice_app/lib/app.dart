@@ -9,6 +9,7 @@ import 'screens/decision/create_decision_screen.dart';
 import 'screens/history/history_screen.dart';
 import 'screens/admin/dashboard/admin_dashboard_screen.dart';
 import 'screens/admin/profile/admin_profile_screen.dart';
+import 'screens/admin/reports/admin_reports_screen.dart';
 import 'screens/admin/users/user_management_screen.dart';
 import 'screens/profile/personal_information_screen.dart';
 import 'screens/profile/language_screen.dart';
@@ -51,6 +52,7 @@ class MyChoiceApp extends StatelessWidget {
         '/profile/my-decision-data': (context) => const MyDecisionDataScreen(),
         '/admin': (context) => const AdminDashboardScreen(),
         '/admin/users': (context) => const UserManagementScreen(),
+        '/admin/reports': (context) => const AdminReportsScreen(),
         '/admin/profile': (context) => const AdminProfileScreen(),
         '/admin/profile/personal-information': (context) =>
             const PersonalInformationScreen(isAdmin: true),

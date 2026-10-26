@@ -18,6 +18,10 @@ class AdminBottomNavigation extends StatelessWidget {
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/users');
       }
+    } else if (index == 3) {
+      if (selectedIndex != index) {
+        Navigator.of(context).pushReplacementNamed('/admin/reports');
+      }
     } else if (index == 4) {
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/profile');
