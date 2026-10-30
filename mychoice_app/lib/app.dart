@@ -1,68 +1,108 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/app_colors.dart';
-import 'core/theme/app_typography.dart';
-import 'features/auth/data/datasources/mock_auth_datasource.dart';
-import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/data/repositories/supabase_auth_repository.dart';
+import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/category_selection/data/datasources/category_datasource.dart';
 import 'features/category_selection/data/repositories/category_repository_impl.dart';
 import 'features/category_selection/presentation/providers/category_provider.dart';
 import 'features/comparison/presentation/providers/comparison_provider.dart';
-import 'features/comparison/presentation/screens/comparison_screen.dart';
 import 'features/decision_engine/data/repositories/decision_engine_repository_impl.dart';
 import 'features/decision_engine/domain/usecases/calculate_saw_usecase.dart';
 import 'features/decision_engine/presentation/providers/result_provider.dart';
 import 'features/priority_setting/domain/usecases/auto_balance_usecase.dart';
 import 'features/what_if_simulation/domain/usecases/recalculate_simulation_usecase.dart';
 import 'features/what_if_simulation/presentation/providers/simulation_provider.dart';
-import 'features/what_if_simulation/presentation/screens/what_if_screen.dart';
-import 'screens/admin/catalogue/catalogue_screen.dart';
-import 'screens/admin/dashboard/admin_dashboard_screen.dart';
-import 'screens/admin/profile/admin_profile_screen.dart';
-import 'screens/admin/users/user_management_screen.dart';
-import 'screens/auth/forgot_password_screen.dart';
-import 'screens/auth/login_screen.dart';
-import 'screens/auth/register_screen.dart';
-import 'screens/dashboard/dashboard_screen.dart';
-import 'screens/decision/create_decision_screen.dart';
-import 'features/dashboard/presentation/screens/guest_home_screen.dart';
-import 'features/guest/presentation/screens/guest_create_decision_screen.dart';
-import 'features/guest/presentation/screens/guest_explore_screen.dart';
-import 'features/guest/presentation/screens/guest_category_detail_screen.dart';
-import 'screens/history/history_screen.dart';
-import 'screens/admin/reports/admin_reports_screen.dart';
-import 'screens/mf04_public_home_catalog_screen.dart';
-import 'screens/comparison/mf08_manual_choice_structuring_screen.dart';
-import 'screens/onboarding/onboarding_screen.dart';
-import 'screens/profile/language_screen.dart';
-import 'screens/profile/my_decision_data_screen.dart';
-import 'screens/profile/notification_settings_screen.dart';
-import 'screens/profile/personal_information_screen.dart';
-import 'screens/profile/premium_plan_screen.dart';
-import 'screens/profile/profile_screen.dart';
-import 'screens/profile/security_screen.dart';
-import 'screens/splash/splash_screen.dart';
+
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<ScaffoldMessengerState> appScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 /// MyChoice App
 /// Main application widget with routing and theme configuration
-class MyChoiceApp extends StatelessWidget {
-  const MyChoiceApp({super.key});
+class MyChoiceApp extends StatefulWidget {
+  const MyChoiceApp({super.key, this.initialPasswordRecovery = false});
+
+  final bool initialPasswordRecovery;
+
+  @override
+  State<MyChoiceApp> createState() => _MyChoiceAppState();
+}
+
+class _MyChoiceAppState extends State<MyChoiceApp> {
+  late final StreamSubscription<supabase.AuthState> _authSubscription;
+  AuthProvider? _authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _authSubscription = supabase.Supabase.instance.client.auth.onAuthStateChange
+        .listen(
+          (authState) {
+            if (authState.event == supabase.AuthChangeEvent.passwordRecovery) {
+              if (_authProvider?.isPasswordResetCodeVerified == true) {
+                return;
+              }
+              appNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+                '/reset-password',
+                (route) => false,
+              );
+            } else if (authState.event == supabase.AuthChangeEvent.signedIn) {
+              final auth = _authProvider;
+              if (auth == null) return;
+              if (auth.isGoogleSignInPending) {
+                unawaited(_completeGoogleSignIn(auth));
+              }
+            }
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            _authProvider?.failGoogleSignIn(error);
+          },
+        );
+  }
+
+  Future<void> _completeGoogleSignIn(AuthProvider auth) async {
+    await auth.completeGoogleSignIn();
+    if (!auth.isAuthenticated) {
+      if (auth.error != null) {
+        appScaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(auth.error!)),
+        );
+      }
+      return;
+    }
+
+    final destination = auth.user!.isAdmin ? '/admin' : '/dashboard';
+    appNavigatorKey.currentState?.pushNamedAndRemoveUntil(
+      destination,
+      (route) => false,
+    );
+  }
+
+  @override
+  void dispose() {
+    _authSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         // Auth Provider
-        Provider<MockAuthDataSource>(create: (_) => MockAuthDataSource()),
+        Provider<AuthRepository>(
+          create: (_) =>
+              SupabaseAuthRepository(supabase.Supabase.instance.client),
+        ),
         ChangeNotifierProvider<AuthProvider>(
-          create: (context) => AuthProvider(
-            repository: AuthRepositoryImpl(
-              mockDataSource: context.read<MockAuthDataSource>(),
-            ),
-          ),
+          create: (context) =>
+              AuthProvider(repository: context.read<AuthRepository>()),
         ),
         // Category Provider
         Provider<MockCategoryDataSource>(
@@ -103,92 +143,15 @@ class MyChoiceApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MyChoice',
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        // Routes
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const SplashScreen(),
-          '/onboarding': (context) => const OnboardingScreen(),
-          '/login': (context) => const LoginScreen(),
-          '/register': (context) => const RegisterScreen(),
-          '/forgot-password': (context) => const ForgotPasswordScreen(),
-          '/dashboard': (context) => const DashboardScreen(),
-          '/create-decision': (context) => const CreateDecisionScreen(),
-          '/history': (context) => const HistoryScreen(),
-          '/profile': (context) => const ProfileScreen(),
-          '/profile/personal-information': (context) =>
-              const PersonalInformationScreen(),
-          '/profile/premium-plan': (context) => const PremiumPlanScreen(),
-          '/profile/security': (context) => const SecurityScreen(),
-          '/profile/notifications': (context) =>
-              const NotificationSettingsScreen(),
-          '/profile/language': (context) => const LanguageScreen(),
-          '/profile/my-decision-data': (context) =>
-              const MyDecisionDataScreen(),
-          '/guest-home': (context) => const GuestHomeScreen(),
-          '/guest-explore': (context) => const GuestExploreScreen(),
-          '/guest-category-detail': (context) =>
-              const GuestCategoryDetailScreen(categoryName: 'Technology'),
-          '/guest-create-decision': (context) =>
-              const GuestCreateDecisionScreen(),
-          '/public-catalog': (context) => const Mf04PublicHomeCatalogScreen(),
-          '/comparison': (context) => const ComparisonScreen(),
-          '/mf08-comparison': (context) {
-            final arguments = ModalRoute.of(context)?.settings.arguments;
-            if (arguments is! Mf08ComparisonArguments) {
-              throw FlutterError(
-                'The /mf08-comparison route requires '
-                'Mf08ComparisonArguments.',
-              );
-            }
-            return Mf08ComparisonScreen(
-              choices: arguments.choices,
-              category: arguments.category,
-              subcategory: arguments.subcategory,
-            );
-          },
-          '/what-if': (context) => const WhatIfScreen(),
-          '/admin': (context) => const AdminDashboardScreen(),
-          '/admin/users': (context) => const UserManagementScreen(),
-          '/admin/catalogue': (context) => const CatalogueScreen(),
-          '/admin/reports': (context) => const AdminReportsScreen(),
-          '/admin/profile': (context) => const AdminProfileScreen(),
-          '/admin/profile/personal-information': (context) =>
-              const PersonalInformationScreen(isAdmin: true),
+        scaffoldMessengerKey: appScaffoldMessengerKey,
+        navigatorKey: appNavigatorKey,
+        builder: (context, child) {
+          _authProvider = context.read<AuthProvider>();
+          return child!;
         },
-      ),
-    );
-  }
-}
-
-/// Placeholder screen for features coming soon
-class _ComingSoonScreen extends StatelessWidget {
-  final String title;
-
-  const _ComingSoonScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.construction, size: 64, color: AppColors.textTertiary),
-            const SizedBox(height: 16),
-            Text(
-              '$title coming soon',
-              style: AppTypography.sectionTitle.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
+        theme: AppTheme.lightTheme,
+        initialRoute: widget.initialPasswordRecovery ? '/reset-password' : '/',
+        routes: buildAppRoutes(),
       ),
     );
   }

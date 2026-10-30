@@ -7,7 +7,6 @@ class User {
   final String id;
   final String email;
   final String name;
-  final DateTime? dateOfBirth;
   final UserRole role;
   final UserPlan plan;
   final DateTime createdAt;
@@ -17,19 +16,19 @@ class User {
     required this.id,
     required this.email,
     required this.name,
-    this.dateOfBirth,
     required this.role,
     required this.plan,
     required this.createdAt,
     this.updatedAt,
   });
 
+  bool get isAdmin => role == UserRole.admin;
+
   /// Create a copy with optional field replacements
   User copyWith({
     String? id,
     String? email,
     String? name,
-    DateTime? dateOfBirth,
     UserRole? role,
     UserPlan? plan,
     DateTime? createdAt,
@@ -39,7 +38,6 @@ class User {
       id: id ?? this.id,
       email: email ?? this.email,
       name: name ?? this.name,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       role: role ?? this.role,
       plan: plan ?? this.plan,
       createdAt: createdAt ?? this.createdAt,

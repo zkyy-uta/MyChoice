@@ -5,6 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final isPasswordRecoveryRedirect =
+      Uri.base.queryParameters['flow'] == 'reset-password';
 
   // Set preferred orientations (portrait only)
   SystemChrome.setPreferredOrientations([
@@ -28,5 +30,11 @@ Future<void> main() async {
     publishableKey: 'sb_publishable_O5K1gJ3di3RIf17TJ48rFg_Mfo87PJn',
   );
 
-  runApp(const MyChoiceApp());
+  runApp(
+    MyChoiceApp(
+      initialPasswordRecovery:
+          isPasswordRecoveryRedirect &&
+          Supabase.instance.client.auth.currentSession != null,
+    ),
+  );
 }

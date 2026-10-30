@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/theme/app_spacing.dart';
-import '../../core/widgets/animated_gradient_background.dart';
+import '../../core/widgets/mobile_background.dart';
 
 /// Splash Screen
 /// First screen shown when app launches
@@ -53,7 +56,13 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _navigateToOnboarding() async {
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/onboarding');
+      final authProvider = context.read<AuthProvider>();
+      await authProvider.initialized;
+      if (!mounted) return;
+      final route = authProvider.isAuthenticated
+          ? (authProvider.user!.isAdmin ? '/admin' : '/dashboard')
+          : '/onboarding';
+      Navigator.of(context).pushReplacementNamed(route);
     }
   }
 
@@ -66,9 +75,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedGradientBackground(
-        animate: true,
-        duration: const Duration(seconds: 3),
+      body: MobileBackground(
         child: Center(
           child: AnimatedBuilder(
             animation: _animationController,

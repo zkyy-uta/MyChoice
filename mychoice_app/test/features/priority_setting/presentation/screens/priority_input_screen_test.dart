@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mychoice_app/features/priority_setting/presentation/screens/priority_input_screen.dart';
+import 'package:mychoice_app/screens/user/decision/priority_input_screen.dart';
 import 'package:mychoice_app/features/criteria_selection/domain/entities/criterion.dart';
 import 'package:mychoice_app/core/theme/app_theme.dart';
 import 'package:mychoice_app/core/widgets/forms/weight_slider.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/category_selection/presentation/providers/category_provider.dart';
-import 'package:mychoice_app/features/category_selection/presentation/screens/category_selection_screen.dart';
+import 'package:mychoice_app/screens/user/decision/category_selection_screen.dart';
 import 'package:mychoice_app/features/category_selection/data/repositories/category_repository_impl.dart';
 import 'package:mychoice_app/features/category_selection/data/datasources/category_datasource.dart';
 import 'package:mychoice_app/core/theme/app_theme.dart';

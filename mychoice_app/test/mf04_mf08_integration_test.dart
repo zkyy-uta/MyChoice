@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mychoice_app/screens/comparison/mf08_manual_choice_structuring_screen.dart';
-import 'package:mychoice_app/screens/decision/result_screen.dart';
-import 'package:mychoice_app/screens/mf04_public_home_catalog_screen.dart';
+import 'package:mychoice_app/screens/user/comparison/mf08_manual_choice_structuring_screen.dart';
+import 'package:mychoice_app/screens/user/decision/result_screen.dart';
+import 'package:mychoice_app/screens/guest/mf04_public_home_catalog_screen.dart';
 import 'package:mychoice_app/screens/onboarding/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

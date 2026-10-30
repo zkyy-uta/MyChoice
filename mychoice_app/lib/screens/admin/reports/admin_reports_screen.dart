@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 
 class AdminReportsScreen extends StatefulWidget {
   const AdminReportsScreen({super.key});
@@ -55,152 +56,154 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
         ),
         centerTitle: true,
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-              child: Text(
-                'Reviews submitted by MyChoice users.',
-                style: AppTypography.extraSmallSemibold.copyWith(
-                  color: AppColors.textTertiary,
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _ReviewSummaryCard(
-                      icon: Icons.rate_review_outlined,
-                      label: 'Total Reviews',
-                      value: '${_sampleReviews.length}',
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _ReviewSummaryCard(
-                      icon: Icons.star_rounded,
-                      label: 'Average Rating',
-                      value: averageRating.toStringAsFixed(1),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-              child: TextField(
-                controller: _searchController,
-                onChanged: (_) => setState(() {}),
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  hintText: 'Search name or review',
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: AppColors.primaryDark,
-                  ),
-                  suffixIcon: _searchController.text.isEmpty
-                      ? null
-                      : IconButton(
-                          tooltip: 'Clear search',
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {});
-                          },
-                          icon: const Icon(Icons.close),
-                        ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide.none,
+      body: MobileBackground(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                child: Text(
+                  'Reviews submitted by MyChoice users.',
+                  style: AppTypography.extraSmallSemibold.copyWith(
+                    color: AppColors.textTertiary,
                   ),
                 ),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Wrap(
-                spacing: 8,
-                children: [
-                  _RatingFilterChip(
-                    label: 'All',
-                    selected: _selectedRating == null,
-                    onSelected: () => setState(() => _selectedRating = null),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _ReviewSummaryCard(
+                        icon: Icons.rate_review_outlined,
+                        label: 'Total Reviews',
+                        value: '${_sampleReviews.length}',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _ReviewSummaryCard(
+                        icon: Icons.star_rounded,
+                        label: 'Average Rating',
+                        value: averageRating.toStringAsFixed(1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (_) => setState(() {}),
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: 'Search name or review',
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppColors.primaryDark,
+                    ),
+                    suffixIcon: _searchController.text.isEmpty
+                        ? null
+                        : IconButton(
+                            tooltip: 'Clear search',
+                            onPressed: () {
+                              _searchController.clear();
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.close),
+                          ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
-                  for (var rating = 5; rating >= 1; rating--)
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Wrap(
+                  spacing: 8,
+                  children: [
                     _RatingFilterChip(
-                      label: '$rating stars',
-                      selected: _selectedRating == rating,
-                      onSelected: () =>
-                          setState(() => _selectedRating = rating),
+                      label: 'All',
+                      selected: _selectedRating == null,
+                      onSelected: () => setState(() => _selectedRating = null),
                     ),
-                ],
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-            sliver: SliverToBoxAdapter(
-              child: Text(
-                '${reviews.length} reviews',
-                style: AppTypography.extraSmallSemibold.copyWith(
-                  color: AppColors.textSecondary,
+                    for (var rating = 5; rating >= 1; rating--)
+                      _RatingFilterChip(
+                        label: '$rating stars',
+                        selected: _selectedRating == rating,
+                        onSelected: () =>
+                            setState(() => _selectedRating = rating),
+                      ),
+                  ],
                 ),
               ),
             ),
-          ),
-          if (reviews.isEmpty)
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.rate_review_outlined,
-                        size: 44,
-                        color: AppColors.textTertiary,
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'No reviews found',
-                        style: AppTypography.sectionInnerTitle,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Try a different search or rating filter.',
-                        textAlign: TextAlign.center,
-                        style: AppTypography.small,
-                      ),
-                    ],
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              sliver: SliverToBoxAdapter(
+                child: Text(
+                  '${reviews.length} reviews',
+                  style: AppTypography.extraSmallSemibold.copyWith(
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
-            )
-          else
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              sliver: SliverList.builder(
-                itemCount: reviews.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _ReviewCard(review: reviews[index]),
+            ),
+            if (reviews.isEmpty)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.rate_review_outlined,
+                          size: 44,
+                          color: AppColors.textTertiary,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'No reviews found',
+                          style: AppTypography.sectionInnerTitle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Try a different search or rating filter.',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.small,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                sliver: SliverList.builder(
+                  itemCount: reviews.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: _ReviewCard(review: reviews[index]),
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 3),
     );

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_typography.dart';
-import '../../core/theme/app_spacing.dart';
-import '../../core/widgets/animated_gradient_background.dart';
+import 'package:provider/provider.dart';
 
-/// Login Screen
-/// Allows users to sign in to their account
-/// Features email, password input and Google sign-in option
+import 'package:mychoice_app/core/theme/app_colors.dart';
+import 'package:mychoice_app/core/theme/app_spacing.dart';
+import 'package:mychoice_app/core/theme/app_typography.dart';
+import 'package:mychoice_app/core/validators/validation_rules.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
+import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -19,8 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _rememberMe = false;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -30,291 +29,236 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+    if (!_formKey.currentState!.validate()) return;
 
-      // TODO: Implement actual login logic
-      await Future.delayed(const Duration(seconds: 2));
+    final auth = context.read<AuthProvider>();
+    await auth.login(_emailController.text, _passwordController.text);
+    if (!mounted) return;
 
-      setState(() => _isLoading = false);
-
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/dashboard');
-      }
+    if (auth.isAuthenticated) {
+      final destination = auth.user!.isAdmin ? '/admin' : '/dashboard';
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(destination, (route) => false);
+    } else if (auth.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(auth.error!),
+          backgroundColor: AppColors.error80,
+        ),
+      );
     }
-  }
-
-  Future<void> _handleGoogleLogin() async {
-    // TODO: Implement Google Sign-In
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() => _isLoading = false);
-
-    if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/dashboard');
-    }
-  }
-
-  void _navigateToRegister() {
-    Navigator.of(context).pushNamed('/register');
-  }
-
-  void _navigateToForgotPassword() {
-    // TODO: Implement forgot password
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Forgot Password feature coming soon')),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SoftGradientBackground(
+      body: MobileBackground(
         child: SafeArea(
-          child: Column(
-            children: [
-              // Back Button
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(top: AppSpacing.xxl),
+              padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
               ),
-
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(top: AppSpacing.xxl),
-                  padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(32),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: AppSpacing.lg),
-
-                          // Title
-                          Text(
-                            'Sign in to your\nAccount',
-                            style: AppTypography.screenTitle,
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-
-                          // Subtitle
-                          Text(
-                            'Enter your email and password to log in',
-                            style: AppTypography.body,
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-
-                          // Email Field
-                          TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                              hintText: 'Email',
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () => Navigator.of(
+                            context,
+                          ).pushReplacementNamed('/guest-home'),
+                          icon: const Icon(Icons.arrow_back),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Sign in to your\nAccount',
+                        style: AppTypography.screenTitle,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'Masuk dengan email dan password. Akses user atau admin '
+                        'ditentukan dari peran akun.',
+                        style: AppTypography.body,
+                      ),
+                      const SizedBox(height: AppSpacing.xxl),
+                      TextFormField(
+                        key: const Key('login-email'),
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        autofillHints: const [AutofillHints.username],
+                        decoration: const InputDecoration(hintText: 'Email'),
+                        validator: validateEmail,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      TextFormField(
+                        key: const Key('login-password'),
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        autofillHints: const [AutofillHints.password],
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          suffixIcon: IconButton(
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              if (!value.contains('@')) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-
-                          // Password Field
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscurePassword,
-                            decoration: InputDecoration(
-                              hintText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                  color: AppColors.textTertiary,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                              ),
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
                           ),
-                          const SizedBox(height: AppSpacing.md),
-
-                          // Remember Me & Forgot Password
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: _rememberMe,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _rememberMe = value ?? false;
-                                  });
-                                },
-                              ),
-                              Text('Remember me', style: AppTypography.body),
-                              const Spacer(),
-                              TextButton(
-                                onPressed: _navigateToForgotPassword,
-                                child: Text(
-                                  'Forgot Password ?',
-                                  style: AppTypography.buttonMedium.copyWith(
-                                    color: AppColors.info80,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-
-                          // Login Button
-                          SizedBox(
-                            height: 56,
+                        ),
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Password wajib diisi'
+                            : null,
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => Navigator.of(
+                            context,
+                          ).pushNamed('/forgot-password'),
+                          child: const Text('Lupa password?'),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Consumer<AuthProvider>(
+                        builder: (context, auth, _) {
+                          final isLoading =
+                              auth.state == AuthState.loading ||
+                              auth.state == AuthState.initial;
+                          return SizedBox(
+                            height: 54,
                             child: ElevatedButton(
-                              onPressed: _isLoading ? null : _handleLogin,
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
-                                      ),
+                              onPressed: isLoading ? null : _handleLogin,
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
                                     )
                                   : Text(
                                       'Log In',
                                       style: AppTypography.buttonLarge,
                                     ),
                             ),
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-
-                          // Divider
-                          Row(
-                            children: [
-                              const Expanded(child: Divider()),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSpacing.md,
-                                ),
-                                child: Text('Or', style: AppTypography.body),
-                              ),
-                              const Expanded(child: Divider()),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-
-                          // Google Sign In Button
-                          SizedBox(
-                            height: 56,
-                            child: OutlinedButton.icon(
-                              onPressed: _isLoading ? null : _handleGoogleLogin,
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                side: const BorderSide(
-                                  color: AppColors.border,
-                                  width: 1,
-                                ),
-                              ),
-                              icon: Image.network(
-                                'https://www.google.com/favicon.ico',
-                                width: 20,
-                                height: 20,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(
-                                    Icons.g_mobiledata,
-                                    color: AppColors.textPrimary,
-                                    size: 24,
-                                  );
-                                },
-                              ),
-                              label: Text(
-                                'Continue with Google',
-                                style: AppTypography.buttonLarge.copyWith(
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Row(
+                        children: [
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.md,
                             ),
+                            child: Text('Or', style: AppTypography.small),
                           ),
-                        const SizedBox(height: AppSpacing.md), // TOMBOL PANEL ADMIN (SEMENTARA) -----------------------------------------------
-                          OutlinedButton.icon(
-                            onPressed: _isLoading
-                                ? null
-                                : () => Navigator.of(
-                                    context,
-                                  ).pushReplacementNamed('/admin'),
-                            icon: const Icon(Icons.admin_panel_settings_outlined),
-                            label: const Text('Masuk sebagai Admin'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.primaryDark,
-                              side: const BorderSide(
-                                color: AppColors.primary60,
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
-
-                          // Sign Up Link
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Don't have an account?  ",
-                                style: AppTypography.body,
-                              ),
-                              TextButton(
-                                onPressed: _navigateToRegister,
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: const Size(0, 0),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                                child: Text(
-                                  'Sign Up',
-                                  style: AppTypography.buttonMedium.copyWith(
-                                    color: AppColors.info80,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: AppSpacing.xxl),
+                          const Expanded(child: Divider()),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: AppSpacing.md),
+                      Consumer<AuthProvider>(
+                        builder: (context, auth, _) {
+                          final isBusy =
+                              auth.state == AuthState.loading ||
+                              auth.state == AuthState.initial;
+                          return SizedBox(
+                            height: 48,
+                            child: OutlinedButton(
+                              key: const Key('continue-with-google'),
+                              onPressed: isBusy
+                                  ? null
+                                  : () async {
+                                      await auth.signInWithGoogle();
+                                      if (!context.mounted ||
+                                          auth.error == null) {
+                                        return;
+                                      }
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text(auth.error!)),
+                                      );
+                                    },
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: AppColors.textPrimary,
+                                side: const BorderSide(
+                                  color: AppColors.grey200,
+                                ),
+                                shape: const StadiumBorder(),
+                              ),
+                              child: auth.state == AuthState.loading
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'G',
+                                          style: TextStyle(
+                                            color: Color(0xFF4285F4),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(width: AppSpacing.sm),
+                                        Text(
+                                          'Continue with Google',
+                                          style: AppTypography.smallSemibold,
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Center(
+                        child: Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              "Don't have an account? ",
+                              style: AppTypography.body,
+                            ),
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.of(context).pushNamed('/register'),
+                              child: Text(
+                                'Sign Up',
+                                style: AppTypography.buttonMedium.copyWith(
+                                  color: AppColors.info80,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),

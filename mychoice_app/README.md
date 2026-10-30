@@ -78,6 +78,14 @@ flutter pub get
 flutter run
 ```
 
+## 🔐 Supabase Authentication
+
+- [Panduan setup Supabase](docs/SUPABASE_SETUP.md) — langkah Dashboard, SQL
+  migrations, konfirmasi email, SMTP, deep link reset, dan setup admin.
+- [Penjelasan backend autentikasi](docs/AUTHENTICATION_BACKEND.md) — arsitektur
+  login/register/reset, pemisahan role, keamanan, serta contoh jawaban untuk
+  presentasi.
+
 ### Run on specific device
 ```bash
 # List available devices
@@ -91,26 +99,37 @@ flutter run -d <device-id>
 
 ```
 lib/
-├── core/
-│   └── theme/
-│       ├── app_colors.dart       # Color palette
-│       ├── app_typography.dart   # Text styles
-│       ├── app_spacing.dart      # Spacing system
-│       └── app_theme.dart        # Theme configuration
-├── screens/
-│   ├── splash/
-│   │   └── splash_screen.dart
-│   ├── onboarding/
-│   │   ├── onboarding_screen.dart
-│   │   └── widgets/
+├── core/                         # Komponen dan aturan lintas fitur
+│   ├── routes/                   # Pemetaan route ke screen
+│   ├── theme/
+│   ├── validators/
+│   └── widgets/
+├── features/                     # Data, aturan domain, dan state fitur
+│   └── <feature>/
+│       ├── data/                 # Datasource dan implementasi repository
+│       ├── domain/               # Entity, kontrak, dan use case
+│       └── presentation/
+│           └── providers/        # State/controller yang dipakai UI
+├── screens/                      # Semua halaman UI aplikasi
+│   ├── admin/
 │   ├── auth/
-│   │   ├── login_screen.dart
-│   │   └── register_screen.dart
-│   └── dashboard/
-│       └── dashboard_screen.dart
-├── app.dart                      # App widget & routing
-└── main.dart                     # Entry point
+│   ├── guest/
+│   ├── onboarding/
+│   ├── splash/
+│   └── user/
+│       ├── comparison/
+│       ├── dashboard/
+│       ├── decision/
+│       ├── history/
+│       └── profile/
+├── app.dart                       # Provider global dan konfigurasi app
+└── main.dart                      # Entry point
 ```
+
+Aturannya: file tampilan halaman berada di `screens/`, dikelompokkan menurut
+jenis pengguna atau alur aplikasi. `features/` menyimpan logika dan state
+fitur yang digunakan layar. Saat menambah route, daftarkan screen dari
+`core/routes/app_routes.dart`; jangan membuat salinan screen di `features/`.
 
 ## 🎨 Design System
 

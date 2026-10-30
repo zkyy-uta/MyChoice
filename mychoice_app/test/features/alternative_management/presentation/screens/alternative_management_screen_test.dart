@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/alternative_management/domain/entities/alternative.dart';
 import 'package:mychoice_app/features/alternative_management/presentation/providers/alternative_provider.dart';
-import 'package:mychoice_app/features/alternative_management/presentation/screens/alternative_management_screen.dart';
+import 'package:mychoice_app/screens/user/decision/alternative_management_screen.dart';
 import 'package:mychoice_app/features/alternative_management/data/repositories/alternative_repository_impl.dart';
 import 'package:mychoice_app/features/alternative_management/domain/usecases/add_alternative_usecase.dart';
 import 'package:mychoice_app/features/alternative_management/data/datasources/alternative_datasource.dart';

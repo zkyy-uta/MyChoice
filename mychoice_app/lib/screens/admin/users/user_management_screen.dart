@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -101,125 +102,129 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-            child: Text(
-              'Manage MyChoice accounts here.',
-              style: AppTypography.extraSmallSemibold.copyWith(
-                color: AppColors.textTertiary,
+      body: MobileBackground(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: Text(
+                'Manage MyChoice accounts here.',
+                style: AppTypography.extraSmallSemibold.copyWith(
+                  color: AppColors.textTertiary,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (_) => setState(() {}),
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      hintText: 'Search name, email, or ID',
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: AppColors.primaryDark,
-                      ),
-                      suffixIcon: _searchController.text.isEmpty
-                          ? null
-                          : IconButton(
-                              tooltip: 'Clear search',
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() {});
-                              },
-                              icon: const Icon(Icons.close),
-                            ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide.none,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (_) => setState(() {}),
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        hintText: 'Search name, email, or ID',
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: AppColors.primaryDark,
+                        ),
+                        suffixIcon: _searchController.text.isEmpty
+                            ? null
+                            : IconButton(
+                                tooltip: 'Clear search',
+                                onPressed: () {
+                                  _searchController.clear();
+                                  setState(() {});
+                                },
+                                icon: const Icon(Icons.close),
+                              ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  child: IconButton(
-                    tooltip: 'Filter by status',
-                    onPressed: _showStatusFilter,
-                    icon: Icon(
-                      Icons.tune,
-                      color: allSelected
-                          ? AppColors.primaryDark
-                          : AppColors.error80,
+                  const SizedBox(width: 10),
+                  Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    child: IconButton(
+                      tooltip: 'Filter by status',
+                      onPressed: _showStatusFilter,
+                      icon: Icon(
+                        Icons.tune,
+                        color: allSelected
+                            ? AppColors.primaryDark
+                            : AppColors.error80,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-            child: Text(
-              '${users.length} accounts found',
-              style: AppTypography.extraSmallSemibold.copyWith(
-                color: AppColors.textSecondary,
+                ],
               ),
             ),
-          ),
-          Expanded(
-            child: users.isEmpty
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.person_search_outlined,
-                            size: 44,
-                            color: AppColors.textTertiary,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            'No users found',
-                            style: AppTypography.smallSemibold,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Try changing your search or status filter.',
-                            textAlign: TextAlign.center,
-                            style: AppTypography.extraSmallSemibold.copyWith(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Text(
+                '${users.length} accounts found',
+                style: AppTypography.extraSmallSemibold.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            Expanded(
+              child: users.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.person_search_outlined,
+                              size: 44,
                               color: AppColors.textTertiary,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 10),
+                            Text(
+                              'No users found',
+                              style: AppTypography.smallSemibold,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Try changing your search or status filter.',
+                              textAlign: TextAlign.center,
+                              style: AppTypography.extraSmallSemibold.copyWith(
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                      itemCount: users.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        final user = users[index];
+                        return _UserCard(
+                          user: user,
+                          onDetailsTap: () => _showUserDetails(user),
+                        );
+                      },
                     ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-                    itemCount: users.length,
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final user = users[index];
-                      return _UserCard(
-                        user: user,
-                        onDetailsTap: () => _showUserDetails(user),
-                      );
-                    },
-                  ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 1),
     );

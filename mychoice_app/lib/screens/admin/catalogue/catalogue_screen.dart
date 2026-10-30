@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 import 'technology_screen.dart';
 
 class CatalogueScreen extends StatelessWidget {
@@ -15,61 +15,61 @@ class CatalogueScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Categories',
-                      style: AppTypography.sectionInnerTitle.copyWith(
-                        color: _darkPurple,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
+      body: MobileBackground(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Categories',
+                        style: AppTypography.sectionInnerTitle.copyWith(
+                          color: _darkPurple,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 14),
-                    _buildCategoryCard(
-                      context: context,
-                      title: 'Technology',
-                      icon: Icons.laptop_mac_rounded,
-                      criteria: 23,
-                      subcategories: 5,
-                      accent: const Color(0xFFD9C7F0),
-                    ),
-                    _buildCategoryCard(
-                      context: context,
-                      title: 'Education',
-                      icon: Icons.school_outlined,
-                      criteria: 11,
-                      subcategories: 3,
-                      accent: const Color(0xFFD6E6F7),
-                    ),
-                    _buildCategoryCard(
-                      context: context,
-                      title: 'Fashion',
-                      icon: Icons.checkroom_outlined,
-                      criteria: 19,
-                      subcategories: 5,
-                      accent: const Color(0xFFF4D6E5),
-                    ),
-                  ],
+                      const SizedBox(height: 14),
+                      _buildCategoryCard(
+                        context: context,
+                        title: 'Technology',
+                        icon: Icons.laptop_mac_rounded,
+                        criteria: 23,
+                        subcategories: 5,
+                        accent: const Color(0xFFD9C7F0),
+                      ),
+                      _buildCategoryCard(
+                        context: context,
+                        title: 'Education',
+                        icon: Icons.school_outlined,
+                        criteria: 11,
+                        subcategories: 3,
+                        accent: const Color(0xFFD6E6F7),
+                      ),
+                      _buildCategoryCard(
+                        context: context,
+                        title: 'Fashion',
+                        icon: Icons.checkroom_outlined,
+                        criteria: 19,
+                        subcategories: 5,
+                        accent: const Color(0xFFF4D6E5),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(
-        selectedIndex: 2,
-      ),
+      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
     );
   }
 
@@ -129,10 +129,7 @@ class CatalogueScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.white,
-          width: 1.4,
-        ),
+        border: Border.all(color: Colors.white, width: 1.4),
         boxShadow: [
           BoxShadow(
             color: AppColors.shadow,
@@ -157,9 +154,7 @@ class CatalogueScreen extends StatelessWidget {
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    '$title screen will be connected next.',
-                  ),
+                  content: Text('$title screen will be connected next.'),
                   duration: const Duration(seconds: 2),
                 ),
               );
@@ -178,15 +173,9 @@ class CatalogueScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFFE8E0F0),
-                        ),
+                        border: Border.all(color: const Color(0xFFE8E0F0)),
                       ),
-                      child: Icon(
-                        icon,
-                        size: 21,
-                        color: _darkPurple,
-                      ),
+                      child: Icon(icon, size: 21, color: _darkPurple),
                     ),
                     const SizedBox(width: 9),
                     Expanded(
@@ -276,10 +265,7 @@ class CatalogueScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.65),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: accent,
-                          width: 1.5,
-                        ),
+                        border: Border.all(color: accent, width: 1.5),
                       ),
                       child: const Icon(
                         Icons.arrow_forward_rounded,
@@ -309,11 +295,7 @@ class CatalogueScreen extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(9),
       ),
-      child: Icon(
-        icon,
-        color: _darkPurple,
-        size: 16,
-      ),
+      child: Icon(icon, color: _darkPurple, size: 16),
     );
   }
 }
