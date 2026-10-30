@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_typography.dart';
-// import '../../core/widgets/bottom_navigation.dart';
+import '../comparison/mf08_manual_choice_structuring_screen.dart';
+import 'detail_analysis_screen.dart';
+import 'package:mychoice_app/features/what_if_simulation/presentation/providers/simulation_provider.dart';
+import 'package:mychoice_app/features/decision_engine/domain/entities/decision_result.dart';
+import 'package:mychoice_app/features/decision_engine/domain/entities/decision_matrix.dart';
+import 'package:mychoice_app/features/alternative_management/domain/entities/alternative.dart';
+import 'package:mychoice_app/features/criteria_selection/domain/entities/criterion.dart';
+import 'package:mychoice_app/features/decision_engine/domain/entities/calculation_breakdown.dart';
+import 'package:mychoice_app/features/decision_engine/domain/entities/saw_configuration.dart';
 
 /// A single score returned by the SAW decision engine.
 /// The UI only displays values; scoring must happen in the backend.
@@ -81,30 +90,6 @@ class _ResultScreenState extends State<ResultScreen> {
       if (mounted) setState(() => saving = false);
     }
   }
-
-  // void _onNavigation(int index) {
-  //   if (widget.onTabSelected != null) {
-  //     widget.onTabSelected!(index);
-  //     return;
-  //   }
-
-  //   switch (index) {
-  //     case 0:
-  //       Navigator.of(context).pushNamed('/dashboard');
-  //     case 1:
-  //       Navigator.of(context).pushNamed('/create-decision');
-  //     case 2:
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Insight feature coming soon')),
-  //       );
-  //     case 3:
-  //       Navigator.of(context).pushNamed('/history');
-  //     case 4:
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Profile feature coming soon')),
-  //       );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -291,6 +276,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         final index = entry.key;
                         final choice = entry.value;
                         const medals = ['🥇', '🥈', '🥉'];
+
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 3),
                           child: Row(
@@ -328,7 +314,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     ] else ...[
                       Center(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 20),
                           child: Text(
                             'No ranking results available.',
                             style: AppTypography.body,
@@ -345,10 +331,23 @@ class _ResultScreenState extends State<ResultScreen> {
                         icon: Icons.compare_arrows_rounded,
                         label: 'View Comparison',
                         subtitle: 'Compare the data and scores for each option',
-                        onPressed: sorted.length > 1
-                            ? (widget.onComparison ??
-                                  () => _unavailable('Comparison'))
-                            : null,
+                        onPressed:
+                            widget.onComparison ??
+                            () => Navigator.of(context).pushNamed(
+                              '/mf08-comparison',
+                              arguments: Mf08ComparisonArguments(
+                                category: widget.category,
+                                subcategory: widget.subcategory,
+                                choices: widget.choices
+                                    .map(
+                                      (choice) => ComparisonChoice(
+                                        name: choice.name,
+                                        finalScore: choice.score,
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ),
                         wide: true,
                       ),
                     ),
@@ -362,7 +361,15 @@ class _ResultScreenState extends State<ResultScreen> {
                             subtitle: 'Why these results?',
                             onPressed:
                                 widget.onAnalysis ??
-                                () => _unavailable('Analysis Details'),
+                                () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DetailAnalysisScreen(),
+                                    ),
+                                  );
+                                },
                           ),
                         ),
                         const SizedBox(width: 13),
@@ -371,9 +378,130 @@ class _ResultScreenState extends State<ResultScreen> {
                             icon: Icons.autorenew_rounded,
                             label: 'What-If',
                             subtitle: 'Try another scenario',
-                            onPressed:
-                                widget.onWhatIf ??
-                                () => _unavailable('What-If'),
+                            onPressed: () {
+                              // Inisialisasi SimulationProvider dengan data keputusan asli
+                              final simProvider =
+                                  context.read<SimulationProvider>();
+
+                              // Buat mock Alternative dari choices
+                              final alternatives =
+                                  widget.choices.asMap().entries.map((entry) {
+                                final index = entry.key;
+                                final choice = entry.value;
+                                return Alternative(
+                                  id: 'alt_$index',
+                                  name: choice.name,
+                                  source: 'custom',
+                                );
+                              }).toList();
+
+                              // Definisikan kriteria
+                              final criteria = [
+                                Criterion(
+                                    id: 'price',
+                                    name: 'Price',
+                                    type: CriterionType.cost,
+                                    source: 'suggested'),
+                                Criterion(
+                                    id: 'performance',
+                                    name: 'Performance',
+                                    type: CriterionType.benefit,
+                                    source: 'suggested'),
+                                Criterion(
+                                    id: 'battery',
+                                    name: 'Battery',
+                                    type: CriterionType.benefit,
+                                    source: 'suggested'),
+                                Criterion(
+                                    id: 'storage',
+                                    name: 'Storage',
+                                    type: CriterionType.benefit,
+                                    source: 'suggested'),
+                              ];
+
+                              final criteriaMap = {
+                                for (final c in criteria) c.id: c
+                              };
+
+                              // Buat matrix dengan nilai mentah
+                              final values = <String, Map<String, double>>{};
+                              for (final alt in alternatives) {
+                                final idx = alternatives.indexOf(alt);
+                                values[alt.id] = {
+                                  'price': 70.0 + (idx * 5.0),
+                                  'performance': 75.0 + (idx * 4.0),
+                                  'battery': 65.0 + (idx * 6.0),
+                                  'storage': 80.0 + (idx * 3.0),
+                                };
+                              }
+
+                              final matrix = DecisionMatrix(
+                                alternatives: alternatives,
+                                criteria: criteria,
+                                values: values,
+                              );
+
+                              // Bobot asli (dari create decision)
+                              final originalWeights = <String, double>{
+                                'price': 30.0,
+                                'performance': 35.0,
+                                'battery': 20.0,
+                                'storage': 15.0,
+                              };
+
+                              // Buat breakdown per alternative
+                              final breakdown = <String, CalculationBreakdown>{};
+                              for (int i = 0; i < alternatives.length; i++) {
+                                final alt = alternatives[i];
+                                final choice = widget.choices[i];
+                                final critBreakdown = <String, NormalizedScore>{};
+                                for (final crit in criteria) {
+                                  final rawValue = values[alt.id]![crit.id]!;
+                                  final normalized = rawValue / 100.0;
+                                  final weight =
+                                      (originalWeights[crit.id] ?? 0) / 100.0;
+                                  critBreakdown[crit.id] = NormalizedScore(
+                                    normalized: normalized,
+                                    weight: weight,
+                                    weighted: normalized * weight,
+                                  );
+                                }
+                                breakdown[alt.id] = CalculationBreakdown(
+                                  alternativeId: alt.id,
+                                  criteria: critBreakdown,
+                                  compositeScore: choice.score * 100,
+                                );
+                              }
+
+                              // Buat ranking
+                              final ranking =
+                                  widget.choices.asMap().entries.map((entry) {
+                                final index = entry.key;
+                                final choice = entry.value;
+                                return RankedAlternative(
+                                  rank: index + 1,
+                                  alternative: alternatives[index],
+                                  compositeScore: choice.score * 100,
+                                );
+                              }).toList();
+
+                              final originalResult = DecisionResult(
+                                ranking: ranking,
+                                breakdown: breakdown,
+                                algorithmVersion: '1.0',
+                                calculatedAt: DateTime.now(),
+                                config: SAWConfiguration.defaultConfig(),
+                              );
+
+                              simProvider.initialize(
+                                originalResult: originalResult,
+                                matrix: matrix,
+                                criteriaMap: criteriaMap,
+                                originalWeights: originalWeights,
+                              );
+
+                              Navigator.of(context).pushNamed('/what-if');
+                            },
                           ),
                         ),
                       ],
@@ -422,10 +550,7 @@ class _ResultScreenState extends State<ResultScreen> {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomNavigation(
-      //   selectedIndex: 1,
-      //   onSelected: _onNavigation,
-      // ),
+      // bottomNavigationBar: _navigation(),
     );
   }
 

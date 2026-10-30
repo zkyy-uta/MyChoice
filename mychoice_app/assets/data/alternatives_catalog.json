@@ -1,0 +1,2156 @@
+{
+  "categories": {
+    "laptop": {
+      "name": "Laptop",
+      "alternatives": [
+        {
+          "id": "laptop_dell_xps_13",
+          "name": "Dell XPS 13",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-13700H",
+            "RAM": "16GB LPDDR5",
+            "Storage": "512GB NVMe SSD",
+            "Display": "13.4\" OLED (1920x1200)",
+            "Battery": "52Wh (9-11 hours)",
+            "Weight": "1.2 kg",
+            "Price": "$1,299",
+            "GPU": "Intel Iris Xe"
+          }
+        },
+        {
+          "id": "laptop_hp_pavilion_15",
+          "name": "HP Pavilion 15",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 7 5700U",
+            "RAM": "16GB DDR4",
+            "Storage": "256GB SSD",
+            "Display": "15.6\" IPS (1920x1080)",
+            "Battery": "52.5Wh (7-8 hours)",
+            "Weight": "1.75 kg",
+            "Price": "$649",
+            "GPU": "AMD Radeon Graphics"
+          }
+        },
+        {
+          "id": "laptop_lenovo_thinkpad_x1",
+          "name": "Lenovo ThinkPad X1 Carbon",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-13700HX",
+            "RAM": "32GB LPDDR5",
+            "Storage": "1TB NVMe SSD",
+            "Display": "14\" OLED (2880x1800)",
+            "Battery": "63Wh (12+ hours)",
+            "Weight": "1.19 kg",
+            "Price": "$1,599",
+            "GPU": "Intel Iris Xe"
+          }
+        },
+        {
+          "id": "laptop_asus_vivobook_15",
+          "name": "ASUS VivoBook 15",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 5 5500U",
+            "RAM": "8GB DDR4",
+            "Storage": "512GB SSD",
+            "Display": "15.6\" IPS (1920x1080)",
+            "Battery": "42Wh (8 hours)",
+            "Weight": "1.8 kg",
+            "Price": "$499",
+            "GPU": "AMD Radeon Graphics"
+          }
+        },
+        {
+          "id": "laptop_apple_macbook_pro_14",
+          "name": "Apple MacBook Pro 14\"",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Apple M3 Pro",
+            "RAM": "18GB Unified Memory",
+            "Storage": "512GB SSD",
+            "Display": "14.2\" Liquid Retina XDR",
+            "Battery": "17 hours",
+            "Weight": "1.6 kg",
+            "Price": "$1,999",
+            "GPU": "18-core GPU"
+          }
+        },
+        {
+          "id": "laptop_acer_aspire_5",
+          "name": "Acer Aspire 5",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i5-12450H",
+            "RAM": "8GB DDR4",
+            "Storage": "512GB SSD",
+            "Display": "15.6\" IPS (1920x1080)",
+            "Battery": "50Wh (8-9 hours)",
+            "Weight": "1.9 kg",
+            "Price": "$549",
+            "GPU": "Intel UHD Graphics"
+          }
+        },
+        {
+          "id": "laptop_msi_stealth_16",
+          "name": "MSI Stealth 16 (Gaming)",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i9-13900HX",
+            "RAM": "32GB DDR5",
+            "Storage": "1TB NVMe SSD",
+            "Display": "16\" IPS (2560x1600, 240Hz)",
+            "Battery": "80Wh (6 hours gaming)",
+            "Weight": "2.2 kg",
+            "Price": "$2,199",
+            "GPU": "NVIDIA RTX 4070"
+          }
+        },
+        {
+          "id": "laptop_asus_vivobook_16x",
+          "name": "ASUS VivoBook 16X",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 7 7730U",
+            "RAM": "16GB DDR4",
+            "Storage": "512GB NVMe SSD",
+            "Display": "16\" IPS (1920x1200, 60Hz)",
+            "Battery": "70Wh (9-10 hours)",
+            "Weight": "1.88 kg",
+            "Price": "$699",
+            "GPU": "AMD Radeon Graphics"
+          }
+        },
+        {
+          "id": "laptop_lenovo_ideapad_slim5",
+          "name": "Lenovo IdeaPad Slim 5",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 5 7530U",
+            "RAM": "8GB LPDDR4x",
+            "Storage": "512GB NVMe SSD",
+            "Display": "14\" IPS (1920x1080, 60Hz)",
+            "Battery": "57Wh (8-9 hours)",
+            "Weight": "1.46 kg",
+            "Price": "$599",
+            "GPU": "AMD Radeon Graphics"
+          }
+        },
+        {
+          "id": "laptop_acer_swift_5",
+          "name": "Acer Swift 5",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-1260P",
+            "RAM": "16GB LPDDR5",
+            "Storage": "512GB NVMe SSD",
+            "Display": "14\" IPS (2560x1600, 90Hz)",
+            "Battery": "56Wh (up to 13 hours)",
+            "Weight": "1.35 kg",
+            "Price": "$999",
+            "GPU": "Intel Iris Xe"
+          }
+        },
+        {
+          "id": "laptop_hp_envy_x360",
+          "name": "HP Envy x360",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 7 7730U",
+            "RAM": "16GB LPDDR4x",
+            "Storage": "512GB SSD",
+            "Display": "13.3\" OLED Touch (1920x1200)",
+            "Battery": "66Wh (10+ hours)",
+            "Weight": "1.35 kg",
+            "Price": "$899",
+            "GPU": "AMD Radeon Graphics"
+          }
+        },
+        {
+          "id": "laptop_msi_prestige_16",
+          "name": "MSI Prestige 16",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-13700H",
+            "RAM": "32GB DDR5",
+            "Storage": "1TB NVMe SSD",
+            "Display": "16\" QHD+ IPS (2560x1600, 165Hz)",
+            "Battery": "99.9Wh (up to 12 hours)",
+            "Weight": "1.7 kg",
+            "Price": "$1,499",
+            "GPU": "NVIDIA RTX 4060"
+          }
+        },
+        {
+          "id": "laptop_huawei_matebook_d16",
+          "name": "Huawei MateBook D16",
+          "category": "laptop",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i5-12450H",
+            "RAM": "16GB DDR4",
+            "Storage": "512GB NVMe SSD",
+            "Display": "16\" IPS (1920x1200, 60Hz)",
+            "Battery": "60Wh (up to 10 hours)",
+            "Weight": "1.7 kg",
+            "Price": "$749",
+            "GPU": "Intel UHD Graphics"
+          }
+        }
+      ]
+    },
+    "smartphone": {
+      "name": "Smartphone",
+      "alternatives": [
+        {
+          "id": "phone_iphone_15_pro",
+          "name": "iPhone 15 Pro",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Apple A17 Pro",
+            "RAM": "8GB",
+            "Storage": "256GB",
+            "Display": "6.1\" Super Retina XDR OLED",
+            "Battery": "3,274 mAh (up to 29 hours)",
+            "Weight": "187g",
+            "Price": "$999",
+            "Camera": "48MP Main, 12MP Ultra Wide, 12MP Telephoto"
+          }
+        },
+        {
+          "id": "phone_samsung_s24_ultra",
+          "name": "Samsung Galaxy S24 Ultra",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 3",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "6.8\" Dynamic AMOLED (120Hz)",
+            "Battery": "5,000 mAh (up to 30 hours)",
+            "Weight": "218g",
+            "Price": "$1,299",
+            "Camera": "200MP Main, 50MP Ultra Wide, 10MP Telephoto 3x, 10MP Telephoto 5x"
+          }
+        },
+        {
+          "id": "phone_google_pixel_8",
+          "name": "Google Pixel 8",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Google Tensor G3",
+            "RAM": "8GB",
+            "Storage": "128GB",
+            "Display": "6.2\" OLED (120Hz)",
+            "Battery": "4,700 mAh (up to 24 hours)",
+            "Weight": "187g",
+            "Price": "$799",
+            "Camera": "50MP Main, 12MP Ultra Wide, 8MP Telephoto"
+          }
+        },
+        {
+          "id": "phone_oneplus_12",
+          "name": "OnePlus 12",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 3 Leading Version",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "6.7\" Fluid AMOLED (120Hz)",
+            "Battery": "5,400 mAh (up to 50 hours)",
+            "Weight": "220g",
+            "Price": "$799",
+            "Camera": "50MP Main (f/1.6), 48MP Ultra Wide, 8MP Telephoto 3x"
+          }
+        },
+        {
+          "id": "phone_xiaomi_14",
+          "name": "Xiaomi 14",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 3",
+            "RAM": "12GB",
+            "Storage": "512GB",
+            "Display": "6.36\" AMOLED (120Hz)",
+            "Battery": "4,610 mAh (up to 24 hours)",
+            "Weight": "181g",
+            "Price": "$699",
+            "Camera": "50MP Main (Leica), 50MP Ultra Wide, 50MP Telephoto 3.2x"
+          }
+        },
+        {
+          "id": "phone_poco_x6_pro",
+          "name": "Poco X6 Pro",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 7 Gen 3",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "6.67\" AMOLED (120Hz)",
+            "Battery": "5,110 mAh (up to 40 hours)",
+            "Weight": "218g",
+            "Price": "$399",
+            "Camera": "50MP Main (OIS), 8MP Ultra Wide, 2MP Macro"
+          }
+        },
+        {
+          "id": "phone_samsung_s23",
+          "name": "Samsung Galaxy S23",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 2",
+            "RAM": "8GB",
+            "Storage": "128GB",
+            "Display": "6.1\" Dynamic AMOLED 2X (120Hz)",
+            "Battery": "4,000 mAh (up to 22 hours)",
+            "Weight": "168g",
+            "Price": "$799",
+            "Camera": "50MP Main, 12MP Ultra Wide, 10MP Telephoto 3x"
+          }
+        },
+        {
+          "id": "phone_xiaomi_14_pro",
+          "name": "Xiaomi 14 Pro",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 3",
+            "RAM": "16GB",
+            "Storage": "512GB",
+            "Display": "6.73\" LTPO AMOLED (120Hz)",
+            "Battery": "4,880 mAh (90W wired, 50W wireless)",
+            "Weight": "223g",
+            "Price": "$899",
+            "Camera": "50MP Leica Main, 50MP Ultra Wide, 50MP Periscope 5x"
+          }
+        },
+        {
+          "id": "phone_oppo_find_x7",
+          "name": "OPPO Find X7",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Dimensity 9300",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "6.74\" LTPO3 AMOLED (120Hz)",
+            "Battery": "5,000 mAh (100W wired)",
+            "Weight": "209g",
+            "Price": "$749",
+            "Camera": "50MP Main (Hasselblad), 64MP Periscope, 50MP Ultra Wide"
+          }
+        },
+        {
+          "id": "phone_vivo_x100_pro",
+          "name": "Vivo X100 Pro",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Dimensity 9300",
+            "RAM": "16GB",
+            "Storage": "512GB",
+            "Display": "6.78\" LTPO AMOLED (120Hz)",
+            "Battery": "5,400 mAh (100W wired, 50W wireless)",
+            "Weight": "225g",
+            "Price": "$849",
+            "Camera": "50MP ZEISS Main, 50MP Periscope 5x, 50MP Ultra Wide"
+          }
+        },
+        {
+          "id": "phone_realme_gt5_pro",
+          "name": "Realme GT 5 Pro",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 3",
+            "RAM": "16GB",
+            "Storage": "512GB",
+            "Display": "6.78\" LTPO AMOLED (144Hz)",
+            "Battery": "5,400 mAh (100W wired)",
+            "Weight": "221g",
+            "Price": "$599",
+            "Camera": "50MP Sony Main, 50MP Periscope 3x, 8MP Ultra Wide"
+          }
+        },
+        {
+          "id": "phone_samsung_galaxy_a55",
+          "name": "Samsung Galaxy A55",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Exynos 1480",
+            "RAM": "8GB",
+            "Storage": "256GB",
+            "Display": "6.6\" Super AMOLED (120Hz)",
+            "Battery": "5,000 mAh (25W wired)",
+            "Weight": "213g",
+            "Price": "$449",
+            "Camera": "50MP OIS Main, 12MP Ultra Wide, 5MP Macro"
+          }
+        },
+        {
+          "id": "phone_iphone_15",
+          "name": "iPhone 15",
+          "category": "smartphone",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Apple A16 Bionic",
+            "RAM": "6GB",
+            "Storage": "128GB",
+            "Display": "6.1\" Super Retina XDR OLED",
+            "Battery": "3,349 mAh (up to 20 hours video)",
+            "Weight": "171g",
+            "Price": "$799",
+            "Camera": "48MP Main, 12MP Ultra Wide"
+          }
+        }
+      ]
+    },
+    "tablet": {
+      "name": "Tablet",
+      "alternatives": [
+        {
+          "id": "tablet_ipad_pro_12_9",
+          "name": "iPad Pro 12.9\"",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Apple M2",
+            "RAM": "8GB Unified Memory",
+            "Storage": "256GB",
+            "Display": "12.9\" Liquid Retina XDR",
+            "Battery": "10,308 mAh (10 hours)",
+            "Weight": "682g",
+            "Price": "$1,099",
+            "Connectivity": "WiFi 6E + 5G optional"
+          }
+        },
+        {
+          "id": "tablet_samsung_galaxy_tab_s9_ultra",
+          "name": "Samsung Galaxy Tab S9 Ultra",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 2",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "14.6\" Dynamic AMOLED (120Hz)",
+            "Battery": "11,200 mAh (up to 18 hours)",
+            "Weight": "732g",
+            "Price": "$1,199",
+            "Connectivity": "WiFi 6E + 5G optional"
+          }
+        },
+        {
+          "id": "tablet_lenovo_tab_p11_pro_gen2",
+          "name": "Lenovo Tab P11 Pro Gen 2",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "MediaTek Kompanio 1300T",
+            "RAM": "8GB",
+            "Storage": "128GB",
+            "Display": "11.5\" OLED (90Hz)",
+            "Battery": "10,100 mAh (up to 16 hours)",
+            "Weight": "485g",
+            "Price": "$499",
+            "Connectivity": "WiFi 6 + 5G optional"
+          }
+        },
+        {
+          "id": "tablet_microsoft_surface_pro_9",
+          "name": "Microsoft Surface Pro 9",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-1255U",
+            "RAM": "16GB",
+            "Storage": "512GB SSD",
+            "Display": "13\" PixelSense Touch (2880x1920)",
+            "Battery": "50Wh (up to 19 hours)",
+            "Weight": "879g",
+            "Price": "$1,299",
+            "Connectivity": "WiFi 6 + optional 5G"
+          }
+        },
+        {
+          "id": "tablet_apple_ipad_air_11",
+          "name": "Apple iPad Air 11\"",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Apple M1",
+            "RAM": "8GB Unified Memory",
+            "Storage": "128GB",
+            "Display": "11\" Liquid Retina",
+            "Battery": "7,134 mAh (10 hours)",
+            "Weight": "481g",
+            "Price": "$599",
+            "Connectivity": "WiFi 6E + 5G optional"
+          }
+        },
+        {
+          "id": "tablet_samsung_galaxy_tab_s8_fe",
+          "name": "Samsung Galaxy Tab S8 FE",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "MediaTek Helio G78",
+            "RAM": "4GB",
+            "Storage": "64GB",
+            "Display": "12.4\" TFT LCD (90Hz)",
+            "Battery": "10,000 mAh (up to 14 hours)",
+            "Weight": "507g",
+            "Price": "$299",
+            "Connectivity": "WiFi 5 + optional LTE"
+          }
+        },
+        {
+          "id": "tablet_ipad_pro_m4",
+          "name": "iPad Pro M4",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Apple M4",
+            "RAM": "16GB Unified Memory",
+            "Storage": "256GB",
+            "Display": "11\" Ultra Retina XDR OLED",
+            "Battery": "7,272 mAh (10 hours)",
+            "Weight": "444g",
+            "Price": "$999",
+            "Connectivity": "WiFi 6E + 5G"
+          }
+        },
+        {
+          "id": "tablet_samsung_galaxy_tab_s9",
+          "name": "Samsung Galaxy Tab S9",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8 Gen 2",
+            "RAM": "8GB",
+            "Storage": "128GB",
+            "Display": "11\" Dynamic AMOLED 2X (120Hz)",
+            "Battery": "8,400 mAh (up to 15 hours)",
+            "Weight": "498g",
+            "Price": "$799",
+            "Connectivity": "WiFi 6E + 5G optional"
+          }
+        },
+        {
+          "id": "tablet_xiaomi_pad_6_pro",
+          "name": "Xiaomi Pad 6 Pro",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 8+ Gen 1",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "11\" IPS LCD (2880x1800, 144Hz)",
+            "Battery": "8,600 mAh (67W wired)",
+            "Weight": "490g",
+            "Price": "$549",
+            "Connectivity": "WiFi 6E"
+          }
+        },
+        {
+          "id": "tablet_oppo_pad_2",
+          "name": "OPPO Pad 2",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Dimensity 9000",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "11.61\" LCD (2800x2000, 144Hz)",
+            "Battery": "9,510 mAh (67W wired)",
+            "Weight": "552g",
+            "Price": "$499",
+            "Connectivity": "WiFi 6"
+          }
+        },
+        {
+          "id": "tablet_lenovo_tab_p12_pro",
+          "name": "Lenovo Tab P12 Pro",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Snapdragon 870",
+            "RAM": "8GB",
+            "Storage": "256GB",
+            "Display": "12.6\" AMOLED (2560x1600, 120Hz)",
+            "Battery": "10,200 mAh (45W wired)",
+            "Weight": "565g",
+            "Price": "$599",
+            "Connectivity": "WiFi 6 + optional 5G"
+          }
+        },
+        {
+          "id": "tablet_huawei_matepad_pro",
+          "name": "Huawei MatePad Pro",
+          "category": "tablet",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Kirin 9000S",
+            "RAM": "12GB",
+            "Storage": "256GB",
+            "Display": "11\" IPS (2560x1600, 120Hz)",
+            "Battery": "7,250 mAh (66W wired)",
+            "Weight": "449g",
+            "Price": "$649",
+            "Connectivity": "WiFi 6"
+          }
+        }
+      ]
+    },
+    "monitor": {
+      "name": "Monitor",
+      "alternatives": [
+        {
+          "id": "monitor_lg_ultrawide_38",
+          "name": "LG UltraWide 38\"",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x1600",
+            "Panel": "IPS Curved (3800R)",
+            "Refresh Rate": "60Hz",
+            "Response Time": "5ms",
+            "HDR": "Yes (HDR10)",
+            "Price": "$2,999",
+            "Color Gamut": "98.5% DCI-P3",
+            "Ports": "2x Thunderbolt 3, USB-C, DisplayPort"
+          }
+        },
+        {
+          "id": "monitor_dell_u2720q",
+          "name": "Dell UltraSharp U2720Q",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "IPS",
+            "Refresh Rate": "60Hz",
+            "Response Time": "5ms",
+            "HDR": "Yes",
+            "Price": "$799",
+            "Color Gamut": "99.5% Adobe RGB",
+            "Ports": "2x DisplayPort, 2x HDMI, USB-C"
+          }
+        },
+        {
+          "id": "monitor_benq_pd2500q",
+          "name": "BenQ PD2500Q",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "2560x1440",
+            "Panel": "IPS",
+            "Refresh Rate": "60Hz",
+            "Response Time": "5ms",
+            "HDR": "No",
+            "Price": "$499",
+            "Color Gamut": "99% Adobe RGB",
+            "Ports": "DisplayPort, 2x HDMI, USB 3.0 Hub"
+          }
+        },
+        {
+          "id": "monitor_asus_pa279cv",
+          "name": "ASUS ProArt PA279CV",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "2560x1440",
+            "Panel": "IPS",
+            "Refresh Rate": "60Hz",
+            "Response Time": "5ms",
+            "HDR": "Yes",
+            "Price": "$599",
+            "Color Gamut": "100% sRGB",
+            "Ports": "DisplayPort, HDMI, USB 3.1 Hub, USB-C"
+          }
+        },
+        {
+          "id": "monitor_lg_27gp850",
+          "name": "LG 27GP850 (Gaming)",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "2560x1440",
+            "Panel": "IPS",
+            "Refresh Rate": "165Hz",
+            "Response Time": "1ms",
+            "HDR": "Yes",
+            "Price": "$399",
+            "Color Gamut": "98.5% DCI-P3",
+            "Ports": "2x DisplayPort, HDMI, USB 3.0 Hub"
+          }
+        },
+        {
+          "id": "monitor_samsung_m7_smart",
+          "name": "Samsung M7 Smart Monitor",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "VA Curved",
+            "Refresh Rate": "60Hz",
+            "Response Time": "8ms",
+            "HDR": "Yes",
+            "Price": "$699",
+            "Features": "Smart Hub, Streaming Apps",
+            "Ports": "HDMI 2.1, DisplayPort, USB-C, Speakers Built-in"
+          }
+        },
+        {
+          "id": "monitor_lg_27gp950b",
+          "name": "LG 27GP950-B",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "Nano IPS",
+            "Refresh Rate": "160Hz",
+            "Response Time": "1ms",
+            "HDR": "Yes (HDR600)",
+            "Price": "$799",
+            "Color Gamut": "98% DCI-P3",
+            "Ports": "2x DisplayPort 1.4, HDMI 2.1, USB-A Hub"
+          }
+        },
+        {
+          "id": "monitor_samsung_odyssey_g7",
+          "name": "Samsung Odyssey G7",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "2560x1440",
+            "Panel": "VA Curved (1000R)",
+            "Refresh Rate": "240Hz",
+            "Response Time": "1ms",
+            "HDR": "Yes (HDR600)",
+            "Price": "$599",
+            "Color Gamut": "95% DCI-P3",
+            "Ports": "DisplayPort 1.4, 2x HDMI 2.0, USB Hub"
+          }
+        },
+        {
+          "id": "monitor_asus_rog_swift_pg32uq",
+          "name": "ASUS ROG Swift PG32UQ",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "IPS",
+            "Refresh Rate": "144Hz",
+            "Response Time": "1ms",
+            "HDR": "Yes (HDR1000)",
+            "Price": "$899",
+            "Color Gamut": "90% DCI-P3",
+            "Ports": "DisplayPort 1.4, HDMI 2.1, USB-A Hub"
+          }
+        },
+        {
+          "id": "monitor_dell_u2723qe",
+          "name": "Dell U2723QE",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "IPS Black",
+            "Refresh Rate": "60Hz",
+            "Response Time": "5ms",
+            "HDR": "Yes",
+            "Price": "$649",
+            "Color Gamut": "99% sRGB, 99% Rec. 2020",
+            "Ports": "Thunderbolt 4, DisplayPort, 2x HDMI, USB Hub"
+          }
+        },
+        {
+          "id": "monitor_benq_pd2725u",
+          "name": "BenQ PD2725U",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "IPS",
+            "Refresh Rate": "60Hz",
+            "Response Time": "5ms",
+            "HDR": "Yes (HDR10)",
+            "Price": "$799",
+            "Color Gamut": "99% DCI-P3",
+            "Ports": "Thunderbolt 3, DisplayPort, 2x HDMI, USB-C Hub"
+          }
+        },
+        {
+          "id": "monitor_philips_276e8vjsb",
+          "name": "Philips 276E8VJSB",
+          "category": "monitor",
+          "source": "catalog",
+          "specs": {
+            "Resolution": "3840x2160 (4K)",
+            "Panel": "IPS",
+            "Refresh Rate": "60Hz",
+            "Response Time": "4ms",
+            "HDR": "Yes",
+            "Price": "$349",
+            "Color Gamut": "107% sRGB",
+            "Ports": "DisplayPort, 2x HDMI"
+          }
+        }
+      ]
+    },
+    "gaming_pc": {
+      "name": "Gaming PC",
+      "alternatives": [
+        {
+          "id": "pc_nzxt_starter_pro",
+          "name": "NZXT Starter Pro",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i5-13600K",
+            "RAM": "16GB DDR5",
+            "Storage": "500GB NVMe SSD",
+            "GPU": "NVIDIA RTX 3060 Ti",
+            "PSU": "750W 80+ Gold",
+            "Case": "NZXT H510 Flow",
+            "Price": "$1,199",
+            "Performance": "1080p Ultra 60fps"
+          }
+        },
+        {
+          "id": "pc_corsair_vengeance_a7r",
+          "name": "Corsair Vengeance a7R",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-13700K",
+            "RAM": "32GB DDR5",
+            "Storage": "1TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4070",
+            "PSU": "850W 80+ Platinum",
+            "Case": "Corsair Crystal Series 570X",
+            "Price": "$2,299",
+            "Performance": "1440p Ultra 100+ fps"
+          }
+        },
+        {
+          "id": "pc_alienware_r16",
+          "name": "Alienware Aurora R16",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i9-13900K",
+            "RAM": "32GB DDR5",
+            "Storage": "2TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4090",
+            "PSU": "1000W 80+ Platinum",
+            "Case": "Alienware Aurora",
+            "Price": "$4,499",
+            "Performance": "4K Ultra 60+ fps"
+          }
+        },
+        {
+          "id": "pc_msi_trident_x_plus",
+          "name": "MSI Trident X Plus",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i7-13700K",
+            "RAM": "32GB DDR5",
+            "Storage": "1TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4070 Ti",
+            "PSU": "850W 80+ Gold",
+            "Case": "MSI Trident Compact",
+            "Price": "$2,799",
+            "Performance": "1440p Ultra 120+ fps"
+          }
+        },
+        {
+          "id": "pc_ibuypower_element_240r",
+          "name": "iBuyPower Element 240R",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 7 7700X",
+            "RAM": "16GB DDR5",
+            "Storage": "1TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4070",
+            "PSU": "750W 80+ Bronze",
+            "Case": "IBuyPower Custom",
+            "Price": "$1,499",
+            "Performance": "1440p High 80-100 fps"
+          }
+        },
+        {
+          "id": "pc_skytech_gaming_blaze",
+          "name": "Skytech Gaming Blaze",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i5-13600K",
+            "RAM": "16GB DDR5",
+            "Storage": "500GB NVMe SSD",
+            "GPU": "NVIDIA RTX 4060",
+            "PSU": "650W 80+ Bronze",
+            "Case": "Skytech Gaming Case",
+            "Price": "$799",
+            "Performance": "1080p High 60+ fps"
+          }
+        },
+        {
+          "id": "pc_custom_rtx4080",
+          "name": "Custom RTX 4080 Build",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 9 7900X",
+            "RAM": "32GB DDR5 6000MHz",
+            "Storage": "2TB NVMe Gen5 SSD",
+            "GPU": "NVIDIA RTX 4080",
+            "PSU": "1000W 80+ Gold",
+            "Case": "Lian Li O11 Dynamic EVO",
+            "Price": "$3,200",
+            "Performance": "4K Ultra 60+ fps"
+          }
+        },
+        {
+          "id": "pc_asus_rog_strix",
+          "name": "ASUS ROG Strix",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i9-14900K",
+            "RAM": "64GB DDR5",
+            "Storage": "2TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4090",
+            "PSU": "1200W 80+ Titanium",
+            "Case": "ROG Hyperion",
+            "Price": "$5,999",
+            "Performance": "4K Ultra 120+ fps"
+          }
+        },
+        {
+          "id": "pc_msi_meg_trident_x2",
+          "name": "MSI MEG Trident X2",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "Intel Core i9-13900K",
+            "RAM": "64GB DDR5",
+            "Storage": "2TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4090",
+            "PSU": "1000W 80+ Platinum",
+            "Case": "MSI MEG Compact",
+            "Price": "$5,499",
+            "Performance": "4K Ultra 100+ fps"
+          }
+        },
+        {
+          "id": "pc_hp_omen_45l",
+          "name": "HP OMEN 45L",
+          "category": "gaming_pc",
+          "source": "catalog",
+          "specs": {
+            "Processor": "AMD Ryzen 9 7900X",
+            "RAM": "32GB DDR5",
+            "Storage": "1TB NVMe SSD",
+            "GPU": "NVIDIA RTX 4080",
+            "PSU": "850W 80+ Gold",
+            "Case": "HP OMEN 45L Tower",
+            "Price": "$3,499",
+            "Performance": "4K High 60+ fps"
+          }
+        }
+      ]
+    },
+    "processor": {
+      "name": "Processor",
+      "alternatives": [
+        {
+          "id": "cpu_intel_i9_14900k",
+          "name": "Intel Core i9-14900K",
+          "category": "processor",
+          "source": "catalog",
+          "specs": {
+            "Cores": "24 (8P+16E)",
+            "Threads": "32",
+            "Base Clock": "3.2 GHz (P-core)",
+            "Boost Clock": "6.0 GHz",
+            "TDP": "125W (253W max)",
+            "Socket": "LGA 1700",
+            "Price": "$559",
+            "Generation": "14th Gen Raptor Lake Refresh"
+          }
+        },
+        {
+          "id": "cpu_amd_ryzen9_7950x",
+          "name": "AMD Ryzen 9 7950X",
+          "category": "processor",
+          "source": "catalog",
+          "specs": {
+            "Cores": "16",
+            "Threads": "32",
+            "Base Clock": "4.5 GHz",
+            "Boost Clock": "5.7 GHz",
+            "TDP": "170W",
+            "Socket": "AM5",
+            "Price": "$549",
+            "Generation": "Zen 4"
+          }
+        },
+        {
+          "id": "cpu_intel_i7_14700k",
+          "name": "Intel Core i7-14700K",
+          "category": "processor",
+          "source": "catalog",
+          "specs": {
+            "Cores": "20 (8P+12E)",
+            "Threads": "28",
+            "Base Clock": "3.4 GHz (P-core)",
+            "Boost Clock": "5.6 GHz",
+            "TDP": "125W (253W max)",
+            "Socket": "LGA 1700",
+            "Price": "$379",
+            "Generation": "14th Gen Raptor Lake Refresh"
+          }
+        },
+        {
+          "id": "cpu_amd_ryzen7_7800x3d",
+          "name": "AMD Ryzen 7 7800X3D",
+          "category": "processor",
+          "source": "catalog",
+          "specs": {
+            "Cores": "8",
+            "Threads": "16",
+            "Base Clock": "4.5 GHz",
+            "Boost Clock": "5.0 GHz",
+            "TDP": "120W",
+            "Socket": "AM5",
+            "Price": "$349",
+            "Generation": "Zen 4 + 3D V-Cache"
+          }
+        },
+        {
+          "id": "cpu_intel_i5_14600k",
+          "name": "Intel Core i5-14600K",
+          "category": "processor",
+          "source": "catalog",
+          "specs": {
+            "Cores": "14 (6P+8E)",
+            "Threads": "20",
+            "Base Clock": "3.5 GHz (P-core)",
+            "Boost Clock": "5.3 GHz",
+            "TDP": "125W",
+            "Socket": "LGA 1700",
+            "Price": "$249",
+            "Generation": "14th Gen Raptor Lake Refresh"
+          }
+        }
+      ]
+    },
+    "graphics_card": {
+      "name": "Graphics Card",
+      "alternatives": [
+        {
+          "id": "gpu_nvidia_rtx_4090",
+          "name": "NVIDIA RTX 4090",
+          "category": "graphics_card",
+          "source": "catalog",
+          "specs": {
+            "VRAM": "24GB GDDR6X",
+            "CUDA Cores": "16,384",
+            "Boost Clock": "2.52 GHz",
+            "TDP": "450W",
+            "Bus": "PCIe 4.0 x16",
+            "Price": "$1,599",
+            "Performance": "4K Ultra 100+ fps"
+          }
+        },
+        {
+          "id": "gpu_amd_rx_7900_xtx",
+          "name": "AMD RX 7900 XTX",
+          "category": "graphics_card",
+          "source": "catalog",
+          "specs": {
+            "VRAM": "24GB GDDR6",
+            "Stream Processors": "12,288",
+            "Boost Clock": "2.5 GHz",
+            "TDP": "355W",
+            "Bus": "PCIe 4.0 x16",
+            "Price": "$999",
+            "Performance": "4K High 60+ fps"
+          }
+        },
+        {
+          "id": "gpu_nvidia_rtx_4080",
+          "name": "NVIDIA RTX 4080",
+          "category": "graphics_card",
+          "source": "catalog",
+          "specs": {
+            "VRAM": "16GB GDDR6X",
+            "CUDA Cores": "9,728",
+            "Boost Clock": "2.51 GHz",
+            "TDP": "320W",
+            "Bus": "PCIe 4.0 x16",
+            "Price": "$1,199",
+            "Performance": "4K Ultra 60+ fps"
+          }
+        },
+        {
+          "id": "gpu_amd_rx_7900_xt",
+          "name": "AMD RX 7900 XT",
+          "category": "graphics_card",
+          "source": "catalog",
+          "specs": {
+            "VRAM": "20GB GDDR6",
+            "Stream Processors": "10,752",
+            "Boost Clock": "2.394 GHz",
+            "TDP": "315W",
+            "Bus": "PCIe 4.0 x16",
+            "Price": "$799",
+            "Performance": "4K Medium/High 60fps"
+          }
+        },
+        {
+          "id": "gpu_nvidia_rtx_4070_ti",
+          "name": "NVIDIA RTX 4070 Ti",
+          "category": "graphics_card",
+          "source": "catalog",
+          "specs": {
+            "VRAM": "12GB GDDR6X",
+            "CUDA Cores": "7,680",
+            "Boost Clock": "2.61 GHz",
+            "TDP": "285W",
+            "Bus": "PCIe 4.0 x16",
+            "Price": "$799",
+            "Performance": "1440p Ultra 100+ fps"
+          }
+        }
+      ]
+    },
+    "shoes": {
+      "name": "Shoes",
+      "alternatives": [
+        {
+          "id": "shoes_nike_air_max",
+          "name": "Nike Air Max",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Running / Lifestyle",
+            "Upper": "Mesh + Leather overlays",
+            "Sole": "Air Max cushioning unit",
+            "Fit": "True to size",
+            "Price": "$150",
+            "Best For": "Running, casual wear"
+          }
+        },
+        {
+          "id": "shoes_adidas_ultraboost",
+          "name": "Adidas Ultraboost",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Running",
+            "Upper": "Primeknit+",
+            "Sole": "Boost midsole",
+            "Fit": "True to size",
+            "Price": "$190",
+            "Best For": "Long-distance running"
+          }
+        },
+        {
+          "id": "shoes_new_balance_574",
+          "name": "New Balance 574",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Lifestyle",
+            "Upper": "Suede + Mesh",
+            "Sole": "ENCAP midsole",
+            "Fit": "True to size",
+            "Price": "$85",
+            "Best For": "Casual everyday wear"
+          }
+        },
+        {
+          "id": "shoes_converse_chuck_taylor",
+          "name": "Converse Chuck Taylor",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Lifestyle",
+            "Upper": "Canvas",
+            "Sole": "Vulcanized rubber",
+            "Fit": "Runs half size large",
+            "Price": "$65",
+            "Best For": "Casual, fashion"
+          }
+        },
+        {
+          "id": "shoes_vans_old_skool",
+          "name": "Vans Old Skool",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Skate / Lifestyle",
+            "Upper": "Canvas + Suede",
+            "Sole": "Waffle outsole",
+            "Fit": "True to size",
+            "Price": "$70",
+            "Best For": "Skate, casual"
+          }
+        },
+        {
+          "id": "shoes_puma_rs_x",
+          "name": "Puma RS-X",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Lifestyle",
+            "Upper": "Mesh + Leather",
+            "Sole": "Running System technology",
+            "Fit": "True to size",
+            "Price": "$110",
+            "Best For": "Retro-style casual"
+          }
+        },
+        {
+          "id": "shoes_reebok_classic",
+          "name": "Reebok Classic",
+          "category": "shoes",
+          "source": "catalog",
+          "specs": {
+            "Type": "Lifestyle",
+            "Upper": "Leather",
+            "Sole": "EVA foam",
+            "Fit": "True to size",
+            "Price": "$80",
+            "Best For": "Classic fashion, casual"
+          }
+        }
+      ]
+    },
+    "bags": {
+      "name": "Bags",
+      "alternatives": [
+        {
+          "id": "bag_lv_neverfull",
+          "name": "Louis Vuitton Neverfull",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Tote Bag",
+            "Material": "Monogram Canvas",
+            "Capacity": "Medium / Large",
+            "Origin": "France",
+            "Price": "$1,550",
+            "Best For": "Daily luxury use"
+          }
+        },
+        {
+          "id": "bag_gucci_ophidia",
+          "name": "Gucci Ophidia",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Shoulder Bag",
+            "Material": "GG Supreme Canvas",
+            "Capacity": "Medium",
+            "Origin": "Italy",
+            "Price": "$1,180",
+            "Best For": "Daily fashion"
+          }
+        },
+        {
+          "id": "bag_michael_kors_jet_set",
+          "name": "Michael Kors Jet Set",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Crossbody / Tote",
+            "Material": "Saffiano Leather",
+            "Capacity": "Medium",
+            "Origin": "USA",
+            "Price": "$278",
+            "Best For": "Professional, daily"
+          }
+        },
+        {
+          "id": "bag_coach_tabby",
+          "name": "Coach Tabby",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Shoulder Bag",
+            "Material": "Pebble Leather",
+            "Capacity": "Small / Medium",
+            "Origin": "USA",
+            "Price": "$350",
+            "Best For": "Casual to semi-formal"
+          }
+        },
+        {
+          "id": "bag_tumi_alpha3",
+          "name": "Tumi Alpha 3",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Business Backpack",
+            "Material": "Ballistic Nylon",
+            "Capacity": "26L",
+            "Origin": "USA",
+            "Price": "$595",
+            "Best For": "Business travel"
+          }
+        },
+        {
+          "id": "bag_samsonite_winfield",
+          "name": "Samsonite Winfield",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Hardshell Luggage",
+            "Material": "Polycarbonate",
+            "Capacity": "50L (carry-on)",
+            "Origin": "USA",
+            "Price": "$169",
+            "Best For": "Travel"
+          }
+        },
+        {
+          "id": "bag_eiger_adventure",
+          "name": "Eiger Adventure",
+          "category": "bags",
+          "source": "catalog",
+          "specs": {
+            "Type": "Backpack",
+            "Material": "Nylon 600D",
+            "Capacity": "30L",
+            "Origin": "Indonesia",
+            "Price": "Rp 450,000",
+            "Best For": "Outdoor / hiking"
+          }
+        }
+      ]
+    },
+    "dress": {
+      "name": "Dress",
+      "alternatives": [
+        {
+          "id": "dress_zara_midi",
+          "name": "Zara Midi Dress",
+          "category": "dress",
+          "source": "catalog",
+          "specs": {
+            "Style": "Midi A-line",
+            "Material": "Viscose blend",
+            "Fit": "Regular",
+            "Price": "$69",
+            "Best For": "Office, casual"
+          }
+        },
+        {
+          "id": "dress_hm_wrap",
+          "name": "H&M Wrap Dress",
+          "category": "dress",
+          "source": "catalog",
+          "specs": {
+            "Style": "Wrap",
+            "Material": "Woven fabric",
+            "Fit": "Regular",
+            "Price": "$35",
+            "Best For": "Casual, date night"
+          }
+        },
+        {
+          "id": "dress_mango_floral",
+          "name": "Mango Floral Dress",
+          "category": "dress",
+          "source": "catalog",
+          "specs": {
+            "Style": "Floral midi",
+            "Material": "Satin",
+            "Fit": "Slim",
+            "Price": "$79",
+            "Best For": "Parties, summer"
+          }
+        },
+        {
+          "id": "dress_asos_bodycon",
+          "name": "ASOS Bodycon",
+          "category": "dress",
+          "source": "catalog",
+          "specs": {
+            "Style": "Bodycon mini",
+            "Material": "Jersey",
+            "Fit": "Bodycon",
+            "Price": "$45",
+            "Best For": "Parties, nights out"
+          }
+        },
+        {
+          "id": "dress_uniqlo_linen",
+          "name": "Uniqlo Linen Dress",
+          "category": "dress",
+          "source": "catalog",
+          "specs": {
+            "Style": "Linen shift",
+            "Material": "100% Linen",
+            "Fit": "Relaxed",
+            "Price": "$49",
+            "Best For": "Summer, casual"
+          }
+        }
+      ]
+    },
+    "jewelry": {
+      "name": "Jewelry",
+      "alternatives": [
+        {
+          "id": "jewelry_pandora_charm",
+          "name": "Pandora Charm Bracelet",
+          "category": "jewelry",
+          "source": "catalog",
+          "specs": {
+            "Type": "Bracelet",
+            "Material": "Sterling Silver",
+            "Style": "Charm",
+            "Origin": "Denmark",
+            "Price": "$65",
+            "Best For": "Gift, everyday wear"
+          }
+        },
+        {
+          "id": "jewelry_swarovski_crystal",
+          "name": "Swarovski Crystal Necklace",
+          "category": "jewelry",
+          "source": "catalog",
+          "specs": {
+            "Type": "Necklace",
+            "Material": "Rhodium-plated + Crystal",
+            "Style": "Pendant",
+            "Origin": "Austria",
+            "Price": "$85",
+            "Best For": "Special occasions"
+          }
+        },
+        {
+          "id": "jewelry_tiffany",
+          "name": "Tiffany & Co Open Heart",
+          "category": "jewelry",
+          "source": "catalog",
+          "specs": {
+            "Type": "Necklace",
+            "Material": "Sterling Silver / 18K Gold",
+            "Style": "Heart pendant",
+            "Origin": "USA",
+            "Price": "$250",
+            "Best For": "Romantic gift, luxury"
+          }
+        },
+        {
+          "id": "jewelry_michael_kors_watch",
+          "name": "Michael Kors Watch",
+          "category": "jewelry",
+          "source": "catalog",
+          "specs": {
+            "Type": "Watch",
+            "Material": "Stainless steel",
+            "Style": "Chronograph",
+            "Origin": "USA",
+            "Price": "$250",
+            "Best For": "Professional, fashion"
+          }
+        },
+        {
+          "id": "jewelry_fossil_gen6",
+          "name": "Fossil Gen 6",
+          "category": "jewelry",
+          "source": "catalog",
+          "specs": {
+            "Type": "Smartwatch",
+            "Material": "Stainless steel",
+            "Style": "Hybrid smart",
+            "OS": "Wear OS",
+            "Price": "$299",
+            "Best For": "Tech + fashion"
+          }
+        },
+        {
+          "id": "jewelry_casio_gshock",
+          "name": "Casio G-Shock",
+          "category": "jewelry",
+          "source": "catalog",
+          "specs": {
+            "Type": "Watch",
+            "Material": "Resin + Stainless steel",
+            "Style": "Sport",
+            "Origin": "Japan",
+            "Price": "$130",
+            "Best For": "Outdoor, sport"
+          }
+        }
+      ]
+    },
+    "accessories": {
+      "name": "Accessories",
+      "alternatives": [
+        {
+          "id": "acc_rayban_wayfarer",
+          "name": "Ray-Ban Wayfarer",
+          "category": "accessories",
+          "source": "catalog",
+          "specs": {
+            "Type": "Sunglasses",
+            "Frame": "Acetate",
+            "Lens": "G-15 glass",
+            "UV Protection": "100% UV400",
+            "Price": "$175",
+            "Best For": "Classic fashion"
+          }
+        },
+        {
+          "id": "acc_oakley_holbrook",
+          "name": "Oakley Holbrook",
+          "category": "accessories",
+          "source": "catalog",
+          "specs": {
+            "Type": "Sunglasses",
+            "Frame": "O-Matter",
+            "Lens": "Plutonite",
+            "UV Protection": "100% UV",
+            "Price": "$165",
+            "Best For": "Sport, outdoor"
+          }
+        },
+        {
+          "id": "acc_gucci_belt",
+          "name": "Gucci Belt",
+          "category": "accessories",
+          "source": "catalog",
+          "specs": {
+            "Type": "Belt",
+            "Material": "Leather",
+            "Buckle": "Gold-tone GG interlocking",
+            "Width": "3.8cm",
+            "Price": "$440",
+            "Best For": "Luxury fashion"
+          }
+        },
+        {
+          "id": "acc_hermes_scarf",
+          "name": "Hermès Scarf",
+          "category": "accessories",
+          "source": "catalog",
+          "specs": {
+            "Type": "Scarf",
+            "Material": "Twill Silk",
+            "Size": "90x90cm",
+            "Origin": "France",
+            "Price": "$430",
+            "Best For": "Luxury fashion"
+          }
+        },
+        {
+          "id": "acc_coach_lanyard",
+          "name": "Coach Lanyard",
+          "category": "accessories",
+          "source": "catalog",
+          "specs": {
+            "Type": "Lanyard / Keychain",
+            "Material": "Leather",
+            "Style": "Logo",
+            "Origin": "USA",
+            "Price": "$65",
+            "Best For": "Daily accessory"
+          }
+        }
+      ]
+    },
+    "outerwear": {
+      "name": "Outerwear",
+      "alternatives": [
+        {
+          "id": "outer_tnf_thermoball",
+          "name": "The North Face Thermoball",
+          "category": "outerwear",
+          "source": "catalog",
+          "specs": {
+            "Type": "Insulated Jacket",
+            "Fill": "ThermoBall Eco synthetic",
+            "Warmth": "Medium",
+            "Water Resistance": "DWR coating",
+            "Price": "$220",
+            "Best For": "Cold weather, travel"
+          }
+        },
+        {
+          "id": "outer_uniqlo_ultralight",
+          "name": "Uniqlo Ultra Light Down",
+          "category": "outerwear",
+          "source": "catalog",
+          "specs": {
+            "Type": "Down Jacket",
+            "Fill": "90% Down, 10% Feather",
+            "Warmth": "Medium",
+            "Water Resistance": "Yes",
+            "Price": "$90",
+            "Best For": "Travel, lightweight warmth"
+          }
+        },
+        {
+          "id": "outer_patagonia_nano_puff",
+          "name": "Patagonia Nano Puff",
+          "category": "outerwear",
+          "source": "catalog",
+          "specs": {
+            "Type": "Insulated Jacket",
+            "Fill": "PrimaLoft Gold synthetic",
+            "Warmth": "Medium-High",
+            "Water Resistance": "H2No performance",
+            "Price": "$299",
+            "Best For": "Outdoor, sustainability"
+          }
+        },
+        {
+          "id": "outer_columbia_sportswear",
+          "name": "Columbia Sportswear Jacket",
+          "category": "outerwear",
+          "source": "catalog",
+          "specs": {
+            "Type": "Fleece / Shell Jacket",
+            "Material": "Polyester fleece",
+            "Warmth": "Low-Medium",
+            "Water Resistance": "Omni-Shield",
+            "Price": "$120",
+            "Best For": "Outdoor, hiking"
+          }
+        },
+        {
+          "id": "outer_zara_puffer",
+          "name": "Zara Puffer Jacket",
+          "category": "outerwear",
+          "source": "catalog",
+          "specs": {
+            "Type": "Puffer Jacket",
+            "Fill": "Synthetic",
+            "Warmth": "Medium",
+            "Water Resistance": "Basic",
+            "Price": "$89",
+            "Best For": "Casual fashion"
+          }
+        }
+      ]
+    },
+    "course": {
+      "name": "Online Course",
+      "alternatives": [
+        {
+          "id": "course_coursera_ml",
+          "name": "Coursera ML Specialization",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Coursera / DeepLearning.AI",
+            "Instructor": "Andrew Ng",
+            "Duration": "3 months",
+            "Level": "Beginner to Intermediate",
+            "Price": "$49/month",
+            "Certificate": "Yes"
+          }
+        },
+        {
+          "id": "course_udemy_web_dev",
+          "name": "Udemy Web Development Bootcamp",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Udemy",
+            "Instructor": "Angela Yu",
+            "Duration": "65+ hours",
+            "Level": "Beginner",
+            "Price": "$15 (on sale)",
+            "Certificate": "Yes"
+          }
+        },
+        {
+          "id": "course_google_data_analytics",
+          "name": "Coursera Google Data Analytics",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Coursera / Google",
+            "Instructor": "Google Staff",
+            "Duration": "6 months",
+            "Level": "Beginner",
+            "Price": "$49/month",
+            "Certificate": "Yes (Google)"
+          }
+        },
+        {
+          "id": "course_edx_mit_micromasters",
+          "name": "edX MIT MicroMasters",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "edX / MIT",
+            "Instructor": "MIT Faculty",
+            "Duration": "9-12 months",
+            "Level": "Advanced",
+            "Price": "$1,500 - $5,000",
+            "Certificate": "MicroMasters credential"
+          }
+        },
+        {
+          "id": "course_dicoding_flutter",
+          "name": "Dicoding Flutter Developer",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Dicoding",
+            "Language": "Bahasa Indonesia",
+            "Duration": "30-60 hours",
+            "Level": "Beginner to Intermediate",
+            "Price": "Rp 750,000",
+            "Certificate": "Yes (Industry recognized ID)"
+          }
+        },
+        {
+          "id": "course_bangkit_academy",
+          "name": "Bangkit Academy",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Google, Tokopedia, Gojek, Traveloka",
+            "Language": "Bahasa Indonesia + English",
+            "Duration": "6 months",
+            "Level": "Intermediate",
+            "Price": "Free (selective)",
+            "Certificate": "Yes"
+          }
+        },
+        {
+          "id": "course_udacity_nanodegree",
+          "name": "Udacity Nanodegree",
+          "category": "course",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Udacity",
+            "Tracks": "Data Science, ML, Android, etc.",
+            "Duration": "3-6 months",
+            "Level": "Intermediate to Advanced",
+            "Price": "$399/month",
+            "Certificate": "Yes"
+          }
+        }
+      ]
+    },
+    "certification": {
+      "name": "Certification",
+      "alternatives": [
+        {
+          "id": "cert_aws_solutions_architect",
+          "name": "AWS Solutions Architect",
+          "category": "certification",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Amazon Web Services",
+            "Level": "Associate / Professional",
+            "Duration": "3-6 months study",
+            "Exam Fee": "$150 - $300",
+            "Validity": "3 years",
+            "Best For": "Cloud architects"
+          }
+        },
+        {
+          "id": "cert_google_cloud_professional",
+          "name": "Google Cloud Professional",
+          "category": "certification",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Google Cloud",
+            "Level": "Professional",
+            "Duration": "3-6 months study",
+            "Exam Fee": "$200",
+            "Validity": "2 years",
+            "Best For": "Cloud engineers"
+          }
+        },
+        {
+          "id": "cert_microsoft_azure_az900",
+          "name": "Microsoft Azure AZ-900",
+          "category": "certification",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Microsoft",
+            "Level": "Fundamentals",
+            "Duration": "1-2 months study",
+            "Exam Fee": "$165",
+            "Validity": "Lifetime",
+            "Best For": "Cloud beginners"
+          }
+        },
+        {
+          "id": "cert_comptia_security_plus",
+          "name": "CompTIA Security+",
+          "category": "certification",
+          "source": "catalog",
+          "specs": {
+            "Provider": "CompTIA",
+            "Level": "Entry-level security",
+            "Duration": "2-3 months study",
+            "Exam Fee": "$404",
+            "Validity": "3 years",
+            "Best For": "Cybersecurity beginners"
+          }
+        },
+        {
+          "id": "cert_cisco_ccna",
+          "name": "Cisco CCNA",
+          "category": "certification",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Cisco",
+            "Level": "Associate",
+            "Duration": "3-6 months study",
+            "Exam Fee": "$330",
+            "Validity": "3 years",
+            "Best For": "Network engineers"
+          }
+        },
+        {
+          "id": "cert_pmi_pmp",
+          "name": "PMI PMP",
+          "category": "certification",
+          "source": "catalog",
+          "specs": {
+            "Provider": "PMI",
+            "Level": "Professional",
+            "Duration": "3-6 months study",
+            "Exam Fee": "$405 (member) / $555",
+            "Validity": "3 years",
+            "Best For": "Project managers"
+          }
+        }
+      ]
+    },
+    "bootcamp": {
+      "name": "Bootcamp",
+      "alternatives": [
+        {
+          "id": "bootcamp_hacktiv8",
+          "name": "Hacktiv8",
+          "category": "bootcamp",
+          "source": "catalog",
+          "specs": {
+            "Location": "Indonesia (Online + Offline)",
+            "Tracks": "Full Stack JS, Data Science",
+            "Duration": "12 weeks",
+            "Price": "Rp 25,000,000",
+            "ISA": "Available",
+            "Best For": "Career switchers ID"
+          }
+        },
+        {
+          "id": "bootcamp_purwadhika",
+          "name": "Purwadhika",
+          "category": "bootcamp",
+          "source": "catalog",
+          "specs": {
+            "Location": "Indonesia",
+            "Tracks": "Digital Talent, Data Science",
+            "Duration": "3-6 months",
+            "Price": "Rp 20,000,000 - 35,000,000",
+            "ISA": "Available",
+            "Best For": "Career switchers ID"
+          }
+        },
+        {
+          "id": "bootcamp_revou",
+          "name": "RevoU",
+          "category": "bootcamp",
+          "source": "catalog",
+          "specs": {
+            "Location": "Indonesia (Online)",
+            "Tracks": "Software Engineering, Data Analytics",
+            "Duration": "16 weeks",
+            "Price": "Rp 18,000,000 or ISA",
+            "ISA": "Available",
+            "Best For": "Entry-level tech ID"
+          }
+        },
+        {
+          "id": "bootcamp_general_assembly",
+          "name": "General Assembly",
+          "category": "bootcamp",
+          "source": "catalog",
+          "specs": {
+            "Location": "Global (Online + Offline)",
+            "Tracks": "Software Engineering, Data Science, UX",
+            "Duration": "12 weeks",
+            "Price": "$14,950",
+            "ISA": "Available",
+            "Best For": "Career changers global"
+          }
+        },
+        {
+          "id": "bootcamp_le_wagon",
+          "name": "Le Wagon",
+          "category": "bootcamp",
+          "source": "catalog",
+          "specs": {
+            "Location": "Global (40+ cities)",
+            "Tracks": "Web Development, Data Science",
+            "Duration": "9 weeks",
+            "Price": "$8,000 - $12,000",
+            "ISA": "No",
+            "Best For": "Startup founders, career switchers"
+          }
+        },
+        {
+          "id": "bootcamp_ironhack",
+          "name": "Ironhack",
+          "category": "bootcamp",
+          "source": "catalog",
+          "specs": {
+            "Location": "Global (Online + Offline)",
+            "Tracks": "Web Dev, UX/UI, Data Analytics, Cybersecurity",
+            "Duration": "9-24 weeks",
+            "Price": "$8,500 - $14,000",
+            "ISA": "Available",
+            "Best For": "Career switchers global"
+          }
+        }
+      ]
+    },
+    "university": {
+      "name": "University",
+      "alternatives": [
+        {
+          "id": "uni_ui",
+          "name": "Universitas Indonesia (UI)",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Depok, Indonesia",
+            "Ranking": "#1 Indonesia (QS 2024)",
+            "Type": "Public",
+            "Tuition": "Rp 0 - 10,000,000/semester",
+            "Notable Programs": "Medical, Law, Engineering",
+            "Best For": "Top Indonesian students"
+          }
+        },
+        {
+          "id": "uni_itb",
+          "name": "Institut Teknologi Bandung (ITB)",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Bandung, Indonesia",
+            "Ranking": "#2 Indonesia (QS 2024)",
+            "Type": "Public",
+            "Tuition": "Rp 0 - 12,500,000/semester",
+            "Notable Programs": "Engineering, Architecture, Design",
+            "Best For": "STEM students ID"
+          }
+        },
+        {
+          "id": "uni_ugm",
+          "name": "Universitas Gadjah Mada (UGM)",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Yogyakarta, Indonesia",
+            "Ranking": "#3 Indonesia (QS 2024)",
+            "Type": "Public",
+            "Tuition": "Rp 0 - 10,000,000/semester",
+            "Notable Programs": "Medicine, Agriculture, Social Sciences",
+            "Best For": "Wide program selection"
+          }
+        },
+        {
+          "id": "uni_its",
+          "name": "Institut Teknologi Sepuluh Nopember (ITS)",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Surabaya, Indonesia",
+            "Ranking": "Top 5 Indonesia",
+            "Type": "Public",
+            "Tuition": "Rp 0 - 9,000,000/semester",
+            "Notable Programs": "Marine Engineering, Informatics",
+            "Best For": "Engineering East Java"
+          }
+        },
+        {
+          "id": "uni_binus",
+          "name": "Universitas Bina Nusantara (Binus)",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Jakarta, Indonesia",
+            "Ranking": "Top 10 Indonesia",
+            "Type": "Private",
+            "Tuition": "Rp 15,000,000 - 22,000,000/semester",
+            "Notable Programs": "Computer Science, Business, Animation",
+            "Best For": "Tech & business careers"
+          }
+        },
+        {
+          "id": "uni_prasmul",
+          "name": "Prasetiya Mulya",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Tangerang, Indonesia",
+            "Ranking": "Top Business School ID",
+            "Type": "Private",
+            "Tuition": "Rp 35,000,000 - 45,000,000/semester",
+            "Notable Programs": "Business, Entrepreneurship",
+            "Best For": "Business & startup founders"
+          }
+        },
+        {
+          "id": "uni_harvard_online",
+          "name": "Harvard Online",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "USA (Online)",
+            "Ranking": "#1 World (multiple rankings)",
+            "Type": "Private",
+            "Tuition": "$50,000+/year (residential)",
+            "Notable Programs": "Business, Law, Medicine, CS",
+            "Best For": "World-class education"
+          }
+        },
+        {
+          "id": "uni_mit",
+          "name": "MIT (Massachusetts Institute of Technology)",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "Cambridge, USA",
+            "Ranking": "#1 Engineering World",
+            "Type": "Private",
+            "Tuition": "$55,000+/year",
+            "Notable Programs": "Engineering, CS, Physics",
+            "Best For": "STEM research & innovation"
+          }
+        },
+        {
+          "id": "uni_stanford_online",
+          "name": "Stanford Online",
+          "category": "university",
+          "source": "catalog",
+          "specs": {
+            "Location": "California, USA (Online courses)",
+            "Ranking": "Top 5 World",
+            "Type": "Private",
+            "Tuition": "$55,000+/year (residential)",
+            "Notable Programs": "CS, AI, Business, Medicine",
+            "Best For": "Tech innovation, Silicon Valley"
+          }
+        }
+      ]
+    },
+    "training_program": {
+      "name": "Training Program",
+      "alternatives": [
+        {
+          "id": "train_linkedin_learning",
+          "name": "LinkedIn Learning Premium",
+          "category": "training_program",
+          "source": "catalog",
+          "specs": {
+            "Provider": "LinkedIn / Microsoft",
+            "Format": "Video + Quiz",
+            "Catalog": "20,000+ courses",
+            "Price": "$39.99/month",
+            "Certificate": "Yes (LinkedIn)",
+            "Best For": "Professional development"
+          }
+        },
+        {
+          "id": "train_pluralsight",
+          "name": "Pluralsight",
+          "category": "training_program",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Pluralsight",
+            "Format": "Video + Labs",
+            "Catalog": "7,000+ courses",
+            "Price": "$29 - $45/month",
+            "Certificate": "Yes + Skill assessments",
+            "Best For": "IT, DevOps, software engineers"
+          }
+        },
+        {
+          "id": "train_oreilly",
+          "name": "O'Reilly Learning",
+          "category": "training_program",
+          "source": "catalog",
+          "specs": {
+            "Provider": "O'Reilly Media",
+            "Format": "Books, Videos, Live events",
+            "Catalog": "60,000+ resources",
+            "Price": "$499/year",
+            "Certificate": "Yes",
+            "Best For": "Software engineers, architects"
+          }
+        },
+        {
+          "id": "train_skill_academy",
+          "name": "Skill Academy",
+          "category": "training_program",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Skill Academy (Ruangguru)",
+            "Format": "Video + Mentoring",
+            "Language": "Bahasa Indonesia",
+            "Price": "Rp 300,000 - 1,500,000",
+            "Certificate": "Yes",
+            "Best For": "Indonesian learners"
+          }
+        },
+        {
+          "id": "train_tokopedia_academy",
+          "name": "Tokopedia Academy",
+          "category": "training_program",
+          "source": "catalog",
+          "specs": {
+            "Provider": "Tokopedia",
+            "Format": "Online training + mentoring",
+            "Language": "Bahasa Indonesia",
+            "Price": "Free",
+            "Certificate": "Yes",
+            "Best For": "E-commerce & digital skills ID"
+          }
+        }
+      ]
+    }
+  }
+}

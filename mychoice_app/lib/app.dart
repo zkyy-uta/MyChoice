@@ -1,23 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'core/theme/app_theme.dart';
-import 'screens/splash/splash_screen.dart';
-import 'screens/onboarding/onboarding_screen.dart';
+import 'core/theme/app_colors.dart';
+import 'core/theme/app_typography.dart';
+import 'features/auth/data/datasources/mock_auth_datasource.dart';
+import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/auth/presentation/providers/auth_provider.dart';
+import 'features/category_selection/data/datasources/category_datasource.dart';
+import 'features/category_selection/data/repositories/category_repository_impl.dart';
+import 'features/category_selection/presentation/providers/category_provider.dart';
+import 'features/comparison/presentation/providers/comparison_provider.dart';
+import 'features/comparison/presentation/screens/comparison_screen.dart';
+import 'features/decision_engine/data/repositories/decision_engine_repository_impl.dart';
+import 'features/decision_engine/domain/usecases/calculate_saw_usecase.dart';
+import 'features/decision_engine/presentation/providers/result_provider.dart';
+import 'features/priority_setting/domain/usecases/auto_balance_usecase.dart';
+import 'features/what_if_simulation/domain/usecases/recalculate_simulation_usecase.dart';
+import 'features/what_if_simulation/presentation/providers/simulation_provider.dart';
+import 'features/what_if_simulation/presentation/screens/what_if_screen.dart';
+import 'screens/admin/catalogue/catalogue_screen.dart';
+import 'screens/admin/dashboard/admin_dashboard_screen.dart';
+import 'screens/admin/profile/admin_profile_screen.dart';
+import 'screens/admin/users/user_management_screen.dart';
+import 'screens/auth/forgot_password_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
 import 'screens/decision/create_decision_screen.dart';
+import 'features/dashboard/presentation/screens/guest_home_screen.dart';
+import 'features/guest/presentation/screens/guest_create_decision_screen.dart';
+import 'features/guest/presentation/screens/guest_explore_screen.dart';
+import 'features/guest/presentation/screens/guest_category_detail_screen.dart';
 import 'screens/history/history_screen.dart';
-import 'screens/admin/dashboard/admin_dashboard_screen.dart';
-import 'screens/admin/profile/admin_profile_screen.dart';
 import 'screens/admin/reports/admin_reports_screen.dart';
-import 'screens/admin/users/user_management_screen.dart';
-import 'screens/profile/personal_information_screen.dart';
+import 'screens/mf04_public_home_catalog_screen.dart';
+import 'screens/comparison/mf08_manual_choice_structuring_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/profile/language_screen.dart';
 import 'screens/profile/my_decision_data_screen.dart';
 import 'screens/profile/notification_settings_screen.dart';
+import 'screens/profile/personal_information_screen.dart';
 import 'screens/profile/premium_plan_screen.dart';
 import 'screens/profile/profile_screen.dart';
 import 'screens/profile/security_screen.dart';
+import 'screens/splash/splash_screen.dart';
 
 /// MyChoice App
 /// Main application widget with routing and theme configuration
@@ -26,37 +53,143 @@ class MyChoiceApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyChoice',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+    return MultiProvider(
+      providers: [
+        // Auth Provider
+        Provider<MockAuthDataSource>(create: (_) => MockAuthDataSource()),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (context) => AuthProvider(
+            repository: AuthRepositoryImpl(
+              mockDataSource: context.read<MockAuthDataSource>(),
+            ),
+          ),
+        ),
+        // Category Provider
+        Provider<MockCategoryDataSource>(
+          create: (_) => MockCategoryDataSource(),
+        ),
+        ChangeNotifierProvider<CategoryProvider>(
+          create: (context) => CategoryProvider(
+            repository: CategoryRepositoryImpl(
+              dataSource: context.read<MockCategoryDataSource>(),
+            ),
+          ),
+        ),
+        // Decision Engine Provider
+        Provider<DecisionEngineRepositoryImpl>(
+          create: (_) => DecisionEngineRepositoryImpl(),
+        ),
+        ChangeNotifierProvider<ResultProvider>(
+          create: (context) => ResultProvider(
+            calculateSAWUseCase: CalculateSAWUseCase(
+              repository: context.read<DecisionEngineRepositoryImpl>(),
+            ),
+          ),
+        ),
+        // Phase 7: What-If Simulation Provider
+        ChangeNotifierProvider<SimulationProvider>(
+          create: (context) => SimulationProvider(
+            recalculateUseCase: RecalculateSimulationUseCase(
+              repository: context.read<DecisionEngineRepositoryImpl>(),
+            ),
+            autoBalanceUseCase: AutoBalanceUseCase(),
+          ),
+        ),
+        // Phase 7: Comparison Provider
+        ChangeNotifierProvider<ComparisonProvider>(
+          create: (_) => ComparisonProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'MyChoice',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        // Routes
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/onboarding': (context) => const OnboardingScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/forgot-password': (context) => const ForgotPasswordScreen(),
+          '/dashboard': (context) => const DashboardScreen(),
+          '/create-decision': (context) => const CreateDecisionScreen(),
+          '/history': (context) => const HistoryScreen(),
+          '/profile': (context) => const ProfileScreen(),
+          '/profile/personal-information': (context) =>
+              const PersonalInformationScreen(),
+          '/profile/premium-plan': (context) => const PremiumPlanScreen(),
+          '/profile/security': (context) => const SecurityScreen(),
+          '/profile/notifications': (context) =>
+              const NotificationSettingsScreen(),
+          '/profile/language': (context) => const LanguageScreen(),
+          '/profile/my-decision-data': (context) =>
+              const MyDecisionDataScreen(),
+          '/guest-home': (context) => const GuestHomeScreen(),
+          '/guest-explore': (context) => const GuestExploreScreen(),
+          '/guest-category-detail': (context) =>
+              const GuestCategoryDetailScreen(categoryName: 'Technology'),
+          '/guest-create-decision': (context) =>
+              const GuestCreateDecisionScreen(),
+          '/public-catalog': (context) => const Mf04PublicHomeCatalogScreen(),
+          '/comparison': (context) => const ComparisonScreen(),
+          '/mf08-comparison': (context) {
+            final arguments = ModalRoute.of(context)?.settings.arguments;
+            if (arguments is! Mf08ComparisonArguments) {
+              throw FlutterError(
+                'The /mf08-comparison route requires '
+                'Mf08ComparisonArguments.',
+              );
+            }
+            return Mf08ComparisonScreen(
+              choices: arguments.choices,
+              category: arguments.category,
+              subcategory: arguments.subcategory,
+            );
+          },
+          '/what-if': (context) => const WhatIfScreen(),
+          '/admin': (context) => const AdminDashboardScreen(),
+          '/admin/users': (context) => const UserManagementScreen(),
+          '/admin/catalogue': (context) => const CatalogueScreen(),
+          '/admin/reports': (context) => const AdminReportsScreen(),
+          '/admin/profile': (context) => const AdminProfileScreen(),
+          '/admin/profile/personal-information': (context) =>
+              const PersonalInformationScreen(isAdmin: true),
+        },
+      ),
+    );
+  }
+}
 
-      // Routes
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/onboarding': (context) => const OnboardingScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/dashboard': (context) => const DashboardScreen(),
-        '/create-decision': (context) => const CreateDecisionScreen(),
-        '/history': (context) => const HistoryScreen(),
-        '/profile': (context) => const ProfileScreen(),
-        '/profile/personal-information': (context) =>
-            const PersonalInformationScreen(),
-        '/profile/premium-plan': (context) => const PremiumPlanScreen(),
-        '/profile/security': (context) => const SecurityScreen(),
-        '/profile/notifications': (context) =>
-            const NotificationSettingsScreen(),
-        '/profile/language': (context) => const LanguageScreen(),
-        '/profile/my-decision-data': (context) => const MyDecisionDataScreen(),
-        '/admin': (context) => const AdminDashboardScreen(),
-        '/admin/users': (context) => const UserManagementScreen(),
-        '/admin/reports': (context) => const AdminReportsScreen(),
-        '/admin/profile': (context) => const AdminProfileScreen(),
-        '/admin/profile/personal-information': (context) =>
-            const PersonalInformationScreen(isAdmin: true),
-      },
+/// Placeholder screen for features coming soon
+class _ComingSoonScreen extends StatelessWidget {
+  final String title;
+
+  const _ComingSoonScreen({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.construction, size: 64, color: AppColors.textTertiary),
+            const SizedBox(height: 16),
+            Text(
+              '$title coming soon',
+              style: AppTypography.sectionTitle.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

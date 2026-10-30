@@ -11,22 +11,32 @@ class AdminBottomNavigation extends StatelessWidget {
 
   void _select(BuildContext context, int index) {
     if (index == 0) {
+      // Home
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin');
       }
     } else if (index == 1) {
+      // Users
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/users');
       }
+    } else if (index == 2) {
+      // Catalogue
+      if (selectedIndex != index) {
+        Navigator.of(context).pushReplacementNamed('/admin/catalogue');
+      }
     } else if (index == 3) {
+      // Reports
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/reports');
       }
     } else if (index == 4) {
+      // Profile
       if (selectedIndex != index) {
         Navigator.of(context).pushReplacementNamed('/admin/profile');
       }
     } else {
+      // Reports masih dalam pengembangan
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('This feature is coming soon')),
       );

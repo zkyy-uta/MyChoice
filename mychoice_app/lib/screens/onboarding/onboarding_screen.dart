@@ -84,7 +84,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _navigateToAuth() {
-    Navigator.of(context).pushReplacementNamed('/login');
+    Navigator.of(context).pushReplacementNamed('/guest-home');
   }
 
   @override
@@ -230,6 +230,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: AppSpacing.sm),
                   ],
                 ),
               ),
