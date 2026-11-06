@@ -11,7 +11,7 @@ class AlternativeProvider extends ChangeNotifier {
   final AddAlternativeUseCase _addAlternativeUseCase;
 
   // State properties
-  List<Alternative> _selectedAlternatives = [];
+  final List<Alternative> _selectedAlternatives = [];
   List<Alternative> _catalogAlternatives = [];
   bool _catalogMode = true;
   String? _error;

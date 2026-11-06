@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 
 class AdminProfileScreen extends StatelessWidget {
   const AdminProfileScreen({super.key});
@@ -15,15 +16,11 @@ class AdminProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
 
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Admin Profile', style: AppTypography.sectionInnerTitle),
-        centerTitle: true,
-      ),
-      body: MobileBackground(
-        child: ListView(
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const PageAppBar(title: 'Admin Profile', showBackButton: false),
+        body: ListView(
           padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
           children: [
             const SizedBox(height: AppSpacing.md),
@@ -98,8 +95,8 @@ class AdminProfileScreen extends StatelessWidget {
             ),
           ],
         ),
+        bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 4),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 4),
     );
   }
 }

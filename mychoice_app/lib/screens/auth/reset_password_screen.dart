@@ -61,12 +61,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       await showDialog<void>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Password diperbarui'),
-          content: const Text('Silakan login kembali dengan password baru.'),
+          title: const Text('Password updated successfully'),
+          content: const Text('Please log in again with your new password.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Ke login'),
+              child: const Text('Go to login'),
             ),
           ],
         ),
@@ -98,12 +98,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Buat Password Baru',
+                        'Create New Password',
                         style: AppTypography.screenTitle,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Gunakan minimal 8 karakter, satu huruf besar, dan satu angka.',
+                        'Use at least 8 characters, one uppercase letter, and one number.',
                         style: AppTypography.body,
                       ),
                       const SizedBox(height: AppSpacing.xxl),
@@ -152,7 +152,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           ),
                         ),
                         validator: (value) => value != _passwordController.text
-                            ? 'Konfirmasi password tidak sama'
+                            ? 'Password confirmation does not match'
                             : null,
                       ),
                       if (_confirmationController.text.isNotEmpty &&
@@ -182,7 +182,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                   strokeWidth: 2,
                                 )
                               : Text(
-                                  'Simpan password baru',
+                                  'Save New Password',
                                   style: AppTypography.buttonLarge,
                                 ),
                         ),

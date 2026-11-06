@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 import 'manage_subcategory_screen.dart';
 
 class EducationScreen extends StatelessWidget {
@@ -15,89 +16,85 @@ class EducationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        _statCard('3', 'Subcategories'),
-                        const SizedBox(width: 8),
-                        _statCard('11', 'Criteria'),
-                        const SizedBox(width: 8),
-                        _statCard('15', 'Options'),
-                      ],
-                    ),
-                    const SizedBox(height: 22),
-                    Text(
-                      'Subcategories',
-                      style: AppTypography.sectionInnerTitle.copyWith(
-                        color: _darkPurple,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
+      backgroundColor: Colors.transparent,
+      body: MobileBackground(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _statCard('3', 'Subcategories'),
+                          const SizedBox(width: 8),
+                          _statCard('11', 'Criteria'),
+                          const SizedBox(width: 8),
+                          _statCard('15', 'Options'),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 22),
+                      Text(
+                        'Subcategories',
+                        style: AppTypography.sectionInnerTitle.copyWith(
+                          color: _darkPurple,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
-                    // 1. COURSES
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Courses',
-                      icon: Icons.menu_book_rounded,
-                      incomplete: false,
-                      criteriaTags: const [
-                        'Price',
-                        'Rating',
-                        'Duration',
-                      ],
-                    ),
+                      // 1. COURSES
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Courses',
+                        icon: Icons.menu_book_rounded,
+                        incomplete: false,
+                        criteriaTags: const ['Price', 'Rating', 'Duration'],
+                      ),
 
-                    // 2. CERTIFICATIONS
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Certifications',
-                      icon: Icons.workspace_premium_rounded,
-                      incomplete: false,
-                      criteriaTags: const [
-                        'Exam Fee',
-                        'Industry Recognition',
-                        'Validity',
-                        'Preparation Time',
-                      ],
-                    ),
+                      // 2. CERTIFICATIONS
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Certifications',
+                        icon: Icons.workspace_premium_rounded,
+                        incomplete: false,
+                        criteriaTags: const [
+                          'Exam Fee',
+                          'Industry Recognition',
+                          'Validity',
+                          'Preparation Time',
+                        ],
+                      ),
 
-                    // 3. INTERNSHIPS
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Internships',
-                      icon: Icons.work_outline_rounded,
-                      incomplete: false,
-                      criteriaTags: const [
-                        'Monthly Allowance',
-                        'Field Relevance',
-                        'Company Rating',
-                        'Distance',
-                      ],
-                    ),
-                  ],
+                      // 3. INTERNSHIPS
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Internships',
+                        icon: Icons.work_outline_rounded,
+                        incomplete: false,
+                        criteriaTags: const [
+                          'Monthly Allowance',
+                          'Field Relevance',
+                          'Company Rating',
+                          'Distance',
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(
-        selectedIndex: 2,
-      ),
+      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
     );
   }
 
@@ -148,20 +145,13 @@ class EducationScreen extends StatelessWidget {
   Widget _statCard(String value, String label) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 20,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0, 0.55, 1.0],
-            colors: [
-              Color(0xFF7B4378),
-              Color(0xFF9783D6),
-              Color(0xFFB4A8F6),
-            ],
+            colors: [Color(0xFF7B4378), Color(0xFF9783D6), Color(0xFFB4A8F6)],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -253,11 +243,7 @@ class EducationScreen extends StatelessWidget {
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        icon,
-                        color: _plum,
-                        size: 24,
-                      ),
+                      child: Icon(icon, color: _plum, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -310,9 +296,7 @@ class EducationScreen extends StatelessWidget {
                           Navigator.of(context).push(
                             MaterialPageRoute<void>(
                               builder: (context) =>
-                                  ManageSubcategoryScreen(
-                                subcategory: name,
-                              ),
+                                  ManageSubcategoryScreen(subcategory: name),
                             ),
                           );
                         },
@@ -321,9 +305,7 @@ class EducationScreen extends StatelessWidget {
                           foregroundColor: _plum,
                           elevation: 3,
                           shadowColor: Colors.black.withValues(alpha: 0.35),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -339,10 +321,7 @@ class EducationScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 6),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 18,
-                            ),
+                            Icon(Icons.arrow_forward_rounded, size: 18),
                           ],
                         ),
                       ),
@@ -395,7 +374,8 @@ class EducationScreen extends StatelessWidget {
           }
           final hidden = tags.length - visible;
           if (hidden > 0) {
-            total += (visible > 0 ? _tagSpacing : 0) +
+            total +=
+                (visible > 0 ? _tagSpacing : 0) +
                 _tagWidth(context, '+$hidden');
           }
           return total;
@@ -440,11 +420,7 @@ class EducationScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        text,
-        maxLines: 1,
-        style: _tagTextStyle(),
-      ),
+      child: Text(text, maxLines: 1, style: _tagTextStyle()),
     );
   }
 

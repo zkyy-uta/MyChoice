@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 
 class ManageSubcategoryScreen extends StatefulWidget {
   const ManageSubcategoryScreen({
@@ -25,8 +25,7 @@ class ManageSubcategoryScreen extends StatefulWidget {
       _ManageSubcategoryScreenState();
 }
 
-class _ManageSubcategoryScreenState
-    extends State<ManageSubcategoryScreen> {
+class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
   static const Color _purple = AppColors.textPurple;
   static const Color _dark = Color(0xFF511B4D);
   static const Color _green = Color(0xFF239B4B);
@@ -64,8 +63,7 @@ class _ManageSubcategoryScreenState
     return 'Technology';
   }
 
-  String get _normalizedSubcategory =>
-      widget.subcategory.trim().toLowerCase();
+  String get _normalizedSubcategory => widget.subcategory.trim().toLowerCase();
 
   late final List<_Criterion> _criteria = _initialCriteria();
   late final List<_OptionItem> _options = _initialOptions();
@@ -78,27 +76,82 @@ class _ManageSubcategoryScreenState
         case 'courses':
         case 'kursus':
           return [
-            _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Duration', type: 'Cost', unit: 'hours', icon: Icons.schedule_rounded),
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Duration',
+              type: 'Cost',
+              unit: 'hours',
+              icon: Icons.schedule_rounded,
+            ),
           ];
         case 'certification':
         case 'certifications':
         case 'sertifikasi':
           return [
-            _Criterion(name: 'Exam Fee', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Industry Recognition', type: 'Benefit', unit: 'scale 1-5', icon: Icons.workspace_premium_rounded),
-            _Criterion(name: 'Validity', type: 'Benefit', unit: 'years', icon: Icons.event_available_rounded),
-            _Criterion(name: 'Preparation Time', type: 'Cost', unit: 'hours', icon: Icons.schedule_rounded),
+            _Criterion(
+              name: 'Exam Fee',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Industry Recognition',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.workspace_premium_rounded,
+            ),
+            _Criterion(
+              name: 'Validity',
+              type: 'Benefit',
+              unit: 'years',
+              icon: Icons.event_available_rounded,
+            ),
+            _Criterion(
+              name: 'Preparation Time',
+              type: 'Cost',
+              unit: 'hours',
+              icon: Icons.schedule_rounded,
+            ),
           ];
         case 'internship':
         case 'internships':
         case 'tempat magang':
           return [
-            _Criterion(name: 'Monthly Allowance', type: 'Benefit', unit: 'Rp/month', icon: Icons.payments_outlined),
-            _Criterion(name: 'Field Relevance', type: 'Benefit', unit: 'scale 1-5', icon: Icons.school_outlined),
-            _Criterion(name: 'Company Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Distance', type: 'Cost', unit: 'km', icon: Icons.directions_walk_rounded),
+            _Criterion(
+              name: 'Monthly Allowance',
+              type: 'Benefit',
+              unit: 'Rp/month',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Field Relevance',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.school_outlined,
+            ),
+            _Criterion(
+              name: 'Company Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Distance',
+              type: 'Cost',
+              unit: 'km',
+              icon: Icons.directions_walk_rounded,
+            ),
           ];
       }
     }
@@ -108,46 +161,141 @@ class _ManageSubcategoryScreenState
         case 'shoes':
         case 'sepatu':
           return [
-            _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Comfort', type: 'Benefit', unit: 'scale 1-5', icon: Icons.weekend_outlined),
-            _Criterion(name: 'Weight', type: 'Cost', unit: 'grams', icon: Icons.scale_outlined),
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Comfort',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.weekend_outlined,
+            ),
+            _Criterion(
+              name: 'Weight',
+              type: 'Cost',
+              unit: 'grams',
+              icon: Icons.scale_outlined,
+            ),
           ];
         case 'bags':
         case 'bag':
         case 'tas':
           return [
-            _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Capacity', type: 'Benefit', unit: 'liters', icon: Icons.inventory_2_outlined),
-            _Criterion(name: 'Weight', type: 'Cost', unit: 'grams', icon: Icons.scale_outlined),
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Capacity',
+              type: 'Benefit',
+              unit: 'liters',
+              icon: Icons.inventory_2_outlined,
+            ),
+            _Criterion(
+              name: 'Weight',
+              type: 'Cost',
+              unit: 'grams',
+              icon: Icons.scale_outlined,
+            ),
           ];
         case 'tops':
         case 'top':
         case 'atasan':
         case 'atasan baju':
           return [
-            _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Fabric Quality', type: 'Benefit', unit: 'scale 1-5', icon: Icons.checkroom_rounded),
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Fabric Quality',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.checkroom_rounded,
+            ),
           ];
         case 'bottoms':
         case 'bottom':
         case 'bawahan':
           return [
-            _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Comfort', type: 'Benefit', unit: 'scale 1-5', icon: Icons.weekend_outlined),
-            _Criterion(name: 'Fabric Quality', type: 'Benefit', unit: 'scale 1-5', icon: Icons.checkroom_rounded),
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Comfort',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.weekend_outlined,
+            ),
+            _Criterion(
+              name: 'Fabric Quality',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.checkroom_rounded,
+            ),
           ];
         case 'watches':
         case 'watch':
         case 'jam tangan':
           return [
-            _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-            _Criterion(name: 'Rating', type: 'Benefit', unit: 'scale 1-5', icon: Icons.star_rounded),
-            _Criterion(name: 'Water Resistance', type: 'Benefit', unit: 'meters', icon: Icons.water_drop_outlined),
-            _Criterion(name: 'Warranty', type: 'Benefit', unit: 'years', icon: Icons.verified_outlined),
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Water Resistance',
+              type: 'Benefit',
+              unit: 'meters',
+              icon: Icons.water_drop_outlined,
+            ),
+            _Criterion(
+              name: 'Warranty',
+              type: 'Benefit',
+              unit: 'years',
+              icon: Icons.verified_outlined,
+            ),
           ];
       }
     }
@@ -155,48 +303,183 @@ class _ManageSubcategoryScreenState
     switch (_normalizedSubcategory) {
       case 'laptop':
         return [
-          _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-          _Criterion(name: 'RAM', type: 'Benefit', unit: 'GB', icon: Icons.memory_rounded),
-          _Criterion(name: 'Storage', type: 'Benefit', unit: 'GB', icon: Icons.storage_rounded),
-          _Criterion(name: 'Weight', type: 'Cost', unit: 'kg', icon: Icons.scale_outlined),
+          _Criterion(
+            name: 'Price',
+            type: 'Cost',
+            unit: 'Rp',
+            icon: Icons.payments_outlined,
+          ),
+          _Criterion(
+            name: 'RAM',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.memory_rounded,
+          ),
+          _Criterion(
+            name: 'Storage',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.storage_rounded,
+          ),
+          _Criterion(
+            name: 'Weight',
+            type: 'Cost',
+            unit: 'kg',
+            icon: Icons.scale_outlined,
+          ),
         ];
       case 'smartphone':
         return [
-          _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-          _Criterion(name: 'RAM', type: 'Benefit', unit: 'GB', icon: Icons.memory_rounded),
-          _Criterion(name: 'Storage', type: 'Benefit', unit: 'GB', icon: Icons.storage_rounded),
-          _Criterion(name: 'Battery Capacity', type: 'Benefit', unit: 'mAh', icon: Icons.battery_full_rounded),
-          _Criterion(name: 'Main Camera', type: 'Benefit', unit: 'MP', icon: Icons.camera_alt_outlined),
+          _Criterion(
+            name: 'Price',
+            type: 'Cost',
+            unit: 'Rp',
+            icon: Icons.payments_outlined,
+          ),
+          _Criterion(
+            name: 'RAM',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.memory_rounded,
+          ),
+          _Criterion(
+            name: 'Storage',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.storage_rounded,
+          ),
+          _Criterion(
+            name: 'Battery Capacity',
+            type: 'Benefit',
+            unit: 'mAh',
+            icon: Icons.battery_full_rounded,
+          ),
+          _Criterion(
+            name: 'Main Camera',
+            type: 'Benefit',
+            unit: 'MP',
+            icon: Icons.camera_alt_outlined,
+          ),
         ];
       case 'tablet':
         return [
-          _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-          _Criterion(name: 'RAM', type: 'Benefit', unit: 'GB', icon: Icons.memory_rounded),
-          _Criterion(name: 'Storage', type: 'Benefit', unit: 'GB', icon: Icons.storage_rounded),
-          _Criterion(name: 'Battery Capacity', type: 'Benefit', unit: 'mAh', icon: Icons.battery_full_rounded),
-          _Criterion(name: 'Screen Size', type: 'Benefit', unit: 'inches', icon: Icons.tablet_android_outlined),
+          _Criterion(
+            name: 'Price',
+            type: 'Cost',
+            unit: 'Rp',
+            icon: Icons.payments_outlined,
+          ),
+          _Criterion(
+            name: 'RAM',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.memory_rounded,
+          ),
+          _Criterion(
+            name: 'Storage',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.storage_rounded,
+          ),
+          _Criterion(
+            name: 'Battery Capacity',
+            type: 'Benefit',
+            unit: 'mAh',
+            icon: Icons.battery_full_rounded,
+          ),
+          _Criterion(
+            name: 'Screen Size',
+            type: 'Benefit',
+            unit: 'inches',
+            icon: Icons.tablet_android_outlined,
+          ),
         ];
       case 'pc':
         return [
-          _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-          _Criterion(name: 'RAM', type: 'Benefit', unit: 'GB', icon: Icons.memory_rounded),
-          _Criterion(name: 'Storage', type: 'Benefit', unit: 'GB', icon: Icons.storage_rounded),
-          _Criterion(name: 'CPU Score', type: 'Benefit', unit: 'benchmark points', icon: Icons.speed_rounded),
+          _Criterion(
+            name: 'Price',
+            type: 'Cost',
+            unit: 'Rp',
+            icon: Icons.payments_outlined,
+          ),
+          _Criterion(
+            name: 'RAM',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.memory_rounded,
+          ),
+          _Criterion(
+            name: 'Storage',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.storage_rounded,
+          ),
+          _Criterion(
+            name: 'CPU Score',
+            type: 'Benefit',
+            unit: 'benchmark points',
+            icon: Icons.speed_rounded,
+          ),
         ];
       case 'monitor':
         return [
-          _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-          _Criterion(name: 'Screen Size', type: 'Benefit', unit: 'inches', icon: Icons.monitor_outlined),
-          _Criterion(name: 'Refresh Rate', type: 'Benefit', unit: 'Hz', icon: Icons.speed_rounded),
-          _Criterion(name: 'Response Time', type: 'Cost', unit: 'ms', icon: Icons.timer_outlined),
-          _Criterion(name: 'Resolution', type: 'Benefit', unit: 'MP', icon: Icons.high_quality_outlined),
+          _Criterion(
+            name: 'Price',
+            type: 'Cost',
+            unit: 'Rp',
+            icon: Icons.payments_outlined,
+          ),
+          _Criterion(
+            name: 'Screen Size',
+            type: 'Benefit',
+            unit: 'inches',
+            icon: Icons.monitor_outlined,
+          ),
+          _Criterion(
+            name: 'Refresh Rate',
+            type: 'Benefit',
+            unit: 'Hz',
+            icon: Icons.speed_rounded,
+          ),
+          _Criterion(
+            name: 'Response Time',
+            type: 'Cost',
+            unit: 'ms',
+            icon: Icons.timer_outlined,
+          ),
+          _Criterion(
+            name: 'Resolution',
+            type: 'Benefit',
+            unit: 'MP',
+            icon: Icons.high_quality_outlined,
+          ),
         ];
       default:
         return [
-          _Criterion(name: 'Price', type: 'Cost', unit: 'Rp', icon: Icons.payments_outlined),
-          _Criterion(name: 'RAM', type: 'Benefit', unit: 'GB', icon: Icons.memory_rounded),
-          _Criterion(name: 'Storage', type: 'Benefit', unit: 'GB', icon: Icons.storage_rounded),
-          _Criterion(name: 'Weight', type: 'Cost', unit: 'kg', icon: Icons.scale_outlined),
+          _Criterion(
+            name: 'Price',
+            type: 'Cost',
+            unit: 'Rp',
+            icon: Icons.payments_outlined,
+          ),
+          _Criterion(
+            name: 'RAM',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.memory_rounded,
+          ),
+          _Criterion(
+            name: 'Storage',
+            type: 'Benefit',
+            unit: 'GB',
+            icon: Icons.storage_rounded,
+          ),
+          _Criterion(
+            name: 'Weight',
+            type: 'Cost',
+            unit: 'kg',
+            icon: Icons.scale_outlined,
+          ),
         ];
     }
   }
@@ -210,31 +493,126 @@ class _ManageSubcategoryScreenState
         case 'courses':
         case 'kursus':
           return [
-            _OptionItem(name: 'Google Data Analytics Professional Certificate', values: {'Price': '500000', 'Rating': '4.7', 'Duration': '180'}),
-            _OptionItem(name: 'The Complete Python Bootcamp (Udemy)', values: {'Price': '899000', 'Rating': '4.6', 'Duration': '22'}),
-            _OptionItem(name: 'Belajar Dasar Pemrograman Web (Dicoding)', values: {'Price': '500000', 'Rating': '4.8', 'Duration': '60'}),
-            _OptionItem(name: 'Meta Social Media Marketing (Coursera)', values: {'Price': '750000', 'Rating': '4.7', 'Duration': '120'}),
-            _OptionItem(name: 'IBM Data Science Professional Certificate', values: {'Price': '650000', 'Rating': '4.6', 'Duration': '160'}),
+            _OptionItem(
+              name: 'Google Data Analytics Professional Certificate',
+              values: {'Price': '500000', 'Rating': '4.7', 'Duration': '180'},
+            ),
+            _OptionItem(
+              name: 'The Complete Python Bootcamp (Udemy)',
+              values: {'Price': '899000', 'Rating': '4.6', 'Duration': '22'},
+            ),
+            _OptionItem(
+              name: 'Belajar Dasar Pemrograman Web (Dicoding)',
+              values: {'Price': '500000', 'Rating': '4.8', 'Duration': '60'},
+            ),
+            _OptionItem(
+              name: 'Meta Social Media Marketing (Coursera)',
+              values: {'Price': '750000', 'Rating': '4.7', 'Duration': '120'},
+            ),
+            _OptionItem(
+              name: 'IBM Data Science Professional Certificate',
+              values: {'Price': '650000', 'Rating': '4.6', 'Duration': '160'},
+            ),
           ];
         case 'certification':
         case 'certifications':
         case 'sertifikasi':
           return [
-            _OptionItem(name: 'AWS Certified Cloud Practitioner', values: {'Exam Fee': '1500000', 'Industry Recognition': '4.5', 'Validity': '3', 'Preparation Time': '40'}),
-            _OptionItem(name: 'CompTIA A+', values: {'Exam Fee': '3500000', 'Industry Recognition': '4.5', 'Validity': '3', 'Preparation Time': '120'}),
-            _OptionItem(name: 'Cisco Certified Network Associate (CCNA)', values: {'Exam Fee': '5500000', 'Industry Recognition': '4.8', 'Validity': '3', 'Preparation Time': '120'}),
-            _OptionItem(name: 'Project Management Professional (PMP)', values: {'Exam Fee': '8000000', 'Industry Recognition': '5', 'Validity': '3', 'Preparation Time': '150'}),
-            _OptionItem(name: 'Google Cloud Professional Cloud Architect', values: {'Exam Fee': '3000000', 'Industry Recognition': '4.7', 'Validity': '2', 'Preparation Time': '100'}),
+            _OptionItem(
+              name: 'AWS Certified Cloud Practitioner',
+              values: {
+                'Exam Fee': '1500000',
+                'Industry Recognition': '4.5',
+                'Validity': '3',
+                'Preparation Time': '40',
+              },
+            ),
+            _OptionItem(
+              name: 'CompTIA A+',
+              values: {
+                'Exam Fee': '3500000',
+                'Industry Recognition': '4.5',
+                'Validity': '3',
+                'Preparation Time': '120',
+              },
+            ),
+            _OptionItem(
+              name: 'Cisco Certified Network Associate (CCNA)',
+              values: {
+                'Exam Fee': '5500000',
+                'Industry Recognition': '4.8',
+                'Validity': '3',
+                'Preparation Time': '120',
+              },
+            ),
+            _OptionItem(
+              name: 'Project Management Professional (PMP)',
+              values: {
+                'Exam Fee': '8000000',
+                'Industry Recognition': '5',
+                'Validity': '3',
+                'Preparation Time': '150',
+              },
+            ),
+            _OptionItem(
+              name: 'Google Cloud Professional Cloud Architect',
+              values: {
+                'Exam Fee': '3000000',
+                'Industry Recognition': '4.7',
+                'Validity': '2',
+                'Preparation Time': '100',
+              },
+            ),
           ];
         case 'internship':
         case 'internships':
         case 'tempat magang':
           return [
-            _OptionItem(name: 'Telkom Indonesia Internship', values: {'Monthly Allowance': '2500000', 'Field Relevance': '4.5', 'Company Rating': '4.3', 'Distance': '8'}),
-            _OptionItem(name: 'Bank Central Asia (BCA) Internship', values: {'Monthly Allowance': '3000000', 'Field Relevance': '4.4', 'Company Rating': '4.5', 'Distance': '12'}),
-            _OptionItem(name: 'GoTo Group Internship', values: {'Monthly Allowance': '3500000', 'Field Relevance': '4.7', 'Company Rating': '4.2', 'Distance': '10'}),
-            _OptionItem(name: 'Traveloka Internship', values: {'Monthly Allowance': '3000000', 'Field Relevance': '4.6', 'Company Rating': '4.1', 'Distance': '15'}),
-            _OptionItem(name: 'Deloitte Indonesia Internship', values: {'Monthly Allowance': '2800000', 'Field Relevance': '4.5', 'Company Rating': '4.4', 'Distance': '7'}),
+            _OptionItem(
+              name: 'Telkom Indonesia Internship',
+              values: {
+                'Monthly Allowance': '2500000',
+                'Field Relevance': '4.5',
+                'Company Rating': '4.3',
+                'Distance': '8',
+              },
+            ),
+            _OptionItem(
+              name: 'Bank Central Asia (BCA) Internship',
+              values: {
+                'Monthly Allowance': '3000000',
+                'Field Relevance': '4.4',
+                'Company Rating': '4.5',
+                'Distance': '12',
+              },
+            ),
+            _OptionItem(
+              name: 'GoTo Group Internship',
+              values: {
+                'Monthly Allowance': '3500000',
+                'Field Relevance': '4.7',
+                'Company Rating': '4.2',
+                'Distance': '10',
+              },
+            ),
+            _OptionItem(
+              name: 'Traveloka Internship',
+              values: {
+                'Monthly Allowance': '3000000',
+                'Field Relevance': '4.6',
+                'Company Rating': '4.1',
+                'Distance': '15',
+              },
+            ),
+            _OptionItem(
+              name: 'Deloitte Indonesia Internship',
+              values: {
+                'Monthly Allowance': '2800000',
+                'Field Relevance': '4.5',
+                'Company Rating': '4.4',
+                'Distance': '7',
+              },
+            ),
           ];
       }
     }
@@ -246,42 +624,159 @@ class _ManageSubcategoryScreenState
         case 'shoes':
         case 'sepatu':
           return [
-            _OptionItem(name: "Nike Air Force 1 '07", values: {'Price': '1599000', 'Rating': '4.7', 'Comfort': '4.5', 'Weight': '400'}),
-            _OptionItem(name: 'Adidas Runfalcon 3.0', values: {'Price': '899000', 'Rating': '4.5', 'Comfort': '4.4', 'Weight': '280'}),
-            _OptionItem(name: 'Converse Chuck Taylor All Star', values: {'Price': '999000', 'Rating': '4.6', 'Comfort': '4.0', 'Weight': '350'}),
+            _OptionItem(
+              name: "Nike Air Force 1 '07",
+              values: {
+                'Price': '1599000',
+                'Rating': '4.7',
+                'Comfort': '4.5',
+                'Weight': '400',
+              },
+            ),
+            _OptionItem(
+              name: 'Adidas Runfalcon 3.0',
+              values: {
+                'Price': '899000',
+                'Rating': '4.5',
+                'Comfort': '4.4',
+                'Weight': '280',
+              },
+            ),
+            _OptionItem(
+              name: 'Converse Chuck Taylor All Star',
+              values: {
+                'Price': '999000',
+                'Rating': '4.6',
+                'Comfort': '4.0',
+                'Weight': '350',
+              },
+            ),
           ];
         case 'bags':
         case 'bag':
         case 'tas':
           return [
-            _OptionItem(name: 'JanSport SuperBreak', values: {'Price': '799000', 'Rating': '4.6', 'Capacity': '26', 'Weight': '300'}),
-            _OptionItem(name: 'Herschel Classic Backpack', values: {'Price': '1099000', 'Rating': '4.5', 'Capacity': '26', 'Weight': '500'}),
-            _OptionItem(name: 'Fjällräven Kånken Classic', values: {'Price': '1699000', 'Rating': '4.7', 'Capacity': '16', 'Weight': '300'}),
+            _OptionItem(
+              name: 'JanSport SuperBreak',
+              values: {
+                'Price': '799000',
+                'Rating': '4.6',
+                'Capacity': '26',
+                'Weight': '300',
+              },
+            ),
+            _OptionItem(
+              name: 'Herschel Classic Backpack',
+              values: {
+                'Price': '1099000',
+                'Rating': '4.5',
+                'Capacity': '26',
+                'Weight': '500',
+              },
+            ),
+            _OptionItem(
+              name: 'Fjällräven Kånken Classic',
+              values: {
+                'Price': '1699000',
+                'Rating': '4.7',
+                'Capacity': '16',
+                'Weight': '300',
+              },
+            ),
           ];
         case 'tops':
         case 'top':
         case 'atasan':
         case 'atasan baju':
           return [
-            _OptionItem(name: 'Uniqlo AIRism Cotton Oversized T-Shirt', values: {'Price': '199000', 'Rating': '4.7', 'Fabric Quality': '4.6'}),
-            _OptionItem(name: 'H&M Regular Fit Cotton T-Shirt', values: {'Price': '149900', 'Rating': '4.3', 'Fabric Quality': '4.1'}),
-            _OptionItem(name: 'Zara Basic Cotton T-Shirt', values: {'Price': '299900', 'Rating': '4.4', 'Fabric Quality': '4.3'}),
+            _OptionItem(
+              name: 'Uniqlo AIRism Cotton Oversized T-Shirt',
+              values: {
+                'Price': '199000',
+                'Rating': '4.7',
+                'Fabric Quality': '4.6',
+              },
+            ),
+            _OptionItem(
+              name: 'H&M Regular Fit Cotton T-Shirt',
+              values: {
+                'Price': '149900',
+                'Rating': '4.3',
+                'Fabric Quality': '4.1',
+              },
+            ),
+            _OptionItem(
+              name: 'Zara Basic Cotton T-Shirt',
+              values: {
+                'Price': '299900',
+                'Rating': '4.4',
+                'Fabric Quality': '4.3',
+              },
+            ),
           ];
         case 'bottoms':
         case 'bottom':
         case 'bawahan':
           return [
-            _OptionItem(name: "Levi's 501 Original Jeans", values: {'Price': '1499000', 'Rating': '4.7', 'Comfort': '4.4', 'Fabric Quality': '4.7'}),
-            _OptionItem(name: 'Uniqlo Wide Fit Jeans', values: {'Price': '599000', 'Rating': '4.5', 'Comfort': '4.5', 'Fabric Quality': '4.4'}),
-            _OptionItem(name: 'H&M Straight Regular Jeans', values: {'Price': '499900', 'Rating': '4.2', 'Comfort': '4.1', 'Fabric Quality': '4.0'}),
+            _OptionItem(
+              name: "Levi's 501 Original Jeans",
+              values: {
+                'Price': '1499000',
+                'Rating': '4.7',
+                'Comfort': '4.4',
+                'Fabric Quality': '4.7',
+              },
+            ),
+            _OptionItem(
+              name: 'Uniqlo Wide Fit Jeans',
+              values: {
+                'Price': '599000',
+                'Rating': '4.5',
+                'Comfort': '4.5',
+                'Fabric Quality': '4.4',
+              },
+            ),
+            _OptionItem(
+              name: 'H&M Straight Regular Jeans',
+              values: {
+                'Price': '499900',
+                'Rating': '4.2',
+                'Comfort': '4.1',
+                'Fabric Quality': '4.0',
+              },
+            ),
           ];
         case 'watches':
         case 'watch':
         case 'jam tangan':
           return [
-            _OptionItem(name: 'Casio G-Shock DW-5600UE', values: {'Price': '1399000', 'Rating': '4.8', 'Water Resistance': '200', 'Warranty': '1'}),
-            _OptionItem(name: 'Casio AE-1200WH', values: {'Price': '499000', 'Rating': '4.6', 'Water Resistance': '100', 'Warranty': '1'}),
-            _OptionItem(name: 'Seiko 5 Sports SRPD55', values: {'Price': '4200000', 'Rating': '4.7', 'Water Resistance': '100', 'Warranty': '1'}),
+            _OptionItem(
+              name: 'Casio G-Shock DW-5600UE',
+              values: {
+                'Price': '1399000',
+                'Rating': '4.8',
+                'Water Resistance': '200',
+                'Warranty': '1',
+              },
+            ),
+            _OptionItem(
+              name: 'Casio AE-1200WH',
+              values: {
+                'Price': '499000',
+                'Rating': '4.6',
+                'Water Resistance': '100',
+                'Warranty': '1',
+              },
+            ),
+            _OptionItem(
+              name: 'Seiko 5 Sports SRPD55',
+              values: {
+                'Price': '4200000',
+                'Rating': '4.7',
+                'Water Resistance': '100',
+                'Warranty': '1',
+              },
+            ),
           ];
       }
     }
@@ -291,33 +786,162 @@ class _ManageSubcategoryScreenState
     switch (_normalizedSubcategory) {
       case 'laptop':
         return [
-          _OptionItem(name: 'Lenovo IdeaPad Slim 5', values: {'Price': '12999000', 'RAM': '16', 'Storage': '512', 'Weight': '1.46'}),
-          _OptionItem(name: 'ASUS Vivobook 14', values: {'Price': '8999000', 'RAM': '16', 'Storage': '512', 'Weight': '1.40'}),
-          _OptionItem(name: 'Acer Aspire 5', values: {'Price': '7999000', 'RAM': '8', 'Storage': '512', 'Weight': ''}),
+          _OptionItem(
+            name: 'Lenovo IdeaPad Slim 5',
+            values: {
+              'Price': '12999000',
+              'RAM': '16',
+              'Storage': '512',
+              'Weight': '1.46',
+            },
+          ),
+          _OptionItem(
+            name: 'ASUS Vivobook 14',
+            values: {
+              'Price': '8999000',
+              'RAM': '16',
+              'Storage': '512',
+              'Weight': '1.40',
+            },
+          ),
+          _OptionItem(
+            name: 'Acer Aspire 5',
+            values: {
+              'Price': '7999000',
+              'RAM': '8',
+              'Storage': '512',
+              'Weight': '',
+            },
+          ),
         ];
       case 'smartphone':
         return [
-          _OptionItem(name: 'iPhone 17', values: {'Price': '17999000', 'RAM': '8', 'Storage': '256', 'Battery Capacity': '3692', 'Main Camera': '48'}),
-          _OptionItem(name: 'Samsung Galaxy S25', values: {'Price': '13999000', 'RAM': '12', 'Storage': '256', 'Battery Capacity': '4000', 'Main Camera': '50'}),
-          _OptionItem(name: 'Xiaomi Redmi Note 14 Pro 5G', values: {'Price': '4499000', 'RAM': '8', 'Storage': '256', 'Battery Capacity': '5110', 'Main Camera': '200'}),
+          _OptionItem(
+            name: 'iPhone 17',
+            values: {
+              'Price': '17999000',
+              'RAM': '8',
+              'Storage': '256',
+              'Battery Capacity': '3692',
+              'Main Camera': '48',
+            },
+          ),
+          _OptionItem(
+            name: 'Samsung Galaxy S25',
+            values: {
+              'Price': '13999000',
+              'RAM': '12',
+              'Storage': '256',
+              'Battery Capacity': '4000',
+              'Main Camera': '50',
+            },
+          ),
+          _OptionItem(
+            name: 'Xiaomi Redmi Note 14 Pro 5G',
+            values: {
+              'Price': '4499000',
+              'RAM': '8',
+              'Storage': '256',
+              'Battery Capacity': '5110',
+              'Main Camera': '200',
+            },
+          ),
         ];
       case 'tablet':
         return [
-          _OptionItem(name: 'Samsung Galaxy Tab S10+', values: {'Price': '16999000', 'RAM': '12', 'Storage': '256', 'Battery Capacity': '10090', 'Screen Size': '12.4'}),
-          _OptionItem(name: 'Apple iPad Air 11-inch', values: {'Price': '9999000', 'RAM': '8', 'Storage': '128', 'Battery Capacity': '7606', 'Screen Size': '11'}),
-          _OptionItem(name: 'Xiaomi Redmi Pad Pro', values: {'Price': '4499000', 'RAM': '8', 'Storage': '256', 'Battery Capacity': '10000', 'Screen Size': '12.1'}),
+          _OptionItem(
+            name: 'Samsung Galaxy Tab S10+',
+            values: {
+              'Price': '16999000',
+              'RAM': '12',
+              'Storage': '256',
+              'Battery Capacity': '10090',
+              'Screen Size': '12.4',
+            },
+          ),
+          _OptionItem(
+            name: 'Apple iPad Air 11-inch',
+            values: {
+              'Price': '9999000',
+              'RAM': '8',
+              'Storage': '128',
+              'Battery Capacity': '7606',
+              'Screen Size': '11',
+            },
+          ),
+          _OptionItem(
+            name: 'Xiaomi Redmi Pad Pro',
+            values: {
+              'Price': '4499000',
+              'RAM': '8',
+              'Storage': '256',
+              'Battery Capacity': '10000',
+              'Screen Size': '12.1',
+            },
+          ),
         ];
       case 'pc':
         return [
-          _OptionItem(name: 'HP Pavilion Desktop TP01', values: {'Price': '11999000', 'RAM': '16', 'Storage': '1000', 'CPU Score': '27000'}),
-          _OptionItem(name: 'Lenovo IdeaCentre 5', values: {'Price': '13999000', 'RAM': '16', 'Storage': '1000', 'CPU Score': '30000'}),
-          _OptionItem(name: 'Dell Inspiron Desktop', values: {'Price': '10999000', 'RAM': '8', 'Storage': '512', 'CPU Score': '22000'}),
+          _OptionItem(
+            name: 'HP Pavilion Desktop TP01',
+            values: {
+              'Price': '11999000',
+              'RAM': '16',
+              'Storage': '1000',
+              'CPU Score': '27000',
+            },
+          ),
+          _OptionItem(
+            name: 'Lenovo IdeaCentre 5',
+            values: {
+              'Price': '13999000',
+              'RAM': '16',
+              'Storage': '1000',
+              'CPU Score': '30000',
+            },
+          ),
+          _OptionItem(
+            name: 'Dell Inspiron Desktop',
+            values: {
+              'Price': '10999000',
+              'RAM': '8',
+              'Storage': '512',
+              'CPU Score': '22000',
+            },
+          ),
         ];
       case 'monitor':
         return [
-          _OptionItem(name: 'LG UltraGear 27GP850-B', values: {'Price': '5999000', 'Screen Size': '27', 'Refresh Rate': '165', 'Response Time': '1', 'Resolution': '3.7'}),
-          _OptionItem(name: 'Samsung Odyssey G5 27-inch', values: {'Price': '4299000', 'Screen Size': '27', 'Refresh Rate': '165', 'Response Time': '1', 'Resolution': '3.7'}),
-          _OptionItem(name: 'ASUS TUF Gaming VG249Q1A', values: {'Price': '2499000', 'Screen Size': '23.8', 'Refresh Rate': '165', 'Response Time': '1', 'Resolution': '2.1'}),
+          _OptionItem(
+            name: 'LG UltraGear 27GP850-B',
+            values: {
+              'Price': '5999000',
+              'Screen Size': '27',
+              'Refresh Rate': '165',
+              'Response Time': '1',
+              'Resolution': '3.7',
+            },
+          ),
+          _OptionItem(
+            name: 'Samsung Odyssey G5 27-inch',
+            values: {
+              'Price': '4299000',
+              'Screen Size': '27',
+              'Refresh Rate': '165',
+              'Response Time': '1',
+              'Resolution': '3.7',
+            },
+          ),
+          _OptionItem(
+            name: 'ASUS TUF Gaming VG249Q1A',
+            values: {
+              'Price': '2499000',
+              'Screen Size': '23.8',
+              'Refresh Rate': '165',
+              'Response Time': '1',
+              'Resolution': '2.1',
+            },
+          ),
         ];
       default:
         return [
@@ -335,25 +959,70 @@ class _ManageSubcategoryScreenState
         case 'courses':
         case 'kursus':
           return [
-            _Suggestion(name: 'Instructor Experience', users: 8, unit: 'years', category: 'Popular'),
-            _Suggestion(name: 'Completion Rate', users: 5, unit: '%', category: 'Popular'),
-            _Suggestion(name: 'Certificate Included', users: 3, unit: 'yes/no', category: 'New'),
+            _Suggestion(
+              name: 'Instructor Experience',
+              users: 8,
+              unit: 'years',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Completion Rate',
+              users: 5,
+              unit: '%',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Certificate Included',
+              users: 3,
+              unit: 'yes/no',
+              category: 'New',
+            ),
           ];
         case 'certification':
         case 'certifications':
         case 'sertifikasi':
           return [
-            _Suggestion(name: 'Exam Retake Availability', users: 6, unit: 'yes/no', category: 'Popular'),
-            _Suggestion(name: 'Study Materials', users: 4, unit: 'items', category: 'Popular'),
-            _Suggestion(name: 'Pass Rate', users: 7, unit: '%', category: 'New'),
+            _Suggestion(
+              name: 'Exam Retake Availability',
+              users: 6,
+              unit: 'yes/no',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Study Materials',
+              users: 4,
+              unit: 'items',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Pass Rate',
+              users: 7,
+              unit: '%',
+              category: 'New',
+            ),
           ];
         case 'internship':
         case 'internships':
         case 'tempat magang':
           return [
-            _Suggestion(name: 'Mentorship Quality', users: 8, unit: 'scale 1-5', category: 'Popular'),
-            _Suggestion(name: 'Work Mode', users: 5, unit: 'onsite/hybrid/remote', category: 'Popular'),
-            _Suggestion(name: 'Hiring Opportunity', users: 6, unit: '%', category: 'New'),
+            _Suggestion(
+              name: 'Mentorship Quality',
+              users: 8,
+              unit: 'scale 1-5',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Work Mode',
+              users: 5,
+              unit: 'onsite/hybrid/remote',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Hiring Opportunity',
+              users: 6,
+              unit: '%',
+              category: 'New',
+            ),
           ];
       }
     }
@@ -363,42 +1032,117 @@ class _ManageSubcategoryScreenState
         case 'shoes':
         case 'sepatu':
           return [
-            _Suggestion(name: 'Durability', users: 8, unit: 'scale 1-5', category: 'Popular'),
-            _Suggestion(name: 'Grip', users: 6, unit: 'scale 1-5', category: 'Popular'),
-            _Suggestion(name: 'Material', users: 5, unit: 'material type', category: 'New'),
+            _Suggestion(
+              name: 'Durability',
+              users: 8,
+              unit: 'scale 1-5',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Grip',
+              users: 6,
+              unit: 'scale 1-5',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Material',
+              users: 5,
+              unit: 'material type',
+              category: 'New',
+            ),
           ];
         case 'bags':
         case 'bag':
         case 'tas':
           return [
-            _Suggestion(name: 'Water Resistance', users: 8, unit: 'scale 1-5', category: 'Popular'),
-            _Suggestion(name: 'Number of Compartments', users: 6, unit: 'count', category: 'Popular'),
-            _Suggestion(name: 'Laptop Compartment', users: 5, unit: 'yes/no', category: 'New'),
+            _Suggestion(
+              name: 'Water Resistance',
+              users: 8,
+              unit: 'scale 1-5',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Number of Compartments',
+              users: 6,
+              unit: 'count',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Laptop Compartment',
+              users: 5,
+              unit: 'yes/no',
+              category: 'New',
+            ),
           ];
         case 'tops':
         case 'top':
         case 'atasan':
         case 'atasan baju':
           return [
-            _Suggestion(name: 'Fit', users: 8, unit: 'regular/slim/oversized', category: 'Popular'),
-            _Suggestion(name: 'Breathability', users: 6, unit: 'scale 1-5', category: 'Popular'),
-            _Suggestion(name: 'Color Options', users: 5, unit: 'count', category: 'New'),
+            _Suggestion(
+              name: 'Fit',
+              users: 8,
+              unit: 'regular/slim/oversized',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Breathability',
+              users: 6,
+              unit: 'scale 1-5',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Color Options',
+              users: 5,
+              unit: 'count',
+              category: 'New',
+            ),
           ];
         case 'bottoms':
         case 'bottom':
         case 'bawahan':
           return [
-            _Suggestion(name: 'Stretchability', users: 8, unit: 'scale 1-5', category: 'Popular'),
-            _Suggestion(name: 'Fit', users: 6, unit: 'fit type', category: 'Popular'),
-            _Suggestion(name: 'Pocket Count', users: 5, unit: 'count', category: 'New'),
+            _Suggestion(
+              name: 'Stretchability',
+              users: 8,
+              unit: 'scale 1-5',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Fit',
+              users: 6,
+              unit: 'fit type',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Pocket Count',
+              users: 5,
+              unit: 'count',
+              category: 'New',
+            ),
           ];
         case 'watches':
         case 'watch':
         case 'jam tangan':
           return [
-            _Suggestion(name: 'Movement Type', users: 8, unit: 'quartz/automatic', category: 'Popular'),
-            _Suggestion(name: 'Battery Life', users: 6, unit: 'years', category: 'Popular'),
-            _Suggestion(name: 'Display Type', users: 5, unit: 'analog/digital', category: 'New'),
+            _Suggestion(
+              name: 'Movement Type',
+              users: 8,
+              unit: 'quartz/automatic',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Battery Life',
+              users: 6,
+              unit: 'years',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Display Type',
+              users: 5,
+              unit: 'analog/digital',
+              category: 'New',
+            ),
           ];
       }
     }
@@ -406,40 +1150,135 @@ class _ManageSubcategoryScreenState
     switch (_normalizedSubcategory) {
       case 'laptop':
         return [
-          _Suggestion(name: 'Battery Life', users: 8, unit: 'hours', category: 'Popular'),
-          _Suggestion(name: 'Screen Size', users: 7, unit: 'inches', category: 'Popular'),
-          _Suggestion(name: 'Warranty', users: 6, unit: 'months', category: 'Popular'),
-          _Suggestion(name: 'Display Resolution', users: 5, unit: 'pixels', category: 'New'),
+          _Suggestion(
+            name: 'Battery Life',
+            users: 8,
+            unit: 'hours',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Screen Size',
+            users: 7,
+            unit: 'inches',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Warranty',
+            users: 6,
+            unit: 'months',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Display Resolution',
+            users: 5,
+            unit: 'pixels',
+            category: 'New',
+          ),
         ];
       case 'smartphone':
         return [
-          _Suggestion(name: 'Display Size', users: 8, unit: 'inches', category: 'Popular'),
-          _Suggestion(name: 'Refresh Rate', users: 7, unit: 'Hz', category: 'Popular'),
-          _Suggestion(name: 'Water Resistance', users: 6, unit: 'IP rating', category: 'Popular'),
-          _Suggestion(name: 'Wireless Charging', users: 5, unit: 'yes/no', category: 'New'),
+          _Suggestion(
+            name: 'Display Size',
+            users: 8,
+            unit: 'inches',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Refresh Rate',
+            users: 7,
+            unit: 'Hz',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Water Resistance',
+            users: 6,
+            unit: 'IP rating',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Wireless Charging',
+            users: 5,
+            unit: 'yes/no',
+            category: 'New',
+          ),
         ];
       case 'tablet':
         return [
-          _Suggestion(name: 'Stylus Support', users: 8, unit: 'yes/no', category: 'Popular'),
-          _Suggestion(name: 'Screen Resolution', users: 7, unit: 'pixels', category: 'Popular'),
-          _Suggestion(name: 'Cellular Connectivity', users: 5, unit: 'yes/no', category: 'New'),
+          _Suggestion(
+            name: 'Stylus Support',
+            users: 8,
+            unit: 'yes/no',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Screen Resolution',
+            users: 7,
+            unit: 'pixels',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Cellular Connectivity',
+            users: 5,
+            unit: 'yes/no',
+            category: 'New',
+          ),
         ];
       case 'pc':
         return [
-          _Suggestion(name: 'GPU Score', users: 8, unit: 'benchmark points', category: 'Popular'),
-          _Suggestion(name: 'Power Supply', users: 6, unit: 'watts', category: 'Popular'),
-          _Suggestion(name: 'Upgradeability', users: 5, unit: 'scale 1-5', category: 'New'),
+          _Suggestion(
+            name: 'GPU Score',
+            users: 8,
+            unit: 'benchmark points',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Power Supply',
+            users: 6,
+            unit: 'watts',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Upgradeability',
+            users: 5,
+            unit: 'scale 1-5',
+            category: 'New',
+          ),
         ];
       case 'monitor':
         return [
-          _Suggestion(name: 'Panel Type', users: 8, unit: 'IPS/VA/OLED', category: 'Popular'),
-          _Suggestion(name: 'Adaptive Sync', users: 6, unit: 'yes/no', category: 'Popular'),
-          _Suggestion(name: 'HDR Support', users: 5, unit: 'yes/no', category: 'New'),
+          _Suggestion(
+            name: 'Panel Type',
+            users: 8,
+            unit: 'IPS/VA/OLED',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Adaptive Sync',
+            users: 6,
+            unit: 'yes/no',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'HDR Support',
+            users: 5,
+            unit: 'yes/no',
+            category: 'New',
+          ),
         ];
       default:
         return [
-          _Suggestion(name: 'Warranty', users: 5, unit: 'months', category: 'Popular'),
-          _Suggestion(name: 'Rating', users: 4, unit: 'scale 1-5', category: 'New'),
+          _Suggestion(
+            name: 'Warranty',
+            users: 5,
+            unit: 'months',
+            category: 'Popular',
+          ),
+          _Suggestion(
+            name: 'Rating',
+            users: 4,
+            unit: 'scale 1-5',
+            category: 'New',
+          ),
         ];
     }
   }
@@ -459,8 +1298,7 @@ class _ManageSubcategoryScreenState
   bool _showIncompleteOnly = false;
   bool _showAllOptions = false;
 
-  int get _incompleteCount =>
-      _options.where(_isIncomplete).length;
+  int get _incompleteCount => _options.where(_isIncomplete).length;
 
   int get _displayedOptionCount {
     if (_category.toLowerCase() == 'education' ||
@@ -482,21 +1320,13 @@ class _ManageSubcategoryScreenState
     return targetCount + _options.length - 3;
   }
 
-  int get _selectedSuggestionCount =>
-      _suggestedCriteria
-          .where(
-            (item) =>
-                item.category == _selectedSuggestionCategory,
-          )
-          .length;
+  int get _selectedSuggestionCount => _suggestedCriteria
+      .where((item) => item.category == _selectedSuggestionCategory)
+      .length;
 
-  List<_Suggestion> get _visibleSuggestions =>
-      _suggestedCriteria
-          .where(
-            (item) =>
-                item.category == _selectedSuggestionCategory,
-          )
-          .toList();
+  List<_Suggestion> get _visibleSuggestions => _suggestedCriteria
+      .where((item) => item.category == _selectedSuggestionCategory)
+      .toList();
 
   bool _isIncomplete(_OptionItem option) {
     return _criteria.any((criterion) {
@@ -504,9 +1334,7 @@ class _ManageSubcategoryScreenState
         return false;
       }
 
-      return (option.values[criterion.name] ?? '')
-          .trim()
-          .isEmpty;
+      return (option.values[criterion.name] ?? '').trim().isEmpty;
     });
   }
 
@@ -555,8 +1383,8 @@ class _ManageSubcategoryScreenState
   }
 
   void _selectSuggestionCategory(String category) {
-    final closesActive = _activeSuggestion != null &&
-        _activeSuggestion!.category != category;
+    final closesActive =
+        _activeSuggestion != null && _activeSuggestion!.category != category;
 
     setState(() {
       _selectedSuggestionCategory = category;
@@ -578,36 +1406,36 @@ class _ManageSubcategoryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildStatistics(),
-                    const SizedBox(height: 22),
-                    _buildCriteriaSection(),
-                    const SizedBox(height: 24),
-                    _buildSuggestionsSection(),
-                    const SizedBox(height: 24),
-                    _buildOptionsSection(),
-                  ],
+      backgroundColor: Colors.transparent,
+      body: MobileBackground(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildStatistics(),
+                      const SizedBox(height: 22),
+                      _buildCriteriaSection(),
+                      const SizedBox(height: 24),
+                      _buildSuggestionsSection(),
+                      const SizedBox(height: 24),
+                      _buildOptionsSection(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(
-        selectedIndex: 2,
-      ),
+      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
     );
   }
 
@@ -661,48 +1489,26 @@ class _ManageSubcategoryScreenState
   Widget _buildStatistics() {
     return Row(
       children: [
-        _statCard(
-          '${_criteria.length}',
-          'Criteria',
-          incomplete: false,
-        ),
+        _statCard('${_criteria.length}', 'Criteria', incomplete: false),
         const SizedBox(width: 8),
-        _statCard(
-          '$_displayedOptionCount',
-          'Options',
-          incomplete: false,
-        ),
+        _statCard('$_displayedOptionCount', 'Options', incomplete: false),
         const SizedBox(width: 8),
-        _statCard(
-          '$_incompleteCount',
-          'Incomplete',
-          incomplete: true,
-        ),
+        _statCard('$_incompleteCount', 'Incomplete', incomplete: true),
       ],
     );
   }
 
-  Widget _statCard(
-    String value,
-    String label, {
-    required bool incomplete,
-  }) {
+  Widget _statCard(String value, String label, {required bool incomplete}) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 14,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
         decoration: BoxDecoration(
           gradient: incomplete
               ? null
               : const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFA18DE1),
-                    Color(0xFF634A9E),
-                  ],
+                  colors: [Color(0xFFA18DE1), Color(0xFF634A9E)],
                 ),
           color: incomplete ? _yellow : null,
           borderRadius: BorderRadius.circular(17),
@@ -755,8 +1561,7 @@ class _ManageSubcategoryScreenState
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: _criteria.length,
-          gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 14,
@@ -783,10 +1588,7 @@ class _ManageSubcategoryScreenState
       decoration: BoxDecoration(
         color: const Color(0xFFE5E8F5),
         borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: Colors.white,
-          width: 1.3,
-        ),
+        border: Border.all(color: Colors.white, width: 1.3),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.13),
@@ -815,11 +1617,7 @@ class _ManageSubcategoryScreenState
                     ),
                   ],
                 ),
-                child: Icon(
-                  criterion.icon,
-                  color: _dark,
-                  size: 29,
-                ),
+                child: Icon(criterion.icon, color: _dark, size: 29),
               ),
               const Spacer(),
               Icon(
@@ -867,11 +1665,7 @@ class _ManageSubcategoryScreenState
       children: [
         Row(
           children: [
-            const Icon(
-              Icons.playlist_add_rounded,
-              color: _dark,
-              size: 23,
-            ),
+            const Icon(Icons.playlist_add_rounded, color: _dark, size: 23),
             const SizedBox(width: 7),
             Expanded(
               child: Text(
@@ -943,33 +1737,22 @@ class _ManageSubcategoryScreenState
 
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: _suggestionCard(
-              suggestion,
-              key: key,
-            ),
+            child: _suggestionCard(suggestion, key: key),
           );
         }),
         if (_visibleSuggestions.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 22,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
             decoration: BoxDecoration(
               color: const Color(0xFFF9F7FC),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: const Color(0xFFB4A5E8),
-              ),
+              border: Border.all(color: const Color(0xFFB4A5E8)),
             ),
             child: const Text(
               'No suggestions available in this category.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: _dark,
-                fontSize: 12,
-              ),
+              style: TextStyle(color: _dark, fontSize: 12),
             ),
           ),
       ],
@@ -987,17 +1770,11 @@ class _ManageSubcategoryScreenState
       borderRadius: BorderRadius.circular(20),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 6,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
           color: selected ? _dark : const Color(0xFFF4F0F7),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: _dark,
-            width: selected ? 0 : 0.9,
-          ),
+          border: Border.all(color: _dark, width: selected ? 0 : 0.9),
         ),
         child: Text(
           '$label · $count',
@@ -1011,12 +1788,8 @@ class _ManageSubcategoryScreenState
     );
   }
 
-  Widget _suggestionCard(
-    _Suggestion suggestion, {
-    Key? key,
-  }) {
-    final isSelected =
-        _activeSuggestion?.name == suggestion.name;
+  Widget _suggestionCard(_Suggestion suggestion, {Key? key}) {
+    final isSelected = _activeSuggestion?.name == suggestion.name;
 
     if (isSelected && _popoverUnitController != null) {
       return SizedBox(
@@ -1055,8 +1828,7 @@ class _ManageSubcategoryScreenState
               constraints: const BoxConstraints(minHeight: 52),
               padding: const EdgeInsets.fromLTRB(12, 7, 12, 7),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F2FA)
-                    .withValues(alpha: 0.55),
+                color: const Color(0xFFF5F2FA).withValues(alpha: 0.55),
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Row(
@@ -1174,9 +1946,7 @@ class _ManageSubcategoryScreenState
 
     final previousController = _popoverUnitController;
 
-    final controller = TextEditingController(
-      text: suggestion.unit,
-    );
+    final controller = TextEditingController(text: suggestion.unit);
 
     setState(() {
       _activeSuggestion = suggestion;
@@ -1195,27 +1965,22 @@ class _ManageSubcategoryScreenState
     final unit = _popoverUnitController?.text.trim() ?? '';
 
     if (unit.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter a unit.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter a unit.')));
       return;
     }
 
     final duplicate = _criteria.any(
       (criterion) =>
-          criterion.name.toLowerCase() ==
-          suggestion.name.toLowerCase(),
+          criterion.name.toLowerCase() == suggestion.name.toLowerCase(),
     );
 
     if (duplicate) {
       _closeSuggestionPopover();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This criterion already exists.'),
-        ),
+        const SnackBar(content: Text('This criterion already exists.')),
       );
 
       return;
@@ -1231,9 +1996,7 @@ class _ManageSubcategoryScreenState
     setState(() {
       _criteria.add(newCriterion);
 
-      _suggestedCriteria.removeWhere(
-        (item) => item.name == suggestion.name,
-      );
+      _suggestedCriteria.removeWhere((item) => item.name == suggestion.name);
 
       _activeSuggestion = null;
     });
@@ -1260,10 +2023,7 @@ class _ManageSubcategoryScreenState
       decoration: BoxDecoration(
         color: const Color(0xFFFCFAFD),
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: _dark,
-          width: 1,
-        ),
+        border: Border.all(color: _dark, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1386,16 +2146,10 @@ class _ManageSubcategoryScreenState
           TextField(
             controller: unitController,
             textInputAction: TextInputAction.done,
-            style: const TextStyle(
-              color: _dark,
-              fontSize: 12,
-            ),
+            style: const TextStyle(color: _dark, fontSize: 12),
             decoration: InputDecoration(
               hintText: 'e.g. hours, GB, years',
-              hintStyle: const TextStyle(
-                color: _sheetHint,
-                fontSize: 12,
-              ),
+              hintStyle: const TextStyle(color: _sheetHint, fontSize: 12),
               filled: true,
               fillColor: const Color(0xFFF0EFF8),
               isDense: true,
@@ -1405,27 +2159,18 @@ class _ManageSubcategoryScreenState
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: _dark,
-                  width: 1,
-                ),
+                borderSide: const BorderSide(color: _dark, width: 1),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(
-                  color: _dark,
-                  width: 1.4,
-                ),
+                borderSide: const BorderSide(color: _dark, width: 1.4),
               ),
             ),
           ),
           const SizedBox(height: 9),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
               color: _yellow,
               borderRadius: BorderRadius.circular(18),
@@ -1463,13 +2208,8 @@ class _ManageSubcategoryScreenState
                     onPressed: onCancel,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: _dark,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      side: const BorderSide(
-                        color: _dark,
-                        width: 1,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      side: const BorderSide(color: _dark, width: 1),
                       shape: const StadiumBorder(),
                     ),
                     child: const Text(
@@ -1491,9 +2231,7 @@ class _ManageSubcategoryScreenState
                     style: FilledButton.styleFrom(
                       backgroundColor: _dark,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       shape: const StadiumBorder(),
                     ),
                     child: const Text(
@@ -1515,10 +2253,7 @@ class _ManageSubcategoryScreenState
 
   Widget _suggestedBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 9,
-        vertical: 2,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 2),
       decoration: BoxDecoration(
         color: const Color(0xFFDCD5FF),
         borderRadius: BorderRadius.circular(20),
@@ -1553,20 +2288,14 @@ class _ManageSubcategoryScreenState
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: color,
-              size: 16,
-            ),
+            Icon(icon, color: color, size: 16),
             const SizedBox(width: 5),
             Flexible(
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: label == 'Benefit'
-                      ? const Color(0xFF246C32)
-                      : _orange,
+                  color: label == 'Benefit' ? const Color(0xFF246C32) : _orange,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                 ),
@@ -1687,10 +2416,7 @@ class _ManageSubcategoryScreenState
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: 0.82),
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(
-              color: Colors.white,
-              width: 1.3,
-            ),
+            border: Border.all(color: Colors.white, width: 1.3),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.08),
@@ -1701,14 +2427,11 @@ class _ManageSubcategoryScreenState
           ),
           child: Column(
             children: [
-              for (final option in _optionsToDisplay)
-                _optionRow(option),
+              for (final option in _optionsToDisplay) _optionRow(option),
               if (_visibleOptions.isEmpty)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 18),
-                  child: Text(
-                    'No options match this filter.',
-                  ),
+                  child: Text('No options match this filter.'),
                 ),
               if (_visibleOptions.length > 3) ...[
                 const Divider(height: 22),
@@ -1733,10 +2456,7 @@ class _ManageSubcategoryScreenState
           ),
         ),
         const SizedBox(height: 14),
-        _primaryButton(
-          label: '+ Add Option',
-          onPressed: _showAddOptionDialog,
-        ),
+        _primaryButton(label: '+ Add Option', onPressed: _showAddOptionDialog),
       ],
     );
   }
@@ -1801,11 +2521,7 @@ class _ManageSubcategoryScreenState
               color: const Color(0xFFE5E3F7),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              icon,
-              color: _purple,
-              size: 21,
-            ),
+            child: Icon(icon, color: _purple, size: 21),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -1823,9 +2539,7 @@ class _ManageSubcategoryScreenState
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  incomplete
-                      ? 'Incomplete values'
-                      : 'All values complete',
+                  incomplete ? 'Incomplete values' : 'All values complete',
                   style: AppTypography.extraSmallSemibold.copyWith(
                     fontSize: 9,
                     color: incomplete ? _orange : _green,
@@ -1836,14 +2550,8 @@ class _ManageSubcategoryScreenState
           ),
           IconButton(
             tooltip: 'Edit option',
-            onPressed: () => _showAddOptionDialog(
-              existing: option,
-            ),
-            icon: const Icon(
-              Icons.edit_outlined,
-              color: _dark,
-              size: 19,
-            ),
+            onPressed: () => _showAddOptionDialog(existing: option),
+            icon: const Icon(Icons.edit_outlined, color: _dark, size: 19),
           ),
         ],
       ),
@@ -1860,10 +2568,7 @@ class _ManageSubcategoryScreenState
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 13,
-          vertical: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
         decoration: BoxDecoration(
           color: selected
               ? (selectedBackground ?? _dark)
@@ -1873,9 +2578,7 @@ class _ManageSubcategoryScreenState
         child: Text(
           label,
           style: AppTypography.extraSmallSemibold.copyWith(
-            color: selected
-                ? (selectedTextColor ?? Colors.white)
-                : _dark,
+            color: selected ? (selectedTextColor ?? Colors.white) : _dark,
             fontSize: 10,
           ),
         ),
@@ -1887,10 +2590,7 @@ class _ManageSubcategoryScreenState
   // FIGMA-STYLE BOTTOM SHEET HELPERS
   // ============================================================
 
-  Widget _sheetHeading({
-    required String title,
-    required String subtitle,
-  }) {
+  Widget _sheetHeading({required String title, required String subtitle}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1966,17 +2666,11 @@ class _ManageSubcategoryScreenState
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: borderColor,
-            width: missing ? 1.3 : 1,
-          ),
+          borderSide: BorderSide(color: borderColor, width: missing ? 1.3 : 1),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: Color(0xFFDFE0E8),
-            width: 1,
-          ),
+          borderSide: const BorderSide(color: Color(0xFFDFE0E8), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -2081,10 +2775,7 @@ class _ManageSubcategoryScreenState
             child: Text(
               cancelLabel,
               maxLines: 1,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -2104,10 +2795,7 @@ class _ManageSubcategoryScreenState
               saveLabel,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -2136,9 +2824,7 @@ class _ManageSubcategoryScreenState
           child: Container(
             decoration: const BoxDecoration(
               color: _sheetBackground,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -2147,10 +2833,7 @@ class _ManageSubcategoryScreenState
                   padding: const EdgeInsets.fromLTRB(28, 21, 25, 0),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: _sheetHeading(
-                      title: title,
-                      subtitle: subtitle,
-                    ),
+                    child: _sheetHeading(title: title, subtitle: subtitle),
                   ),
                 ),
                 Flexible(
@@ -2195,125 +2878,129 @@ class _ManageSubcategoryScreenState
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black54,
       builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            return _sheetFrame(
-              sheetContext: sheetContext,
-              title: 'Add Criteria',
-              subtitle: '$_category · ${widget.subcategory}',
-              maxHeightFactor: 0.78,
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 11,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _yellow,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          Icons.lock_outline_rounded,
-                          color: Color(0xFF9B5700),
-                          size: 20,
-                        ),
-                        const SizedBox(width: 9),
-                        const Expanded(
-                          child: Text(
-                            'Criteria cannot be edited after saving. '
-                            'Please check the name, type and unit first.',
-                            style: TextStyle(
-                              color: Color(0xFF80500C),
-                              fontSize: 10,
-                              height: 1.35,
+        return _SheetControllerOwner(
+          controllers: [nameController, unitController],
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              return _sheetFrame(
+                sheetContext: sheetContext,
+                title: 'Add Criteria',
+                subtitle: '$_category · ${widget.subcategory}',
+                maxHeightFactor: 0.78,
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 11,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _yellow,
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.lock_outline_rounded,
+                            color: Color(0xFF9B5700),
+                            size: 20,
+                          ),
+                          const SizedBox(width: 9),
+                          const Expanded(
+                            child: Text(
+                              'Criteria cannot be edited after saving. '
+                              'Please check the name, type and unit first.',
+                              style: TextStyle(
+                                color: Color(0xFF80500C),
+                                fontSize: 10,
+                                height: 1.35,
+                              ),
                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 17),
+                    _sheetFieldLabel('Criteria Name'),
+                    const SizedBox(height: 6),
+                    _sheetTextField(
+                      controller: nameController,
+                      hintText: 'Enter criteria name',
+                      textCapitalization: TextCapitalization.words,
+                    ),
+                    const SizedBox(height: 14),
+                    _sheetFieldLabel('Type'),
+                    const SizedBox(height: 7),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _criterionTypeCard(
+                            type: 'Benefit',
+                            selected: selectedType == 'Benefit',
+                            onTap: () {
+                              setSheetState(() {
+                                selectedType = 'Benefit';
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _criterionTypeCard(
+                            type: 'Cost',
+                            selected: selectedType == 'Cost',
+                            onTap: () {
+                              setSheetState(() {
+                                selectedType = 'Cost';
+                              });
+                            },
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 17),
-                  _sheetFieldLabel('Criteria Name'),
-                  const SizedBox(height: 6),
-                  _sheetTextField(
-                    controller: nameController,
-                    hintText: 'Enter criteria name',
-                    textCapitalization: TextCapitalization.words,
-                  ),
-                  const SizedBox(height: 14),
-                  _sheetFieldLabel('Type'),
-                  const SizedBox(height: 7),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _criterionTypeCard(
-                          type: 'Benefit',
-                          selected: selectedType == 'Benefit',
-                          onTap: () {
-                            setSheetState(() {
-                              selectedType = 'Benefit';
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _criterionTypeCard(
-                          type: 'Cost',
-                          selected: selectedType == 'Cost',
-                          onTap: () {
-                            setSheetState(() {
-                              selectedType = 'Cost';
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  _sheetFieldLabel('Unit'),
-                  const SizedBox(height: 6),
-                  _sheetTextField(
-                    controller: unitController,
-                    hintText: 'e.g. hours, GB, years',
-                  ),
-                ],
-              ),
-              footer: _sheetActionButtons(
-                cancelLabel: 'Cancel',
-                saveLabel: 'Save Criteria',
-                onCancel: () => Navigator.pop(sheetContext),
-                onSave: () {
-                  final name = nameController.text.trim();
-                  final unit = unitController.text.trim();
-
-                  if (name.isEmpty || unit.isEmpty) return;
-
-                  Navigator.pop(
-                    sheetContext,
-                    _Criterion(
-                      name: name,
-                      type: selectedType,
-                      unit: unit,
-                      icon: _iconForCriterion(name),
+                    const SizedBox(height: 14),
+                    _sheetFieldLabel('Unit'),
+                    const SizedBox(height: 6),
+                    _sheetTextField(
+                      controller: unitController,
+                      hintText: 'e.g. hours, GB, years',
                     ),
-                  );
-                },
-              ),
-            );
-          },
+                  ],
+                ),
+                footer: _sheetActionButtons(
+                  cancelLabel: 'Cancel',
+                  saveLabel: 'Save Criteria',
+                  onCancel: () {
+                    FocusScope.of(sheetContext).unfocus();
+                    Navigator.pop(sheetContext);
+                  },
+                  onSave: () {
+                    final name = nameController.text.trim();
+                    final unit = unitController.text.trim();
+
+                    if (name.isEmpty || unit.isEmpty) return;
+
+                    FocusScope.of(sheetContext).unfocus();
+                    Navigator.pop(
+                      sheetContext,
+                      _Criterion(
+                        name: name,
+                        type: selectedType,
+                        unit: unit,
+                        icon: _iconForCriterion(name),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         );
       },
     );
-
-    nameController.dispose();
-    unitController.dispose();
 
     if (result == null || !mounted) return;
 
@@ -2323,9 +3010,7 @@ class _ManageSubcategoryScreenState
 
     if (duplicate) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('This criterion already exists.'),
-        ),
+        const SnackBar(content: Text('This criterion already exists.')),
       );
       return;
     }
@@ -2339,12 +3024,8 @@ class _ManageSubcategoryScreenState
   // ADD / EDIT OPTION BOTTOM SHEET
   // ============================================================
 
-  Future<void> _showAddOptionDialog({
-    _OptionItem? existing,
-  }) async {
-    final nameController = TextEditingController(
-      text: existing?.name ?? '',
-    );
+  Future<void> _showAddOptionDialog({_OptionItem? existing}) async {
+    final nameController = TextEditingController(text: existing?.name ?? '');
 
     final controllers = <String, TextEditingController>{
       for (final criterion in _criteria)
@@ -2353,9 +3034,7 @@ class _ManageSubcategoryScreenState
         ),
     };
 
-    final unavailable = <String>{
-      ...?existing?.unavailable,
-    };
+    final unavailable = <String>{...?existing?.unavailable};
 
     final result = await showModalBottomSheet<_OptionItem>(
       context: context,
@@ -2364,218 +3043,217 @@ class _ManageSubcategoryScreenState
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black54,
       builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (context, setSheetState) {
-            final missingCriteria = existing == null
-                ? <String>{}
-                : _criteria
-                    .where(
-                      (criterion) =>
-                          !unavailable.contains(criterion.name) &&
-                          (controllers[criterion.name]?.text.trim().isEmpty ??
-                              true),
-                    )
-                    .map((criterion) => criterion.name)
-                    .toSet();
+        return _SheetControllerOwner(
+          controllers: [nameController, ...controllers.values],
+          child: StatefulBuilder(
+            builder: (context, setSheetState) {
+              final missingCriteria = existing == null
+                  ? <String>{}
+                  : _criteria
+                        .where(
+                          (criterion) =>
+                              !unavailable.contains(criterion.name) &&
+                              (controllers[criterion.name]?.text
+                                      .trim()
+                                      .isEmpty ??
+                                  true),
+                        )
+                        .map((criterion) => criterion.name)
+                        .toSet();
 
-            return _sheetFrame(
-              sheetContext: sheetContext,
-              title: existing == null ? 'Add Option' : 'Edit Option',
-              subtitle: existing == null
-                  ? '${widget.subcategory} · $_category'
-                  : '${existing.name} · ${widget.subcategory}',
-              maxHeightFactor: 0.90,
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sheetFieldLabel('Option Name'),
-                  const SizedBox(height: 6),
-                  _sheetTextField(
-                    controller: nameController,
-                    hintText: 'e.g ASUS Vivobook 14',
-                    textCapitalization: TextCapitalization.words,
-                  ),
-                  if (existing != null) ...[
-                    const SizedBox(height: 7),
-                    Text(
-                      'The values below follow the criteria of '
-                      '${widget.subcategory}. Fill each one, or mark it as '
-                      'Not available.',
-                      style: const TextStyle(
-                        color: Color(0xFF929097),
-                        fontSize: 10,
-                        height: 1.3,
-                      ),
+              return _sheetFrame(
+                sheetContext: sheetContext,
+                title: existing == null ? 'Add Option' : 'Edit Option',
+                subtitle: existing == null
+                    ? '${widget.subcategory} · $_category'
+                    : '${existing.name} · ${widget.subcategory}',
+                maxHeightFactor: 0.90,
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _sheetFieldLabel('Option Name'),
+                    const SizedBox(height: 6),
+                    _sheetTextField(
+                      controller: nameController,
+                      hintText: 'e.g ASUS Vivobook 14',
+                      textCapitalization: TextCapitalization.words,
                     ),
-                  ],
-                  const SizedBox(height: 14),
-                  for (final criterion in _criteria) ...[
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _sheetFieldLabel(
-                            '${criterion.name} (${criterion.unit})',
-                          ),
+                    if (existing != null) ...[
+                      const SizedBox(height: 7),
+                      Text(
+                        'The values below follow the criteria of '
+                        '${widget.subcategory}. Fill each one, or mark it as '
+                        'Not available.',
+                        style: const TextStyle(
+                          color: Color(0xFF929097),
+                          fontSize: 10,
+                          height: 1.3,
                         ),
-                        const SizedBox(width: 4),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: 19,
-                              height: 22,
-                              child: Checkbox(
-                                value: unavailable.contains(criterion.name),
-                                onChanged: (checked) {
-                                  setSheetState(() {
-                                    if (checked == true) {
-                                      unavailable.add(criterion.name);
-                                      controllers[criterion.name]!.clear();
-                                    } else {
-                                      unavailable.remove(criterion.name);
-                                    }
-                                  });
-                                },
-                                activeColor: _dark,
-                                side: const BorderSide(
-                                  color: Color(0xFF92939A),
-                                  width: 1.2,
+                      ),
+                    ],
+                    const SizedBox(height: 14),
+                    for (final criterion in _criteria) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _sheetFieldLabel(
+                              '${criterion.name} (${criterion.unit})',
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 19,
+                                height: 22,
+                                child: Checkbox(
+                                  value: unavailable.contains(criterion.name),
+                                  onChanged: (checked) {
+                                    setSheetState(() {
+                                      if (checked == true) {
+                                        unavailable.add(criterion.name);
+                                        controllers[criterion.name]!.clear();
+                                      } else {
+                                        unavailable.remove(criterion.name);
+                                      }
+                                    });
+                                  },
+                                  activeColor: _dark,
+                                  side: const BorderSide(
+                                    color: Color(0xFF92939A),
+                                    width: 1.2,
+                                  ),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  visualDensity: VisualDensity.compact,
                                 ),
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                                visualDensity: VisualDensity.compact,
                               ),
+                              const SizedBox(width: 4),
+                              const Text(
+                                'Not Available',
+                                style: TextStyle(
+                                  color: Color(0xFF252329),
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      _sheetTextField(
+                        controller: controllers[criterion.name]!,
+                        hintText: unavailable.contains(criterion.name)
+                            ? 'Not Available'
+                            : 'Enter ${criterion.name}',
+                        enabled: !unavailable.contains(criterion.name),
+                        missing: missingCriteria.contains(criterion.name),
+                        keyboardType: TextInputType.text,
+                        onChanged: (_) => setSheetState(() {}),
+                      ),
+                      if (missingCriteria.contains(criterion.name)) ...[
+                        const SizedBox(height: 5),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: _orange,
+                              size: 15,
                             ),
                             const SizedBox(width: 4),
-                            const Text(
-                              'Not Available',
-                              style: TextStyle(
-                                color: Color(0xFF252329),
-                                fontSize: 9,
-                                fontWeight: FontWeight.w400,
+                            Expanded(
+                              child: Text(
+                                'Missing. Fill it in or mark it as Not available.',
+                                style: const TextStyle(
+                                  color: _orange,
+                                  fontSize: 10,
+                                  height: 1.25,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 4),
-                    _sheetTextField(
-                      controller: controllers[criterion.name]!,
-                      hintText: unavailable.contains(criterion.name)
-                          ? 'Not Available'
-                          : 'Enter ${criterion.name}',
-                      enabled: !unavailable.contains(criterion.name),
-                      missing: missingCriteria.contains(criterion.name),
-                      keyboardType: TextInputType.text,
-                      onChanged: (_) => setSheetState(() {}),
-                    ),
-                    if (missingCriteria.contains(criterion.name)) ...[
-                      const SizedBox(height: 5),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.info_outline_rounded,
-                            color: _orange,
-                            size: 15,
+                      const SizedBox(height: 12),
+                    ],
+                    if (existing != null) ...[
+                      const SizedBox(height: 1),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 36,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            FocusScope.of(sheetContext).unfocus();
+                            Navigator.pop(
+                              sheetContext,
+                              _OptionItem.delete(existing.name),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 17,
                           ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              'Missing. Fill it in or mark it as Not available.',
-                              style: const TextStyle(
-                                color: _orange,
-                                fontSize: 10,
-                                height: 1.25,
-                              ),
+                          label: const Text(
+                            'Delete Option',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ],
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red, width: 1),
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                          ),
+                        ),
                       ),
+                      const SizedBox(height: 8),
                     ],
-                    const SizedBox(height: 12),
                   ],
-                  if (existing != null) ...[
-                    const SizedBox(height: 1),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 36,
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          Navigator.pop(
-                            sheetContext,
-                            _OptionItem.delete(existing.name),
-                          );
+                ),
+                footer: _sheetActionButtons(
+                  cancelLabel: 'Cancel',
+                  saveLabel: 'Save Option',
+                  onCancel: () {
+                    FocusScope.of(sheetContext).unfocus();
+                    Navigator.pop(sheetContext);
+                  },
+                  onSave: () {
+                    final name = nameController.text.trim();
+
+                    if (name.isEmpty) return;
+
+                    FocusScope.of(sheetContext).unfocus();
+                    Navigator.pop(
+                      sheetContext,
+                      _OptionItem(
+                        name: name,
+                        values: {
+                          for (final criterion in _criteria)
+                            criterion.name: controllers[criterion.name]!.text
+                                .trim(),
                         },
-                        icon: const Icon(
-                          Icons.delete_outline_rounded,
-                          size: 17,
-                        ),
-                        label: const Text(
-                          'Delete Option',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
-                          side: const BorderSide(
-                            color: Colors.red,
-                            width: 1,
-                          ),
-                          shape: const StadiumBorder(),
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                        ),
+                        unavailable: Set<String>.from(unavailable),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ],
-              ),
-              footer: _sheetActionButtons(
-                cancelLabel: 'Cancel',
-                saveLabel: 'Save Option',
-                onCancel: () => Navigator.pop(sheetContext),
-                onSave: () {
-                  final name = nameController.text.trim();
-
-                  if (name.isEmpty) return;
-
-                  Navigator.pop(
-                    sheetContext,
-                    _OptionItem(
-                      name: name,
-                      values: {
-                        for (final criterion in _criteria)
-                          criterion.name:
-                              controllers[criterion.name]!.text.trim(),
-                      },
-                      unavailable: Set<String>.from(unavailable),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         );
       },
     );
-
-    nameController.dispose();
-
-    for (final controller in controllers.values) {
-      controller.dispose();
-    }
 
     if (result == null || !mounted) return;
 
     setState(() {
       if (result.isDeleted) {
-        _options.removeWhere(
-          (option) => option.name == result.name,
-        );
+        _options.removeWhere((option) => option.name == result.name);
       } else {
         final index = existing == null ? -1 : _options.indexOf(existing);
 
@@ -2619,10 +3297,7 @@ class _ManageSubcategoryScreenState
         ),
         child: Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
         ),
       ),
     );
@@ -2632,6 +3307,29 @@ class _ManageSubcategoryScreenState
 // ============================================================
 // DATA MODELS
 // ============================================================
+
+class _SheetControllerOwner extends StatefulWidget {
+  const _SheetControllerOwner({required this.controllers, required this.child});
+
+  final List<TextEditingController> controllers;
+  final Widget child;
+
+  @override
+  State<_SheetControllerOwner> createState() => _SheetControllerOwnerState();
+}
+
+class _SheetControllerOwnerState extends State<_SheetControllerOwner> {
+  @override
+  void dispose() {
+    for (final controller in widget.controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
+}
 
 class _Criterion {
   const _Criterion({
@@ -2670,11 +3368,7 @@ class _OptionItem {
   }) : unavailable = unavailable ?? {};
 
   factory _OptionItem.delete(String name) {
-    return _OptionItem(
-      name: name,
-      values: const {},
-      isDeleted: true,
-    );
+    return _OptionItem(name: name, values: const {}, isDeleted: true);
   }
 
   final String name;
@@ -2688,9 +3382,7 @@ class _OptionItem {
 // ============================================================
 
 class _DashedRoundedBorderPainter extends CustomPainter {
-  const _DashedRoundedBorderPainter({
-    required this.color,
-  });
+  const _DashedRoundedBorderPainter({required this.color});
 
   final Color color;
 
@@ -2700,10 +3392,7 @@ class _DashedRoundedBorderPainter extends CustomPainter {
 
     final path = Path()
       ..addRRect(
-        RRect.fromRectAndRadius(
-          rect.deflate(1),
-          const Radius.circular(18),
-        ),
+        RRect.fromRectAndRadius(rect.deflate(1), const Radius.circular(18)),
       );
 
     final paint = Paint()
@@ -2716,15 +3405,9 @@ class _DashedRoundedBorderPainter extends CustomPainter {
       var distance = 0.0;
 
       while (distance < metric.length) {
-        final end = math.min(
-          distance + 7,
-          metric.length,
-        ).toDouble();
+        final end = math.min(distance + 7, metric.length).toDouble();
 
-        canvas.drawPath(
-          metric.extractPath(distance, end),
-          paint,
-        );
+        canvas.drawPath(metric.extractPath(distance, end), paint);
 
         distance += 12;
       }
@@ -2732,9 +3415,7 @@ class _DashedRoundedBorderPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(
-    covariant _DashedRoundedBorderPainter oldDelegate,
-  ) {
+  bool shouldRepaint(covariant _DashedRoundedBorderPainter oldDelegate) {
     return oldDelegate.color != color;
   }
 }

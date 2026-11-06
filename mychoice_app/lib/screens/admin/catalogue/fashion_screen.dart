@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 import 'manage_subcategory_screen.dart';
 
 class FashionScreen extends StatelessWidget {
@@ -15,112 +16,112 @@ class FashionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        _statCard('5', 'Subcategories'),
-                        const SizedBox(width: 8),
-                        _statCard('19', 'Criteria'),
-                        const SizedBox(width: 8),
-                        _statCard('15', 'Options'),
-                      ],
-                    ),
-                    const SizedBox(height: 22),
-                    Text(
-                      'Subcategories',
-                      style: AppTypography.sectionInnerTitle.copyWith(
-                        color: _darkPurple,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
+      backgroundColor: Colors.transparent,
+      body: MobileBackground(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _statCard('5', 'Subcategories'),
+                          const SizedBox(width: 8),
+                          _statCard('19', 'Criteria'),
+                          const SizedBox(width: 8),
+                          _statCard('15', 'Options'),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 22),
+                      Text(
+                        'Subcategories',
+                        style: AppTypography.sectionInnerTitle.copyWith(
+                          color: _darkPurple,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
-                    // 1. SHOES
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Shoes',
-                      icon: Icons.directions_walk_rounded,
-                      criteriaTags: const [
-                        'Price',
-                        'Rating',
-                        'Comfort',
-                        'Weight',
-                      ],
-                    ),
+                      // 1. SHOES
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Shoes',
+                        icon: Icons.directions_walk_rounded,
+                        criteriaTags: const [
+                          'Price',
+                          'Rating',
+                          'Comfort',
+                          'Weight',
+                        ],
+                      ),
 
-                    // 2. BAGS
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Bags',
-                      icon: Icons.shopping_bag_outlined,
-                      criteriaTags: const [
-                        'Price',
-                        'Rating',
-                        'Capacity',
-                        'Weight',
-                      ],
-                    ),
+                      // 2. BAGS
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Bags',
+                        icon: Icons.shopping_bag_outlined,
+                        criteriaTags: const [
+                          'Price',
+                          'Rating',
+                          'Capacity',
+                          'Weight',
+                        ],
+                      ),
 
-                    // 3. TOPS
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Tops',
-                      icon: Icons.checkroom_rounded,
-                      criteriaTags: const [
-                        'Price',
-                        'Rating',
-                        'Fabric Quality',
-                      ],
-                    ),
+                      // 3. TOPS
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Tops',
+                        icon: Icons.checkroom_rounded,
+                        criteriaTags: const [
+                          'Price',
+                          'Rating',
+                          'Fabric Quality',
+                        ],
+                      ),
 
-                    // 4. BOTTOMS
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Bottoms',
-                      icon: Icons.style_outlined,
-                      criteriaTags: const [
-                        'Price',
-                        'Rating',
-                        'Comfort',
-                        'Fabric Quality',
-                      ],
-                    ),
+                      // 4. BOTTOMS
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Bottoms',
+                        icon: Icons.style_outlined,
+                        criteriaTags: const [
+                          'Price',
+                          'Rating',
+                          'Comfort',
+                          'Fabric Quality',
+                        ],
+                      ),
 
-                    // 5. WATCHES
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Watches',
-                      icon: Icons.watch_outlined,
-                      criteriaTags: const [
-                        'Price',
-                        'Rating',
-                        'Water Resistance',
-                        'Warranty',
-                      ],
-                    ),
-                  ],
+                      // 5. WATCHES
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Watches',
+                        icon: Icons.watch_outlined,
+                        criteriaTags: const [
+                          'Price',
+                          'Rating',
+                          'Water Resistance',
+                          'Warranty',
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(
-        selectedIndex: 2,
-      ),
+      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
     );
   }
 
@@ -171,20 +172,13 @@ class FashionScreen extends StatelessWidget {
   Widget _statCard(String value, String label) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 20,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0, 0.55, 1.0],
-            colors: [
-              Color(0xFF7B4378),
-              Color(0xFF9783D6),
-              Color(0xFFB4A8F6),
-            ],
+            colors: [Color(0xFF7B4378), Color(0xFF9783D6), Color(0xFFB4A8F6)],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -284,14 +278,10 @@ class FashionScreen extends StatelessWidget {
                                   painter: _ShoeIconPainter(color: _plum),
                                 )
                               : name == 'Bottoms'
-                                  ? const CustomPaint(
-                                      painter: _PantsIconPainter(color: _plum),
-                                    )
-                                  : Icon(
-                                      icon,
-                                      color: _plum,
-                                      size: 24,
-                                    ),
+                              ? const CustomPaint(
+                                  painter: _PantsIconPainter(color: _plum),
+                                )
+                              : Icon(icon, color: _plum, size: 24),
                         ),
                       ),
                     ),
@@ -351,9 +341,7 @@ class FashionScreen extends StatelessWidget {
                           foregroundColor: _plum,
                           elevation: 3,
                           shadowColor: Colors.black.withValues(alpha: 0.35),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -369,10 +357,7 @@ class FashionScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 6),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 18,
-                            ),
+                            Icon(Icons.arrow_forward_rounded, size: 18),
                           ],
                         ),
                       ),
@@ -425,7 +410,8 @@ class FashionScreen extends StatelessWidget {
           }
           final hidden = tags.length - visible;
           if (hidden > 0) {
-            total += (visible > 0 ? _tagSpacing : 0) +
+            total +=
+                (visible > 0 ? _tagSpacing : 0) +
                 _tagWidth(context, '+$hidden');
           }
           return total;
@@ -470,11 +456,7 @@ class FashionScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        text,
-        maxLines: 1,
-        style: _tagTextStyle(),
-      ),
+      child: Text(text, maxLines: 1, style: _tagTextStyle()),
     );
   }
 

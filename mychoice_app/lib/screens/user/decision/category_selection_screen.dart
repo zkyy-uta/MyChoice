@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/category_selection/presentation/providers/category_provider.dart';
 import 'package:mychoice_app/features/alternative_management/presentation/providers/alternative_provider.dart';
@@ -21,6 +22,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     super.initState();
     // Load categories on initialization
     Future.microtask(() {
+      if (!mounted) return;
       context.read<CategoryProvider>().loadCategories();
     });
   }
@@ -29,6 +31,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: const MobileAppBarBackground(),
         title: const Text('Select Category'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

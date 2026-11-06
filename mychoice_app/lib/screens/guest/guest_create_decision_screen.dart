@@ -263,10 +263,7 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.textPurple,
-            ),
+            icon: const Icon(Icons.arrow_back, color: AppColors.textPurple),
           ),
           title: Text(
             'Create New Decision',
@@ -284,115 +281,119 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            // Subtitle
-            Text(
-              'Make a Decision: Select the options you want to compare and set your priorities based on your needs.',
-              style: AppTypography.small.copyWith(
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.xxl),
-
-            // 1. Choose Category
-            _buildSectionTitle('Choose Category'),
-            const SizedBox(height: AppSpacing.md),
-            _buildCategoryCards(),
-            const SizedBox(height: AppSpacing.xxl),
-
-            // 2. Choose Subcategory
-            if (_selectedCategory != null) ...[
-              _buildSectionTitle('Choose Subcategory'),
-              const SizedBox(height: AppSpacing.md),
-              _buildSubcategoryChips(),
-              const SizedBox(height: AppSpacing.xxl),
-            ],
-
-            // 3. Options Compared
-            _buildSectionTitle('Options Compared'),
-            const SizedBox(height: AppSpacing.md),
-            _buildOptionsSection(),
-            const SizedBox(height: AppSpacing.xxl),
-
-            // 4. Criteria
-            _buildSectionTitle('Criteria'),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Suggested criteria for comparing your options:',
-              style: AppTypography.small.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildCriteriaCheckboxes(),
-            const SizedBox(height: AppSpacing.md),
-            SizedBox(
-              width: double.infinity,
-              height: 44,
-              child: OutlinedButton(
-                onPressed: _showAddCriteriaDialog,
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.border),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-                  ),
+              // Subtitle
+              Text(
+                'Make a Decision: Select the options you want to compare and set your priorities based on your needs.',
+                style: AppTypography.small.copyWith(
+                  color: AppColors.textSecondary,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.add,
-                      size: 20,
-                      color: AppColors.textPurple,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Add Criteria',
-                      style: AppTypography.buttonMedium.copyWith(
-                        color: AppColors.textPurple,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: AppSpacing.xxl),
+
+              // 1. Choose Category
+              _buildSectionTitle('Choose Category'),
+              const SizedBox(height: AppSpacing.md),
+              _buildCategoryCards(),
+              const SizedBox(height: AppSpacing.xxl),
+
+              // 2. Choose Subcategory
+              if (_selectedCategory != null) ...[
+                _buildSectionTitle('Choose Subcategory'),
+                const SizedBox(height: AppSpacing.md),
+                _buildSubcategoryChips(),
+                const SizedBox(height: AppSpacing.xxl),
+              ],
+
+              // 3. Options Compared
+              _buildSectionTitle('Options Compared'),
+              const SizedBox(height: AppSpacing.md),
+              _buildOptionsSection(),
+              const SizedBox(height: AppSpacing.xxl),
+
+              // 4. Criteria
+              _buildSectionTitle('Criteria'),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Suggested criteria for comparing your options:',
+                style: AppTypography.small.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              _buildCriteriaCheckboxes(),
+              const SizedBox(height: AppSpacing.md),
+              SizedBox(
+                width: double.infinity,
+                height: 44,
+                child: OutlinedButton(
+                  onPressed: _showAddCriteriaDialog,
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.buttonRadius,
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xxl),
-
-            // 5. Set Priorities
-            _buildSectionTitle('Set Priorities'),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Determine how important each criterion is. The total weight must add up to 100%',
-              style: AppTypography.small.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            _buildPrioritySliders(),
-            const SizedBox(height: AppSpacing.md),
-            _buildTotalPriority(),
-            const SizedBox(height: AppSpacing.xxl),
-
-            // 6. Make a Decision Button
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _makeDecision,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryDark,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.add,
+                        size: 20,
+                        color: AppColors.textPurple,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Add Criteria',
+                        style: AppTypography.buttonMedium.copyWith(
+                          color: AppColors.textPurple,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Text(
-                  'Make a Decision',
-                  style: AppTypography.buttonLarge,
+              ),
+              const SizedBox(height: AppSpacing.xxl),
+
+              // 5. Set Priorities
+              _buildSectionTitle('Set Priorities'),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Determine how important each criterion is. The total weight must add up to 100%',
+                style: AppTypography.small.copyWith(
+                  color: AppColors.textSecondary,
                 ),
               ),
-            ),
-            const SizedBox(height: AppSpacing.xxl),
+              const SizedBox(height: AppSpacing.md),
+              _buildPrioritySliders(),
+              const SizedBox(height: AppSpacing.md),
+              _buildTotalPriority(),
+              const SizedBox(height: AppSpacing.xxl),
+
+              // 6. Make a Decision Button
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _makeDecision,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryDark,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.buttonRadius,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Make a Decision',
+                    style: AppTypography.buttonLarge,
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           ),
         ),
@@ -491,15 +492,21 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
                       vertical: AppSpacing.sm,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       borderSide: const BorderSide(color: AppColors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       borderSide: const BorderSide(color: AppColors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       borderSide: const BorderSide(color: AppColors.primary88),
                     ),
                   ),
@@ -513,7 +520,9 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.border),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                     ),
                   ),
                   child: const Icon(
@@ -547,13 +556,17 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
                       color: isAdded
                           ? AppColors.primary20
                           : (isTapped
-                              ? AppColors.primary88.withValues(alpha: 0.1)
-                              : Colors.transparent),
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                                ? AppColors.primary88.withValues(alpha: 0.1)
+                                : Colors.transparent),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       border: Border.all(
                         color: isAdded
                             ? AppColors.primary88
-                            : (isTapped ? AppColors.primary88 : AppColors.border),
+                            : (isTapped
+                                  ? AppColors.primary88
+                                  : AppColors.border),
                         width: isAdded || isTapped ? 1.5 : 1,
                       ),
                     ),
@@ -566,7 +579,9 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
                               color: isAdded
                                   ? AppColors.primary88
                                   : AppColors.textPrimary,
-                              fontWeight: isAdded ? FontWeight.w600 : FontWeight.w400,
+                              fontWeight: isAdded
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                             ),
                           ),
                         ),
@@ -802,7 +817,9 @@ class _CategoryCard extends StatelessWidget {
                   return Icon(
                     _getFallbackIcon(label),
                     size: 32,
-                    color: isSelected ? AppColors.primary88 : AppColors.textSecondary,
+                    color: isSelected
+                        ? AppColors.primary88
+                        : AppColors.textSecondary,
                   );
                 },
               ),
@@ -984,9 +1001,11 @@ class _DecisionReviewDialog extends StatelessWidget {
                             : Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  for (var index = 0;
-                                      index < options.length;
-                                      index++)
+                                  for (
+                                    var index = 0;
+                                    index < options.length;
+                                    index++
+                                  )
                                     Padding(
                                       padding: const EdgeInsets.only(top: 3),
                                       child: Text(
@@ -1104,8 +1123,7 @@ class _ProcessingDecisionDialog extends StatefulWidget {
       _ProcessingDecisionDialogState();
 }
 
-class _ProcessingDecisionDialogState
-    extends State<_ProcessingDecisionDialog> {
+class _ProcessingDecisionDialogState extends State<_ProcessingDecisionDialog> {
   static const _steps = [
     'Reviewing alternative data',
     'Determining criteria weights',
@@ -1258,10 +1276,7 @@ class _GuestBottomNav extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTap;
 
-  const _GuestBottomNav({
-    required this.selectedIndex,
-    required this.onTap,
-  });
+  const _GuestBottomNav({required this.selectedIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

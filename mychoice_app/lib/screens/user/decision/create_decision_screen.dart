@@ -328,13 +328,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text(
-            'Create New Decision',
-            style: AppTypography.sectionTitle.copyWith(
-              color: AppColors.textPurple,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+          title: Text('Create New Decision', style: AppTypography.appBarTitle),
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
@@ -470,9 +464,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
               case 1:
                 break;
               case 2:
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Insight feature coming soon')),
-                );
+                Navigator.of(context).pushNamed('/insight');
                 break;
               case 3:
                 Navigator.of(context).pushNamed('/history');

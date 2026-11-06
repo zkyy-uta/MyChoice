@@ -56,9 +56,7 @@ class ProfileScreen extends StatelessWidget {
       case 1:
         Navigator.of(context).pushNamed('/create-decision');
       case 2:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Insight feature coming soon')),
-        );
+        Navigator.of(context).pushNamed('/insight');
       case 3:
         Navigator.of(context).pushNamed('/history');
       case 4:
@@ -70,15 +68,15 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().user;
 
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('My Profile', style: AppTypography.sectionInnerTitle),
-        centerTitle: true,
-      ),
-      body: MobileBackground(
-        child: ListView(
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text('My Profile', style: AppTypography.appBarTitle),
+          centerTitle: true,
+        ),
+        body: ListView(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.screenHorizontal,
             AppSpacing.lg,
@@ -200,10 +198,10 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-      bottomNavigationBar: BottomNavigation(
-        selectedIndex: 4,
-        onSelected: (index) => _onNavigationSelected(context, index),
+        bottomNavigationBar: BottomNavigation(
+          selectedIndex: 4,
+          onSelected: (index) => _onNavigationSelected(context, index),
+        ),
       ),
     );
   }

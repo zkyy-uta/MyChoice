@@ -155,7 +155,7 @@ class GuestCategoryDetailScreen extends StatelessWidget {
                             ),
                           ),
                         );
-                      }).toList(),
+                      }),
 
                       const SizedBox(height: AppSpacing.huge),
                     ],

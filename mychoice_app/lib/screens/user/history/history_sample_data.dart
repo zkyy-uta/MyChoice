@@ -1,0 +1,55 @@
+import 'history_detail_screen.dart';
+
+final historySampleDecisions = <HistoryDecision>[
+  HistoryDecision(
+    category: 'Technology',
+    title: 'Lenovo IdeaPad Slim 5',
+    score: 0.89,
+    dateGroup: 'Today',
+    date: 'October 3, 2026',
+    recordedAt: DateTime(2026, 10, 3),
+  ),
+  HistoryDecision(
+    category: 'Internship',
+    title: 'Company A',
+    score: 0.86,
+    dateGroup: 'Today',
+    date: 'October 3, 2026',
+    recordedAt: DateTime(2026, 10, 3),
+    priorities: {'Learning': 40, 'Culture': 30, 'Location': 20, 'Salary': 10},
+    status: 'Decision Made',
+  ),
+  HistoryDecision(
+    category: 'Technology',
+    title: 'Samsung Galaxy A56',
+    score: 0.84,
+    dateGroup: 'Yesterday',
+    date: 'October 2, 2026',
+    recordedAt: DateTime(2026, 10, 2),
+    status: 'Decision Made',
+  ),
+  HistoryDecision(
+    category: 'Fashion',
+    title: 'Nike Air Max 95 Big Bubble Gore-Tex',
+    score: 0.89,
+    dateGroup: 'Yesterday',
+    date: 'October 2, 2026',
+    recordedAt: DateTime(2026, 10, 2),
+  ),
+  HistoryDecision(
+    category: 'Technology',
+    title: 'Lenovo IdeaPad Slim 5',
+    score: 0.88,
+    dateGroup: 'Yesterday',
+    date: 'October 2, 2026',
+    recordedAt: DateTime(2026, 10, 2),
+  ),
+  HistoryDecision(
+    category: 'Education',
+    title: 'UX Design Program',
+    score: 0.82,
+    dateGroup: 'Earlier',
+    date: 'September 15, 2026',
+    recordedAt: DateTime(2026, 9, 15),
+  ),
+];

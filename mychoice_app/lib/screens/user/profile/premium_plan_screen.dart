@@ -3,57 +3,54 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 
 class PremiumPlanScreen extends StatelessWidget {
   const PremiumPlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back),
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const PageAppBar(title: 'Premium Plan'),
+        body: ListView(
+          padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
+          children: [
+            Text('Your Current Plan', style: AppTypography.sectionInnerTitle),
+            const SizedBox(height: AppSpacing.md),
+            _PlanCard(
+              title: 'FREE PLAN',
+              description: '1 decision per day',
+              actionLabel: 'Current plan',
+              onPressed: null,
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            Text('Your Benefits', style: AppTypography.sectionInnerTitle),
+            const SizedBox(height: AppSpacing.sm),
+            const _Benefit(text: '1 decision per day'),
+            const _Benefit(text: 'Up to 3 choices per decision'),
+            const _Benefit(text: 'Basic decision analysis'),
+            const _Benefit(text: 'What-if simulation'),
+            const _Benefit(text: 'Decision review'),
+            const SizedBox(height: AppSpacing.xl),
+            _PlanCard(
+              title: 'UPGRADE TO PREMIUM',
+              description:
+                  'Unlimited decisions\nUp to 10 choices per decision\n'
+                  'Personal decision pattern\nAdvanced insights',
+              actionLabel: 'Upgrade Now',
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Premium subscriptions are coming soon'),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        title: Text('Premium Plan', style: AppTypography.sectionInnerTitle),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-        children: [
-          Text('Your Current Plan', style: AppTypography.sectionInnerTitle),
-          const SizedBox(height: AppSpacing.md),
-          _PlanCard(
-            title: 'FREE PLAN',
-            description: '1 decision per day',
-            actionLabel: 'Current plan',
-            onPressed: null,
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          Text('Your Benefits', style: AppTypography.sectionInnerTitle),
-          const SizedBox(height: AppSpacing.sm),
-          const _Benefit(text: '1 decision per day'),
-          const _Benefit(text: 'Up to 3 choices per decision'),
-          const _Benefit(text: 'Basic decision analysis'),
-          const _Benefit(text: 'What-if simulation'),
-          const _Benefit(text: 'Decision review'),
-          const SizedBox(height: AppSpacing.xl),
-          _PlanCard(
-            title: 'UPGRADE TO PREMIUM',
-            description:
-                'Unlimited decisions\nUp to 10 choices per decision\n'
-                'Personal decision pattern\nAdvanced insights',
-            actionLabel: 'Upgrade Now',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Premium subscriptions are coming soon'),
-                ),
-              );
-            },
-          ),
-        ],
       ),
     );
   }

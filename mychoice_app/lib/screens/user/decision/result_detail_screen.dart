@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:mychoice_app/features/decision_engine/domain/entities/decision_result.dart';
 import 'package:mychoice_app/features/decision_engine/domain/entities/calculation_breakdown.dart';
 import 'package:mychoice_app/features/alternative_management/domain/entities/alternative.dart';
@@ -23,8 +24,8 @@ class ResultDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: const MobileAppBarBackground(),
         title: Text(alternative.name),
-        centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),

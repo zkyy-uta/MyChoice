@@ -32,13 +32,16 @@ class _WhatIfScreenState extends State<WhatIfScreen> {
               final totalWeight = provider.totalSimulatedWeight;
               final weightOk = (totalWeight - 100.0).abs() < 0.5;
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Header ─────────────────────────────────────────────
-                    Row(
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      AppSpacing.md,
+                      0,
+                    ),
+                    child: Row(
                       children: [
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
@@ -59,102 +62,94 @@ class _WhatIfScreenState extends State<WhatIfScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'What if your priorities changed?',
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // ── Original Priorities ────────────────────────────────
-                    _buildOriginalPriorities(provider),
-                    const SizedBox(height: AppSpacing.xxl),
-
-                    // ── Simulation Priorities ──────────────────────────────
-                    _buildSectionTitle('Simulation Priorities'),
-                    const SizedBox(height: AppSpacing.md),
-                    ...weights.entries.map((entry) {
-                      final critId = entry.key;
-                      final value = entry.value;
-
-                      final displayName = _getDisplayName(critId);
-
-                      return _WeightSliderRow(
-                        critId: critId,
-                        displayName: displayName,
-                        value: value,
-                        onChanged: (v) => provider.adjustWeight(critId, v),
-                      );
-                    }),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // ── Total weight indicator ─────────────────────────────
-                    _TotalWeightIndicator(
-                      total: totalWeight,
-                      isValid: weightOk,
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // ── Run Simulation button ──────────────────────────────
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: weightOk
-                            ? () {
-                                provider.recalculate();
-                                _showSimulationResultModal(
-                                  context,
-                                  provider,
-                                  original,
-                                );
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: weightOk
-                              ? AppColors.primaryDark
-                              : AppColors.primary40,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppSpacing.buttonRadius,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            'What if your priorities changed?',
+                            style: AppTypography.body.copyWith(
+                              color: AppColors.textSecondary,
                             ),
                           ),
-                        ),
-                        child: Text(
-                          'Run Simulation',
-                          style: AppTypography.buttonLarge,
-                        ),
+                          const SizedBox(height: AppSpacing.xxl),
+
+                          // ── Original Priorities ────────────────────────────────
+                          _buildOriginalPriorities(provider),
+                          const SizedBox(height: AppSpacing.xxl),
+
+                          // ── Simulation Priorities ──────────────────────────────
+                          _buildSectionTitle('Simulation Priorities'),
+                          const SizedBox(height: AppSpacing.md),
+                          ...weights.entries.map((entry) {
+                            final critId = entry.key;
+                            final value = entry.value;
+
+                            final displayName = _getDisplayName(critId);
+
+                            return _WeightSliderRow(
+                              critId: critId,
+                              displayName: displayName,
+                              value: value,
+                              onChanged: (v) =>
+                                  provider.adjustWeight(critId, v),
+                            );
+                          }),
+                          const SizedBox(height: AppSpacing.md),
+
+                          // ── Total weight indicator ─────────────────────────────
+                          _TotalWeightIndicator(
+                            total: totalWeight,
+                            isValid: weightOk,
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+
+                          // ── Run Simulation button ──────────────────────────────
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: weightOk
+                                  ? () {
+                                      provider.recalculate();
+                                      _showSimulationResultModal(
+                                        context,
+                                        provider,
+                                        original,
+                                      );
+                                    }
+                                  : null,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: weightOk
+                                    ? AppColors.primaryDark
+                                    : AppColors.primary40,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.buttonRadius,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Run Simulation',
+                                style: AppTypography.buttonLarge,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.xxl),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.xxl),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           ),
         ),
-      ),
-      bottomNavigationBar: _MainBottomNav(
-        selectedIndex: 2,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.of(context).pushNamed('/dashboard');
-              break;
-            case 1:
-              Navigator.of(context).pushNamed('/create-decision');
-              break;
-            case 3:
-              Navigator.of(context).pushNamed('/history');
-              break;
-            case 4:
-              Navigator.of(context).pushNamed('/profile');
-              break;
-          }
-        },
       ),
     );
   }
@@ -306,7 +301,7 @@ class _WeightSliderRow extends StatelessWidget {
                 ),
               ),
               Text(
-                '${value.toStringAsFixed(1)}',
+                value.toStringAsFixed(1),
                 style: AppTypography.body.copyWith(
                   color: AppColors.primary88,
                   fontWeight: FontWeight.w600,
@@ -604,136 +599,12 @@ class _RankItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  '${score.toStringAsFixed(2)}',
+                  score.toStringAsFixed(2),
                   style: AppTypography.small.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Main Bottom Navigation — Home, Decision, Insight, History, Profile
-class _MainBottomNav extends StatelessWidget {
-  final int selectedIndex;
-  final ValueChanged<int> onTap;
-
-  const _MainBottomNav({required this.selectedIndex, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _NavItem(
-                icon: Icons.home,
-                label: 'Home',
-                isSelected: selectedIndex == 0,
-                onTap: () => onTap(0),
-              ),
-              _NavItem(
-                icon: Icons.add_circle_outline,
-                label: 'Decision',
-                isSelected: selectedIndex == 1,
-                onTap: () => onTap(1),
-                isAction: true,
-              ),
-              _NavItem(
-                icon: Icons.bar_chart,
-                label: 'Insight',
-                isSelected: selectedIndex == 2,
-                onTap: () => onTap(2),
-              ),
-              _NavItem(
-                icon: Icons.history,
-                label: 'History',
-                isSelected: selectedIndex == 3,
-                onTap: () => onTap(3),
-              ),
-              _NavItem(
-                icon: Icons.person_outline,
-                label: 'Profile',
-                isSelected: selectedIndex == 4,
-                onTap: () => onTap(4),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isSelected;
-  final bool isAction;
-  final VoidCallback onTap;
-
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.isSelected,
-    this.isAction = false,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: isAction
-                  ? AppColors.primaryDark
-                  : (isSelected
-                        ? AppColors.primary88.withValues(alpha: 0.15)
-                        : Colors.transparent),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              color: isAction
-                  ? Colors.white
-                  : (isSelected ? AppColors.primary88 : AppColors.textTertiary),
-              size: AppSpacing.iconMd,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: AppTypography.extraSmallSemibold.copyWith(
-              color: isAction
-                  ? AppColors.primaryDark
-                  : (isSelected ? AppColors.primary88 : AppColors.textTertiary),
             ),
           ),
         ],

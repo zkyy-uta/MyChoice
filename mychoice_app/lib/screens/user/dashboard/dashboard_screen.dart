@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../features/auth/presentation/providers/auth_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -24,7 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _createNewDecision();
         break;
       case 2:
-        _showComingSoon('Insight');
+        Navigator.of(context).pushNamed('/insight');
         break;
       case 3:
         Navigator.of(context).pushNamed('/history');
@@ -43,6 +46,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userName = context.watch<AuthProvider>().user?.name.trim();
+
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
       body: SafeArea(
@@ -93,7 +98,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               Text(
-                                'Kim Ryul',
+                                userName == null || userName.isEmpty
+                                    ? 'User'
+                                    : userName,
                                 style: AppTypography.sectionTitle.copyWith(
                                   color: AppColors.textWhite,
                                 ),
@@ -316,7 +323,6 @@ class _OngoingDecisionCard extends StatelessWidget {
   final double progress;
   final Color color;
   final IconData icon;
-  final VoidCallback? onTap;
 
   const _OngoingDecisionCard({
     required this.category,
@@ -325,7 +331,6 @@ class _OngoingDecisionCard extends StatelessWidget {
     required this.progress,
     required this.color,
     required this.icon,
-    this.onTap,
   });
 
   @override
@@ -334,7 +339,7 @@ class _OngoingDecisionCard extends StatelessWidget {
       color: color.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
       child: InkWell(
-        onTap: onTap,
+        onTap: null,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
         child: Container(
           width: 280,

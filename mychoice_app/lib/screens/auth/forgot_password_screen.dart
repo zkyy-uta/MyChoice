@@ -84,9 +84,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       Text('Reset Password', style: AppTypography.screenTitle),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Masukkan email akunmu. Jika terdaftar, kami akan '
-                        'mengirim kode verifikasi untuk membuat password baru '
-                        'di aplikasi.',
+                        'Enter your account email. If registered, we will '
+                        'send a verification code to create a new password '
+                        'in the app.',
                         style: AppTypography.body,
                       ),
                       const SizedBox(height: AppSpacing.xxl),
@@ -117,7 +117,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   strokeWidth: 2,
                                 )
                               : Text(
-                                  'Kirim kode reset',
+                                  'Send Reset Code',
                                   style: AppTypography.buttonLarge,
                                 ),
                         ),

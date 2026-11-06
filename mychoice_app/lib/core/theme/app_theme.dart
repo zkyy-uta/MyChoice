@@ -33,11 +33,13 @@ class AppTheme {
       // ==================== APP BAR ====================
       appBarTheme: AppBarTheme(
         elevation: 0,
-        centerTitle: false,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
         backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         foregroundColor: AppColors.textPrimary,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        titleTextStyle: AppTypography.sectionTitle,
+        titleTextStyle: AppTypography.appBarTitle,
         iconTheme: const IconThemeData(
           color: AppColors.textPrimary,
           size: AppSpacing.iconMd,

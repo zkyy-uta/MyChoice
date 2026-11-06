@@ -3,48 +3,47 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 
 class MyDecisionDataScreen extends StatelessWidget {
   const MyDecisionDataScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back),
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const PageAppBar(title: 'My Decision Data'),
+        body: ListView(
+          padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
+          children: [
+            Text('Your Activity', style: AppTypography.sectionInnerTitle),
+            const SizedBox(height: AppSpacing.md),
+            const _DataSummaryCard(
+              icon: Icons.checklist_outlined,
+              title: 'Decisions created',
+              value: '12',
+            ),
+            const _DataSummaryCard(
+              icon: Icons.category_outlined,
+              title: 'Most used category',
+              value: 'Technology',
+            ),
+            const _DataSummaryCard(
+              icon: Icons.schedule_outlined,
+              title: 'Last decision',
+              value: 'Laptop',
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              'Your decisions are stored in your account so you can review them later.',
+              style: AppTypography.small.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
         ),
-        title: Text('My Decision Data', style: AppTypography.sectionInnerTitle),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-        children: [
-          Text('Your Activity', style: AppTypography.sectionInnerTitle),
-          const SizedBox(height: AppSpacing.md),
-          const _DataSummaryCard(
-            icon: Icons.checklist_outlined,
-            title: 'Decisions created',
-            value: '12',
-          ),
-          const _DataSummaryCard(
-            icon: Icons.category_outlined,
-            title: 'Most used category',
-            value: 'Technology',
-          ),
-          const _DataSummaryCard(
-            icon: Icons.schedule_outlined,
-            title: 'Last decision',
-            value: 'Laptop',
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'Your decisions are stored in your account so you can review them later.',
-            style: AppTypography.small.copyWith(color: AppColors.textSecondary),
-          ),
-        ],
       ),
     );
   }

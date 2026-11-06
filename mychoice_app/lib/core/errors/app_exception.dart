@@ -20,16 +20,11 @@ abstract class AppException implements Exception {
 /// Validation error for invalid input data
 class ValidationError extends AppException {
   ValidationError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'VALIDATION_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'VALIDATION_ERROR');
 
   @override
   String toString() => 'ValidationError: $message';
@@ -38,16 +33,11 @@ class ValidationError extends AppException {
 /// Authentication-related errors
 class AuthenticationError extends AppException {
   AuthenticationError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'AUTHENTICATION_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'AUTHENTICATION_ERROR');
 
   @override
   String toString() => 'AuthenticationError: $message';
@@ -56,16 +46,11 @@ class AuthenticationError extends AppException {
 /// Authorization-related errors (user lacks permission)
 class AuthorizationError extends AppException {
   AuthorizationError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'AUTHORIZATION_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'AUTHORIZATION_ERROR');
 
   @override
   String toString() => 'AuthorizationError: $message';
@@ -74,16 +59,11 @@ class AuthorizationError extends AppException {
 /// Calculation-related errors
 class CalculationError extends AppException {
   CalculationError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'CALCULATION_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'CALCULATION_ERROR');
 
   @override
   String toString() => 'CalculationError: $message';
@@ -92,16 +72,11 @@ class CalculationError extends AppException {
 /// Missing required data error
 class DataMissingError extends AppException {
   DataMissingError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'DATA_MISSING_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'DATA_MISSING_ERROR');
 
   @override
   String toString() => 'DataMissingError: $message';
@@ -110,16 +85,11 @@ class DataMissingError extends AppException {
 /// Network-related errors
 class NetworkError extends AppException {
   NetworkError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'NETWORK_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'NETWORK_ERROR');
 
   @override
   String toString() => 'NetworkError: $message';
@@ -128,16 +98,11 @@ class NetworkError extends AppException {
 /// Timeout error
 class TimeoutError extends AppException {
   TimeoutError({
-    required String message,
+    required super.message,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'TIMEOUT_ERROR',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'TIMEOUT_ERROR');
 
   @override
   String toString() => 'TimeoutError: $message';
@@ -150,19 +115,14 @@ class PlanLimitExceededException extends AppException {
   final int attempted;
 
   PlanLimitExceededException({
-    required String message,
+    required super.message,
     this.feature,
     required this.limit,
     required this.attempted,
     String? code,
-    dynamic originalError,
-    StackTrace? stackTrace,
-  }) : super(
-         message: message,
-         code: code ?? 'PLAN_LIMIT_EXCEEDED',
-         originalError: originalError,
-         stackTrace: stackTrace,
-       );
+    super.originalError,
+    super.stackTrace,
+  }) : super(code: code ?? 'PLAN_LIMIT_EXCEEDED');
 
   @override
   String toString() =>

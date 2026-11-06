@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/decision_engine/presentation/providers/result_provider.dart';
 import 'package:mychoice_app/features/decision_engine/domain/entities/decision_result.dart';
@@ -25,8 +26,8 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: const MobileAppBarBackground(),
         title: const Text('Decision Results'),
-        centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -193,11 +194,9 @@ class _ResultScreenState extends State<ResultScreen> {
                             );
                             return;
                           }
-                          context.read<ComparisonProvider>().buildComparisonView(
-                            result,
-                            matrix,
-                            criteriaMap,
-                          );
+                          context
+                              .read<ComparisonProvider>()
+                              .buildComparisonView(result, matrix, criteriaMap);
                           Navigator.of(context).pushNamed('/comparison');
                         },
                         icon: const Icon(Icons.compare_arrows),
@@ -225,8 +224,7 @@ class _ResultScreenState extends State<ResultScreen> {
                               ? 100.0 / criteriaCount
                               : 0.0;
                           final initialWeights = {
-                            for (final id in criteriaMap.keys)
-                              id: equalWeight,
+                            for (final id in criteriaMap.keys) id: equalWeight,
                           };
                           context.read<SimulationProvider>().initialize(
                             originalResult: result,

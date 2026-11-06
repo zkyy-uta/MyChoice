@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({this.isAdmin = false, super.key});
@@ -53,58 +55,57 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
   @override
   Widget build(BuildContext context) {
     const title = 'Personal Information';
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back),
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: PageAppBar(title: title),
+        body: ListView(
+          padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
+          children: [
+            const Center(
+              child: CircleAvatar(
+                radius: 38,
+                backgroundColor: AppColors.primary20,
+                child: Icon(
+                  Icons.person,
+                  size: 40,
+                  color: AppColors.primaryDark,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            _InformationField(
+              label: 'First Name',
+              controller: _firstNameController,
+              icon: Icons.person_outline,
+            ),
+            _InformationField(
+              label: 'Last Name',
+              controller: _lastNameController,
+              icon: Icons.person_outline,
+            ),
+            _InformationField(
+              label: 'Email',
+              controller: _emailController,
+              icon: Icons.email_outlined,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            _InformationField(
+              label: 'Phone',
+              controller: _phoneController,
+              icon: Icons.phone_outlined,
+              keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: _save,
+                child: const Text('Save Changes'),
+              ),
+            ),
+          ],
         ),
-        title: Text(title, style: AppTypography.sectionInnerTitle),
-        centerTitle: true,
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.screenHorizontal),
-        children: [
-          const Center(
-            child: CircleAvatar(
-              radius: 38,
-              backgroundColor: AppColors.primary20,
-              child: Icon(Icons.person, size: 40, color: AppColors.primaryDark),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          _InformationField(
-            label: 'First Name',
-            controller: _firstNameController,
-            icon: Icons.person_outline,
-          ),
-          _InformationField(
-            label: 'Last Name',
-            controller: _lastNameController,
-            icon: Icons.person_outline,
-          ),
-          _InformationField(
-            label: 'Email',
-            controller: _emailController,
-            icon: Icons.email_outlined,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          _InformationField(
-            label: 'Phone',
-            controller: _phoneController,
-            icon: Icons.phone_outlined,
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          SizedBox(
-            height: 52,
-            child: ElevatedButton(
-              onPressed: _save,
-              child: const Text('Save Changes'),
-            ),
-          ),
-        ],
       ),
     );
   }

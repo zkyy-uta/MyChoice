@@ -27,8 +27,13 @@ class Mf08ComparisonScreen extends StatelessWidget {
     for (final choice in choices) {
       criteria.addAll(choice.criteriaValues.keys);
     }
-    return criteria.toList();
+    return criteria.isEmpty
+        ? const ['Price', 'Performance', 'Battery', 'RAM', 'Storage']
+        : criteria.toList();
   }
+
+  bool get _usesSampleValues =>
+      choices.every((choice) => choice.criteriaValues.isEmpty);
 
   IconData get _categoryIcon => switch (category.toLowerCase()) {
     'education' => Icons.school_rounded,
@@ -41,17 +46,17 @@ class Mf08ComparisonScreen extends StatelessWidget {
     final ranked = _rankedChoices;
     final criteria = _criteria;
 
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        title: const Text('Comparison'),
-        centerTitle: true,
+    return MobileBackground(
+      child: Scaffold(
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.textPurple,
-        elevation: 0,
-      ),
-      body: MobileBackground(
-        child: choices.length < 2
+        appBar: AppBar(
+          title: const Text('Comparison'),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          foregroundColor: AppColors.textPurple,
+          elevation: 0,
+        ),
+        body: choices.length < 2
             ? const _ComparisonEmptyState()
             : ListView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
@@ -84,6 +89,17 @@ class Mf08ComparisonScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   const Divider(height: 1, color: AppColors.grey400),
                   const SizedBox(height: 18),
+                  if (_usesSampleValues) ...[
+                    const Text(
+                      'Sample criterion values',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   _buildComparisonTable(criteria),
                   const SizedBox(height: 25),
                   _buildWeights(criteria),
@@ -308,6 +324,11 @@ class Mf08ComparisonScreen extends StatelessWidget {
   );
 
   double _weightFor(String criterion) {
+    for (final choice in choices) {
+      final configuredWeight = choice.criteriaWeights[criterion];
+      if (configuredWeight != null) return configuredWeight;
+    }
+
     final contributions = choices
         .map((choice) => choice.criteriaContributions[criterion])
         .whereType<double>();
@@ -315,18 +336,32 @@ class Mf08ComparisonScreen extends StatelessWidget {
     for (final contribution in contributions) {
       if (contribution > maximum) maximum = contribution;
     }
-    return maximum * 100;
+    if (maximum > 0) return maximum * 100;
+
+    return switch (criterion) {
+      'Price' => 30,
+      'Performance' => 25,
+      'Battery' => 20,
+      'RAM' => 15,
+      'Storage' => 10,
+      _ => 0,
+    };
   }
 
   double? _comparisonValue(ComparisonChoice choice, String criterion) {
-    final contribution = choice.criteriaContributions[criterion];
-    final maximumContribution = choices
-        .map((item) => item.criteriaContributions[criterion] ?? 0)
-        .fold<double>(0, (maximum, value) => value > maximum ? value : maximum);
-    if (contribution != null && maximumContribution > 0) {
-      return contribution / maximumContribution;
-    }
-    return choice.criteriaValues[criterion];
+    final actualValue = choice.criteriaValues[criterion];
+    if (actualValue != null) return actualValue;
+
+    final choiceIndex = choices.indexOf(choice);
+    final variation = choiceIndex < 0 ? 0 : choiceIndex;
+    return switch (criterion) {
+      'Price' => 12999000 - variation * 1000000,
+      'Performance' => 85 - variation * 5,
+      'Battery' => 8 - variation * 0.5,
+      'RAM' => variation.isEven ? 16 : 8,
+      'Storage' => variation.isEven ? 512 : 1024,
+      _ => null,
+    };
   }
 
   String _formatValue(double? value) {
@@ -427,12 +462,14 @@ class ComparisonChoice {
     required this.finalScore,
     this.criteriaValues = const {},
     this.criteriaContributions = const {},
+    this.criteriaWeights = const {},
   });
 
   final String name;
   final double finalScore;
   final Map<String, double> criteriaValues;
   final Map<String, double> criteriaContributions;
+  final Map<String, double> criteriaWeights;
 }
 
 class Mf08ComparisonArguments {

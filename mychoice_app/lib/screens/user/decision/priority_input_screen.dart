@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/priority_setting/presentation/providers/priority_provider.dart';
 import 'package:mychoice_app/features/priority_setting/domain/usecases/auto_balance_usecase.dart';
@@ -46,6 +47,7 @@ class _PriorityInputScreenState extends State<PriorityInputScreen> {
       value: _priorityProvider,
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: const MobileAppBarBackground(),
           title: const Text('Set Priorities'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),

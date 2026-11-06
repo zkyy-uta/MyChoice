@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mychoice_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:mychoice_app/screens/admin/dashboard/admin_dashboard_screen.dart';
 import 'package:mychoice_app/screens/admin/profile/admin_profile_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   testWidgets('admin profile has no back arrow and can log out', (
@@ -10,7 +13,10 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(500, 900));
     await tester.pumpWidget(
       MaterialApp(
-        home: const AdminProfileScreen(),
+        home: ChangeNotifierProvider(
+          create: (_) => AuthProvider(repository: _TestAuthRepository()),
+          child: const AdminProfileScreen(),
+        ),
         routes: {
           '/login': (_) => const Scaffold(body: Text('Login screen')),
           '/admin': (_) => const Scaffold(body: Text('Admin dashboard')),
@@ -43,4 +49,35 @@ void main() {
 
     await tester.binding.setSurfaceSize(null);
   });
+}
+
+class _TestAuthRepository implements AuthRepository {
+  @override
+  Future<AuthResult?> getCurrentUser() async => null;
+
+  @override
+  Future<AuthResult> login(String email, String password) =>
+      throw UnimplementedError();
+
+  @override
+  Future<bool> signInWithGoogle() async => false;
+
+  @override
+  Future<AuthResult> register(RegistrationData data) =>
+      throw UnimplementedError();
+
+  @override
+  Future<void> requestPasswordReset(String email) async {}
+
+  @override
+  Future<void> verifyPasswordResetCode(String email, String code) async {}
+
+  @override
+  Future<void> updatePassword(String password) async {}
+
+  @override
+  Future<void> deleteAccount() async {}
+
+  @override
+  Future<void> logout() async {}
 }

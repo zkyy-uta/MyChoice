@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/alternative_management/presentation/providers/alternative_provider.dart';
 import 'package:mychoice_app/features/alternative_management/domain/entities/alternative.dart';
-import 'package:mychoice_app/features/access_control/presentation/providers/access_control_provider.dart';
 import 'package:mychoice_app/features/auth/presentation/providers/user_provider.dart';
 import 'package:mychoice_app/core/theme/app_colors.dart';
 import 'package:mychoice_app/core/theme/app_spacing.dart';
@@ -42,6 +42,7 @@ class _AlternativeManagementScreenState
       // Task 1: ensure Scaffold resizes so keyboard doesn't cause overflow
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        flexibleSpace: const MobileAppBarBackground(),
         title: const Text('Select Alternatives'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -58,8 +59,7 @@ class _AlternativeManagementScreenState
               right: AppSpacing.md,
               top: AppSpacing.md,
               // Task 1: push content above the keyboard
-              bottom: AppSpacing.md +
-                  MediaQuery.of(context).viewInsets.bottom,
+              bottom: AppSpacing.md + MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,18 +80,14 @@ class _AlternativeManagementScreenState
                     alternatives: alternativeProvider.catalogAlternatives,
                     selectedAlternatives:
                         alternativeProvider.selectedAlternatives,
-                    onAdd: (alt) => _handleAdd(
-                      context,
-                      alternativeProvider,
-                      catalogAlt: alt,
-                    ),
+                    onAdd: (alt) =>
+                        _handleAdd(alternativeProvider, catalogAlt: alt),
                     onRemove: (altId) {
                       alternativeProvider.removeAlternative(altId);
                     },
                     // Task 2: inline quick-add controller for catalog mode
                     inlineCustomController: _customNameController,
                     onInlineCustomAdd: () => _handleAdd(
-                      context,
                       alternativeProvider,
                       customName: _customNameController.text,
                     ),
@@ -102,7 +98,6 @@ class _AlternativeManagementScreenState
                     selectedAlternatives:
                         alternativeProvider.selectedAlternatives,
                     onAdd: () => _handleAdd(
-                      context,
                       alternativeProvider,
                       customName: _customNameController.text,
                     ),
@@ -141,8 +136,7 @@ class _AlternativeManagementScreenState
 
   /// Task 2: Unified add handler – works for both catalog items and custom names.
   /// Exactly one of [catalogAlt] or [customName] should be provided.
-  void _handleAdd(
-    BuildContext context,
+  Future<void> _handleAdd(
     AlternativeProvider provider, {
     Alternative? catalogAlt,
     String? customName,
@@ -184,8 +178,8 @@ class _AlternativeManagementScreenState
 
       // Clear controller and unfocus if it was a custom add
       if (catalogAlt == null) {
-        _customNameController.clear();
         if (!mounted) return;
+        _customNameController.clear();
         FocusScope.of(context).unfocus();
       }
     } on PlanLimitExceededException catch (e) {
@@ -343,9 +337,7 @@ class _CatalogMode extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(
             'Not in the list? Add a custom option:',
-            style: AppTypography.small.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppTypography.small.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.sm),
           Row(

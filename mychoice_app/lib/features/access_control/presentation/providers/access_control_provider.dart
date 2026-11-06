@@ -56,10 +56,10 @@ class AccessControlProvider extends ChangeNotifier {
   }
 
   /// Check if plan is premium
-  bool get isPremium => _userPlan.tier == 'Premium';
+  bool get isPremium => _userPlan.tier == UserPlanTier.premium;
 
   /// Check if plan is basic
-  bool get isBasic => _userPlan.tier == 'Basic';
+  bool get isBasic => _userPlan.tier == UserPlanTier.basic;
 
   /// Get user tier
   String get planTier => _userPlan.tier.toString().split('.').last;

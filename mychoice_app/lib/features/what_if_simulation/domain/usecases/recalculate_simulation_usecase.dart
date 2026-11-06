@@ -9,7 +9,7 @@ class RecalculateSimulationUseCase {
   final DecisionEngineRepository _repository;
 
   RecalculateSimulationUseCase({required DecisionEngineRepository repository})
-      : _repository = repository;
+    : _repository = repository;
 
   /// [simulatedWeights] – map of criterion ID → weight value in 0-100 range.
   Future<DecisionResult> call({
@@ -24,4 +24,3 @@ class RecalculateSimulationUseCase {
     );
   }
 }
-

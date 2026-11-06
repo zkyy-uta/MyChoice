@@ -45,8 +45,9 @@ class ComparisonView {
         bestVal = val;
         bestAltId = altId;
       } else {
-        final isBetter =
-            type == CriterionType.benefit ? val > bestVal : val < bestVal;
+        final isBetter = type == CriterionType.benefit
+            ? val > bestVal
+            : val < bestVal;
         if (isBetter) {
           bestVal = val;
           bestAltId = altId;
@@ -83,17 +84,17 @@ class ComparisonProvider extends ChangeNotifier {
     }
 
     _view = ComparisonView(
-      alternativeNames:
-          result.ranking.map((r) => r.alternative.name).toList(),
+      alternativeNames: result.ranking.map((r) => r.alternative.name).toList(),
       alternativeIds: result.ranking.map((r) => r.alternative.id).toList(),
       criteriaNames: matrix.criteria.map((c) => c.name).toList(),
       criteriaIds: matrix.criteria.map((c) => c.id).toList(),
       rawValues: matrix.values,
       normalizedValues: normalizedValues,
-      scores: {for (final r in result.ranking) r.alternative.id: r.compositeScore},
+      scores: {
+        for (final r in result.ranking) r.alternative.id: r.compositeScore,
+      },
       ranks: {for (final r in result.ranking) r.alternative.id: r.rank},
     );
     notifyListeners();
   }
 }
-

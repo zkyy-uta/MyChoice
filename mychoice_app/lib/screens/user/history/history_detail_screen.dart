@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/mobile_background.dart';
 
 class HistoryDecision {
   const HistoryDecision({
@@ -68,171 +69,134 @@ class HistoryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      extendBody: true,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _HistoryHeader(title: 'Decision Detail'),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.screenHorizontal,
-                  AppSpacing.lg,
-                  AppSpacing.screenHorizontal,
-                  120,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(decision.icon, color: AppColors.primaryDark),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          decision.category,
-                          style: AppTypography.oneLinerSemibold.copyWith(
-                            color: AppColors.textPurple,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(decision.title, style: AppTypography.small),
-                    const SizedBox(height: AppSpacing.md),
-                    _DetailSection(
-                      title: 'Decision Date',
-                      child: Text(decision.date, style: AppTypography.small),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _DetailSection(
-                      title: 'Final Score',
-                      child: Text(
-                        'Score: ${decision.score.toStringAsFixed(2)}',
-                        style: AppTypography.small,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _DetailSection(
-                      title: 'Your Priorities',
-                      child: Column(
-                        children: decision.priorities.entries.map((entry) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 2),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    entry.key,
-                                    style: AppTypography.small,
-                                  ),
-                                ),
-                                Text(
-                                  '${entry.value}%',
-                                  style: AppTypography.small,
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    _DetailSection(
-                      title: 'Decision Status',
-                      child: Row(
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('Decision Detail', style: AppTypography.appBarTitle),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.screenHorizontal,
+                    AppSpacing.lg,
+                    AppSpacing.screenHorizontal,
+                    120,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          const Icon(
-                            Icons.check_circle_rounded,
-                            size: 15,
-                            color: AppColors.primary88,
-                          ),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(decision.status, style: AppTypography.small),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    const Divider(color: AppColors.grey400),
-                    const SizedBox(height: AppSpacing.md),
-                    _DetailSection(
-                      title: 'Your Review',
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: List.generate(
-                              5,
-                              (index) => Icon(
-                                Icons.star_rounded,
-                                size: 18,
-                                color: index < decision.rating
-                                    ? AppColors.warning80
-                                    : AppColors.grey300,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: AppSpacing.xs),
+                          Icon(decision.icon, color: AppColors.primaryDark),
+                          const SizedBox(width: AppSpacing.sm),
                           Text(
-                            decision.review,
-                            style: AppTypography.small.copyWith(
+                            decision.category,
+                            style: AppTypography.oneLinerSemibold.copyWith(
                               color: AppColors.textPurple,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(decision.title, style: AppTypography.small),
+                      const SizedBox(height: AppSpacing.md),
+                      _DetailSection(
+                        title: 'Decision Date',
+                        child: Text(decision.date, style: AppTypography.small),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      _DetailSection(
+                        title: 'Final Score',
+                        child: Text(
+                          'Score: ${decision.score.toStringAsFixed(2)}',
+                          style: AppTypography.small,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      _DetailSection(
+                        title: 'Your Priorities',
+                        child: Column(
+                          children: decision.priorities.entries.map((entry) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      entry.key,
+                                      style: AppTypography.small,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${entry.value}%',
+                                    style: AppTypography.small,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      _DetailSection(
+                        title: 'Decision Status',
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.check_circle_rounded,
+                              size: 15,
+                              color: AppColors.primary88,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(decision.status, style: AppTypography.small),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      const Divider(color: AppColors.grey400),
+                      const SizedBox(height: AppSpacing.md),
+                      _DetailSection(
+                        title: 'Your Review',
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: List.generate(
+                                5,
+                                (index) => Icon(
+                                  Icons.star_rounded,
+                                  size: 18,
+                                  color: index < decision.rating
+                                      ? AppColors.warning80
+                                      : AppColors.grey300,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              decision.review,
+                              style: AppTypography.small.copyWith(
+                                color: AppColors.textPurple,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      // bottomNavigationBar: DecisionBottomNavigation(
-      //   selectedIndex: 3,
-      //   onSelected: (index) => _onNavigation(context, index),
-      // ),
-    );
-  }
-}
-
-class _HistoryHeader extends StatelessWidget {
-  const _HistoryHeader({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 42,
-            child: IconButton(
-              tooltip: 'Back',
-              onPressed: () => Navigator.maybePop(context),
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 18,
-                color: AppColors.textPurple,
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTypography.sectionInnerTitle.copyWith(
-                color: AppColors.textPurple,
-              ),
-            ),
-          ),
-          const SizedBox(width: 42),
-        ],
       ),
     );
   }

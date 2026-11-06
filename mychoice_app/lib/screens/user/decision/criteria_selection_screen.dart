@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/criteria_selection/presentation/providers/criteria_provider.dart';
 import 'package:mychoice_app/features/criteria_selection/domain/entities/criterion.dart';
@@ -42,7 +43,7 @@ class _CriteriaSelectionScreenState extends State<CriteriaSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.read<UserProvider>();
-    final planTier = (userProvider.user?.plan?.tier ?? 'basic') as String;
+    final planTier = userProvider.user?.plan.tier.name ?? 'basic';
 
     return ProxyProvider<UserProvider, CriteriaProvider>(
       update: (context, userProvider, _) {
@@ -54,6 +55,7 @@ class _CriteriaSelectionScreenState extends State<CriteriaSelectionScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
+          flexibleSpace: const MobileAppBarBackground(),
           title: const Text('Select Criteria'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -305,29 +307,27 @@ class _CustomCriterionSection extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text('Type:', style: AppTypography.oneLiner),
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: RadioListTile<CriterionType>(
-                  title: const Text('Benefit'),
-                  value: CriterionType.benefit,
-                  groupValue: selectedType,
-                  onChanged: (value) {
-                    if (value != null) onTypeChanged(value);
-                  },
+          RadioGroup<CriterionType>(
+            groupValue: selectedType,
+            onChanged: (value) {
+              if (value != null) onTypeChanged(value);
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  child: RadioListTile<CriterionType>(
+                    title: const Text('Benefit'),
+                    value: CriterionType.benefit,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: RadioListTile<CriterionType>(
-                  title: const Text('Cost'),
-                  value: CriterionType.cost,
-                  groupValue: selectedType,
-                  onChanged: (value) {
-                    if (value != null) onTypeChanged(value);
-                  },
+                Expanded(
+                  child: RadioListTile<CriterionType>(
+                    title: const Text('Cost'),
+                    value: CriterionType.cost,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           SizedBox(

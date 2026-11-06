@@ -70,7 +70,7 @@ class _ResetPasswordCodeScreenState extends State<ResetPasswordCodeScreen> {
     });
     if (auth.error == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Kode reset baru sudah dikirim.')),
+        const SnackBar(content: Text('A new reset code has been sent.')),
       );
     }
   }
@@ -105,13 +105,13 @@ class _ResetPasswordCodeScreenState extends State<ResetPasswordCodeScreen> {
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Masukkan Kode Reset',
+                        'Enter the Reset Code',
                         style: AppTypography.screenTitle,
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Kode 8 digit dikirim ke ${widget.email}. Masukkan '
-                        'kode tersebut untuk melanjutkan.',
+                        'An 8-digit code has been sent to ${widget.email}. Enter '
+                        'the code to continue.',
                         style: AppTypography.body,
                       ),
                       const SizedBox(height: AppSpacing.xxl),
@@ -125,11 +125,11 @@ class _ResetPasswordCodeScreenState extends State<ResetPasswordCodeScreen> {
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.done,
                         decoration: const InputDecoration(
-                          hintText: 'Kode verifikasi',
+                          hintText: 'Verification code',
                         ),
                         validator: (value) {
                           if (value == null || value.trim().length != 8) {
-                            return 'Masukkan kode 8 digit dari email';
+                            return 'Enter the 8-digit code from the email';
                           }
                           return null;
                         },
@@ -154,7 +154,7 @@ class _ResetPasswordCodeScreenState extends State<ResetPasswordCodeScreen> {
                                   strokeWidth: 2,
                                 )
                               : Text(
-                                  'Verifikasi kode',
+                                  'Verify Code',
                                   style: AppTypography.buttonLarge,
                                 ),
                         ),
@@ -165,8 +165,8 @@ class _ResetPasswordCodeScreenState extends State<ResetPasswordCodeScreen> {
                             ? null
                             : _resendCode,
                         child: _isResending
-                            ? const Text('Mengirim ulang kode...')
-                            : const Text('Kirim ulang kode'),
+                            ? const Text('Resending code...')
+                            : const Text('Resend code'),
                       ),
                     ],
                   ),

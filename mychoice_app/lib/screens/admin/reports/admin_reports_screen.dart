@@ -5,6 +5,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 
 class AdminReportsScreen extends StatefulWidget {
   const AdminReportsScreen({super.key});
@@ -42,28 +43,18 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
         _sampleReviews.map((review) => review.rating).reduce((a, b) => a + b) /
         _sampleReviews.length;
 
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        backgroundColor: AppColors.surfaceLight,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'Reports',
-          style: AppTypography.sectionInnerTitle.copyWith(
-            color: AppColors.primaryDark,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: MobileBackground(
-        child: CustomScrollView(
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const PageAppBar(title: 'Reports', showBackButton: false),
+        body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                 child: Text(
                   'Reviews submitted by MyChoice users.',
+                  textAlign: TextAlign.center,
                   style: AppTypography.extraSmallSemibold.copyWith(
                     color: AppColors.textTertiary,
                   ),
@@ -204,8 +195,8 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
               ),
           ],
         ),
+        bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 3),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 3),
     );
   }
 }

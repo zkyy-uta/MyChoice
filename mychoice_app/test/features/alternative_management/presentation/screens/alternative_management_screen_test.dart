@@ -185,10 +185,9 @@ void main() {
         );
 
         // Assert
-        final nextButton = find.byType(ElevatedButton);
-        expect(nextButton, findsWidgets);
-        // Check if first ElevatedButton is disabled
-        final buttonWidget = tester.widget<ElevatedButton>(nextButton.first);
+        final nextButton = find.widgetWithText(ElevatedButton, 'Next');
+        expect(nextButton, findsOneWidget);
+        final buttonWidget = tester.widget<ElevatedButton>(nextButton);
         expect(buttonWidget.onPressed, isNull);
       },
     );

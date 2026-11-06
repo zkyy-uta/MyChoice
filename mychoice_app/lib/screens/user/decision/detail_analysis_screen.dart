@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/mobile_background.dart';
 
 class DetailAnalysisScreen extends StatelessWidget {
   const DetailAnalysisScreen({
@@ -26,23 +27,25 @@ class DetailAnalysisScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(27, 22, 27, 20),
-                child: _buildContent(),
+      backgroundColor: Colors.transparent,
+      body: MobileBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(27, 22, 27, 20),
+                  child: _buildContent(),
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 39),
-              child: _buildComparisonButton(context),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(bottom: 39),
+                child: _buildComparisonButton(context),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -71,9 +71,9 @@ class ErrorHandler {
     StackTrace? stackTrace,
   }) {
     final prefix = tag != null ? '[$tag]' : '[Error]';
-    print('$prefix $exception');
+    debugPrint('$prefix $exception');
     if (stackTrace != null) {
-      print(stackTrace);
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 }

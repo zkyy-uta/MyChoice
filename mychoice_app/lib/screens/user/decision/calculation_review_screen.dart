@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:mychoice_app/features/decision_engine/domain/entities/decision_matrix.dart';
 import 'package:mychoice_app/features/criteria_selection/domain/entities/criterion.dart';
 import 'package:mychoice_app/core/theme/app_colors.dart';
@@ -26,8 +27,8 @@ class CalculationReviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: const MobileAppBarBackground(),
         title: const Text('Review Before Calculating'),
-        centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),

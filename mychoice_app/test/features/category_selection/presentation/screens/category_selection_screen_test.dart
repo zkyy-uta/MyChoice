@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/category_selection/presentation/providers/category_provider.dart';
 import 'package:mychoice_app/screens/user/decision/category_selection_screen.dart';
-import 'package:mychoice_app/features/category_selection/data/repositories/category_repository_impl.dart';
-import 'package:mychoice_app/features/category_selection/data/datasources/category_datasource.dart';
+import 'package:mychoice_app/features/category_selection/domain/entities/category.dart';
+import 'package:mychoice_app/features/category_selection/domain/repositories/category_repository.dart';
 import 'package:mychoice_app/core/theme/app_theme.dart';
 
 void main() {
@@ -12,10 +12,9 @@ void main() {
     late CategoryProvider categoryProvider;
 
     setUp(() {
-      final repository = CategoryRepositoryImpl(
-        dataSource: MockCategoryDataSource(),
+      categoryProvider = CategoryProvider(
+        repository: _TestCategoryRepository(),
       );
-      categoryProvider = CategoryProvider(repository: repository);
     });
 
     testWidgets('should display category cards', (WidgetTester tester) async {
@@ -29,9 +28,9 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Assert
-      expect(find.byType(Card), findsWidgets);
       expect(find.text('Technology'), findsOneWidget);
       expect(find.text('Education'), findsOneWidget);
       expect(find.text('Fashion'), findsOneWidget);
@@ -50,11 +49,12 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Find and tap Technology category
       final technologyCard = find.ancestor(
         of: find.text('Technology'),
-        matching: find.byType(Card),
+        matching: find.byType(InkWell),
       );
       expect(technologyCard, findsOneWidget);
       await tester.tap(technologyCard.first);
@@ -78,11 +78,12 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Act - tap Technology category
       final technologyCard = find.ancestor(
         of: find.text('Technology'),
-        matching: find.byType(Card),
+        matching: find.byType(InkWell),
       );
       await tester.tap(technologyCard.first);
       await tester.pumpAndSettle();
@@ -114,11 +115,12 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Act - tap Technology category
       final technologyCard = find.ancestor(
         of: find.text('Technology'),
-        matching: find.byType(Card),
+        matching: find.byType(InkWell),
       );
       await tester.tap(technologyCard.first);
       await tester.pumpAndSettle();
@@ -141,11 +143,12 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Act - select Technology
       final technologyCard = find.ancestor(
         of: find.text('Technology'),
-        matching: find.byType(Card),
+        matching: find.byType(InkWell),
       );
       await tester.tap(technologyCard.first);
       await tester.pumpAndSettle();
@@ -163,7 +166,7 @@ void main() {
       // Act - select Education category (should reset subcategory)
       final educationCard = find.ancestor(
         of: find.text('Education'),
-        matching: find.byType(Card),
+        matching: find.byType(InkWell),
       );
       await tester.tap(educationCard.first);
       await tester.pumpAndSettle();
@@ -186,6 +189,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Assert - Next button should be disabled
       final nextButton = find.ancestor(
@@ -212,11 +216,12 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Act - tap Technology but don't select subcategory
       final technologyCard = find.ancestor(
         of: find.text('Technology'),
-        matching: find.byType(Card),
+        matching: find.byType(InkWell),
       );
       await tester.tap(technologyCard.first);
       await tester.pumpAndSettle();
@@ -243,11 +248,12 @@ void main() {
             ),
           ),
         );
+        await tester.pumpAndSettle();
 
         // Act - select Technology
         final technologyCard = find.ancestor(
           of: find.text('Technology'),
-          matching: find.byType(Card),
+          matching: find.byType(InkWell),
         );
         await tester.tap(technologyCard.first);
         await tester.pumpAndSettle();
@@ -283,6 +289,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Assert
       expect(find.byIcon(Icons.arrow_back), findsOneWidget);
@@ -301,6 +308,7 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       // Assert
       expect(find.text('Technology'), findsOneWidget);
@@ -308,4 +316,63 @@ void main() {
       expect(find.text('Fashion'), findsOneWidget);
     });
   });
+}
+
+class _TestCategoryRepository implements CategoryRepository {
+  static const _categories = [
+    Category(
+      id: 'technology',
+      name: 'Technology',
+      description: 'Electronics and computing devices',
+      icon: 'technology',
+      subcategories: [
+        Subcategory(
+          id: 'laptop',
+          name: 'Laptop',
+          description: 'Portable computers',
+        ),
+        Subcategory(id: 'phone', name: 'Phone', description: 'Mobile phones'),
+      ],
+    ),
+    Category(
+      id: 'education',
+      name: 'Education',
+      description: 'Learning and courses',
+      icon: 'education',
+      subcategories: [
+        Subcategory(
+          id: 'course',
+          name: 'Course',
+          description: 'Online courses',
+        ),
+      ],
+    ),
+    Category(
+      id: 'fashion',
+      name: 'Fashion',
+      description: 'Clothing and accessories',
+      icon: 'fashion',
+      subcategories: [
+        Subcategory(id: 'shoes', name: 'Shoes', description: 'Footwear'),
+      ],
+    ),
+  ];
+
+  @override
+  Future<List<Category>> getCategories() async => _categories;
+
+  @override
+  Future<List<Subcategory>> getSubcategories(String categoryId) async {
+    return _categories
+        .firstWhere((category) => category.id == categoryId)
+        .subcategories;
+  }
+
+  @override
+  Future<Category?> getCategoryById(String categoryId) async {
+    for (final category in _categories) {
+      if (category.id == categoryId) return category;
+    }
+    return null;
+  }
 }

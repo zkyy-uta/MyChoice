@@ -87,8 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
-                        'Masuk dengan email dan password. Akses user atau admin '
-                        'ditentukan dari peran akun.',
+                        'Log in with your email and password. User or admin access '
+                        'is determined by the accounts role.',
                         style: AppTypography.body,
                       ),
                       const SizedBox(height: AppSpacing.xxl),
@@ -130,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () => Navigator.of(
                             context,
                           ).pushNamed('/forgot-password'),
-                          child: const Text('Lupa password?'),
+                          child: const Text('Forgot password?'),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),

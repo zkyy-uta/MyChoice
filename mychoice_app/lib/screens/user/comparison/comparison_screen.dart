@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mychoice_app/core/widgets/mobile_background.dart';
 import 'package:provider/provider.dart';
 import 'package:mychoice_app/features/comparison/presentation/providers/comparison_provider.dart';
 import 'package:mychoice_app/core/theme/app_colors.dart';
@@ -31,8 +32,8 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: const MobileAppBarBackground(),
         title: const Text('Compare Alternatives'),
-        centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -51,22 +52,21 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
                   horizontal: AppSpacing.md,
                   vertical: AppSpacing.sm,
                 ),
-                child: Row(
+                child: Wrap(
+                  spacing: AppSpacing.sm,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text('Show:', style: AppTypography.body),
-                    const SizedBox(width: AppSpacing.sm),
                     ChoiceChip(
                       label: const Text('Raw'),
                       selected: !_showNormalized,
                       onSelected: (_) =>
                           setState(() => _showNormalized = false),
                     ),
-                    const SizedBox(width: AppSpacing.sm),
                     ChoiceChip(
                       label: const Text('Normalized'),
                       selected: _showNormalized,
-                      onSelected: (_) =>
-                          setState(() => _showNormalized = true),
+                      onSelected: (_) => setState(() => _showNormalized = true),
                     ),
                   ],
                 ),
@@ -75,135 +75,139 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
 
               // ── Table ──────────────────────────────────────────────────
               Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Fixed left column: criteria names
-                    SizedBox(
-                      width: _leftColWidth,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Header cell
-                          _HeaderCell(
-                            width: _leftColWidth,
-                            height: _rowHeight + 16,
-                            child: Text(
-                              'Criteria',
-                              style: AppTypography.buttonMedium,
-                            ),
-                          ),
-                          // Criterion name rows
-                          ...view.criteriaIds.map((critId) {
-                            final idx = view.criteriaIds.indexOf(critId);
-                            final critName = view.criteriaNames[idx];
-                            return _Cell(
-                              width: _leftColWidth,
-                              height: _rowHeight,
-                              color: idx.isEven
-                                  ? AppColors.surface
-                                  : AppColors.cardBackground,
-                              child: Text(
-                                critName,
-                                style: AppTypography.small,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final leftColWidth = constraints.maxWidth < 420
+                        ? 82.0
+                        : _leftColWidth;
+                    final alternativeCount = view.alternativeIds.length;
+                    final altColWidth = alternativeCount == 0
+                        ? _altColWidth
+                        : ((constraints.maxWidth - leftColWidth) /
+                                  alternativeCount)
+                              .clamp(58.0, _altColWidth)
+                              .toDouble();
 
-                    // Scrollable right section: alternatives
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: view.alternativeIds.map((altId) {
-                            final altIdx =
-                                view.alternativeIds.indexOf(altId);
-                            final altName = view.alternativeNames[altIdx];
-                            final rank = view.ranks[altId] ?? 0;
-                            final score = view.scores[altId] ?? 0;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // Alternative header
-                                _AltHeaderCell(
-                                  width: _altColWidth,
-                                  height: _rowHeight + 16,
-                                  name: altName,
-                                  rank: rank,
-                                  score: score,
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: leftColWidth,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _HeaderCell(
+                                width: leftColWidth,
+                                height: _rowHeight + 24,
+                                child: Text(
+                                  'Criteria',
+                                  style: AppTypography.buttonMedium,
                                 ),
-                                // Value rows
-                                ...view.criteriaIds.map((critId) {
-                                  final rowIdx =
-                                      view.criteriaIds.indexOf(critId);
+                              ),
+                              ...view.criteriaIds.map((critId) {
+                                final idx = view.criteriaIds.indexOf(critId);
+                                final critName = view.criteriaNames[idx];
+                                return _Cell(
+                                  width: leftColWidth,
+                                  height: _rowHeight,
+                                  color: idx.isEven
+                                      ? AppColors.surface
+                                      : AppColors.cardBackground,
+                                  child: Text(
+                                    critName,
+                                    style: AppTypography.small,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: view.alternativeIds.map((altId) {
+                                final altIdx = view.alternativeIds.indexOf(
+                                  altId,
+                                );
+                                final altName = view.alternativeNames[altIdx];
+                                final rank = view.ranks[altId] ?? 0;
+                                final score = view.scores[altId] ?? 0;
 
-                                  // Determine if this is the best for this criterion
-                                  // We don't have criteriaMap here; use raw/normalized
-                                  // best-by-value heuristic (highest raw = best, since
-                                  // benefit is dominant; cost inversion handled upstream)
-                                  final isBest = _isBestRaw(
-                                    view,
-                                    critId,
-                                    altId,
-                                    _showNormalized,
-                                  );
-
-                                  final raw = view.rawValues[altId]?[critId];
-                                  final norm =
-                                      view.normalizedValues[altId]?[critId];
-                                  final displayVal = _showNormalized
-                                      ? norm
-                                      : raw;
-                                  final text = displayVal != null
-                                      ? displayVal.toStringAsFixed(3)
-                                      : '—';
-
-                                  return GestureDetector(
-                                    onTap: () => _showCellDetail(
-                                      context,
-                                      critName:
-                                          view.criteriaNames[rowIdx],
-                                      altName: altName,
-                                      raw: raw,
-                                      norm: norm,
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    _AltHeaderCell(
+                                      width: altColWidth,
+                                      height: _rowHeight + 24,
+                                      name: altName,
+                                      rank: rank,
+                                      score: score,
                                     ),
-                                    child: _Cell(
-                                      width: _altColWidth,
-                                      height: _rowHeight,
-                                      color: isBest
-                                          ? AppColors.primary20
-                                          : rowIdx.isEven
+                                    ...view.criteriaIds.map((critId) {
+                                      final rowIdx = view.criteriaIds.indexOf(
+                                        critId,
+                                      );
+                                      final isBest = _isBestRaw(
+                                        view,
+                                        critId,
+                                        altId,
+                                        _showNormalized,
+                                      );
+                                      final raw =
+                                          view.rawValues[altId]?[critId];
+                                      final norm =
+                                          view.normalizedValues[altId]?[critId];
+                                      final displayVal = _showNormalized
+                                          ? norm
+                                          : raw;
+                                      final text = displayVal != null
+                                          ? displayVal.toStringAsFixed(3)
+                                          : '—';
+
+                                      return GestureDetector(
+                                        onTap: () => _showCellDetail(
+                                          context,
+                                          critName: view.criteriaNames[rowIdx],
+                                          altName: altName,
+                                          raw: raw,
+                                          norm: norm,
+                                        ),
+                                        child: _Cell(
+                                          width: altColWidth,
+                                          height: _rowHeight,
+                                          color: isBest
+                                              ? AppColors.primary20
+                                              : rowIdx.isEven
                                               ? AppColors.surface
                                               : AppColors.cardBackground,
-                                      child: Text(
-                                        text,
-                                        style: AppTypography.small.copyWith(
-                                          fontWeight: isBest
-                                              ? FontWeight.w700
-                                              : FontWeight.normal,
-                                          color: isBest
-                                              ? AppColors.primary88
-                                              : AppColors.textPrimary,
+                                          child: Text(
+                                            text,
+                                            style: AppTypography.small.copyWith(
+                                              fontWeight: isBest
+                                                  ? FontWeight.w700
+                                                  : FontWeight.normal,
+                                              color: isBest
+                                                  ? AppColors.primary88
+                                                  : AppColors.textPrimary,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
                                         ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              ],
-                            );
-                          }).toList(),
+                                      );
+                                    }),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 ),
               ),
             ],
@@ -215,7 +219,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
 
   /// Heuristic: the alternative with the highest value wins (works for both
   /// raw and normalized since normalized preserves ordering within a criterion).
-  
+
   bool _isBestRaw(
     ComparisonView view,
     String critId,
@@ -261,10 +265,7 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Criterion: $critName',
-              style: AppTypography.body,
-            ),
+            Text('Criterion: $critName', style: AppTypography.body),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Raw value: ${raw?.toStringAsFixed(4) ?? '—'}',
@@ -413,4 +414,3 @@ class _Cell extends StatelessWidget {
     );
   }
 }
-

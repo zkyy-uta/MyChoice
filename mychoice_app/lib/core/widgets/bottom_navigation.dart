@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -37,35 +36,45 @@ class BottomNavigation extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _NavBarItem(
-                icon: Icons.home,
-                label: 'Home',
-                isSelected: selectedIndex == 0,
-                onTap: () => onSelected(0),
+              Expanded(
+                child: _NavBarItem(
+                  icon: Icons.home,
+                  label: 'Home',
+                  isSelected: selectedIndex == 0,
+                  onTap: () => onSelected(0),
+                ),
               ),
-              _NavBarItem(
-                icon: Icons.add_circle_outline,
-                label: 'Decision',
-                isSelected: selectedIndex == 1,
-                onTap: () => onSelected(1),
+              Expanded(
+                child: _NavBarItem(
+                  icon: Icons.add_circle_outline,
+                  label: 'Decision',
+                  isSelected: selectedIndex == 1,
+                  onTap: () => onSelected(1),
+                ),
               ),
-              _NavBarItem(
-                icon: Icons.bar_chart,
-                label: 'Insight',
-                isSelected: selectedIndex == 2,
-                onTap: () => onSelected(2),
+              Expanded(
+                child: _NavBarItem(
+                  icon: Icons.bar_chart,
+                  label: 'Insight',
+                  isSelected: selectedIndex == 2,
+                  onTap: () => onSelected(2),
+                ),
               ),
-              _NavBarItem(
-                icon: Icons.history,
-                label: 'History',
-                isSelected: selectedIndex == 3,
-                onTap: () => onSelected(3),
+              Expanded(
+                child: _NavBarItem(
+                  icon: Icons.history,
+                  label: 'History',
+                  isSelected: selectedIndex == 3,
+                  onTap: () => onSelected(3),
+                ),
               ),
-              _NavBarItem(
-                icon: Icons.person_outline,
-                label: 'Profile',
-                isSelected: selectedIndex == 4,
-                onTap: () => onSelected(4),
+              Expanded(
+                child: _NavBarItem(
+                  icon: Icons.person_outline,
+                  label: 'Profile',
+                  isSelected: selectedIndex == 4,
+                  onTap: () => onSelected(4),
+                ),
               ),
             ],
           ),
@@ -105,9 +114,7 @@ class _NavBarItem extends StatelessWidget {
         child: TweenAnimationBuilder<Color?>(
           tween: ColorTween(
             begin: AppColors.textTertiary,
-            end: isSelected
-                ? AppColors.primary88
-                : AppColors.textTertiary,
+            end: isSelected ? AppColors.primary88 : AppColors.textTertiary,
           ),
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
@@ -115,11 +122,7 @@ class _NavBarItem extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  icon,
-                  color: animatedColor,
-                  size: AppSpacing.iconMd,
-                ),
+                Icon(icon, color: animatedColor, size: AppSpacing.iconMd),
                 const SizedBox(height: 4),
                 Text(
                   label,

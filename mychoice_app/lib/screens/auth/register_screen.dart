@@ -157,6 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'Full Name',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(height: AppSpacing.sm),
@@ -191,6 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'Email Address',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(height: AppSpacing.sm),
@@ -211,6 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'Password',
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(height: AppSpacing.sm),
@@ -234,6 +237,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Checkbox(
                         value: _agreedToTerms,
+                        side: const BorderSide(color: Colors.black),
                         onChanged: (value) {
                           setState(() {
                             _agreedToTerms = value ?? false;
@@ -243,7 +247,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Expanded(
                         child: Text(
                           'I agree to the Terms and Conditions',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodySmall?.copyWith(color: Colors.black),
                         ),
                       ),
                     ],

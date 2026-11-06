@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 import 'technology_screen.dart';
 import 'education_screen.dart';
 import 'fashion_screen.dart';
@@ -16,14 +17,14 @@ class CatalogueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      body: MobileBackground(
-        child: SafeArea(
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const PageAppBar(title: 'Catalogue', showBackButton: false),
+        body: SafeArea(
           bottom: false,
           child: Column(
             children: [
-              _buildHeader(),
               Expanded(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -106,40 +107,7 @@ class CatalogueScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
-      alignment: Alignment.centerLeft,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Catalogue',
-            textAlign: TextAlign.left,
-            style: AppTypography.sectionInnerTitle.copyWith(
-              color: AppColors.primaryDark,
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            'Keep categories and options up to date',
-            textAlign: TextAlign.left,
-            style: AppTypography.extraSmallSemibold.copyWith(
-              color: AppColors.textTertiary,
-              fontSize: 10,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
+        bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
       ),
     );
   }

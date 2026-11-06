@@ -96,5 +96,16 @@ void main() {
     expect(find.textContaining('Course A'), findsWidgets);
     expect(find.textContaining('Course B'), findsWidgets);
     expect(find.text('Course'), findsOneWidget);
+    for (final criterion in [
+      'Price',
+      'Performance',
+      'Battery',
+      'RAM',
+      'Storage',
+    ]) {
+      expect(find.text(criterion), findsWidgets);
+    }
+    expect(find.text('12999000'), findsOneWidget);
+    expect(find.text('1024'), findsOneWidget);
   });
 }

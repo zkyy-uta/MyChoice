@@ -46,6 +46,15 @@ class MobileBackground extends StatelessWidget {
   }
 }
 
+class MobileAppBarBackground extends StatelessWidget {
+  const MobileAppBarBackground({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.expand();
+  }
+}
+
 class _AmbientGlow extends StatelessWidget {
   final Alignment alignment;
   final Color color;

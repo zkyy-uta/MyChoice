@@ -43,6 +43,16 @@ class AppTypography {
     letterSpacing: 0,
   );
 
+  /// App bar title - Extra Bold
+  /// Font: Lexend, Size: 19sp, Weight: 800
+  static TextStyle appBarTitle = GoogleFonts.lexend(
+    fontSize: 19,
+    fontWeight: FontWeight.w800,
+    height: 20 / 19,
+    color: AppColors.textPurple,
+    letterSpacing: 0,
+  );
+
   // ==================== BODY TEXT ====================
 
   /// Body - Regular

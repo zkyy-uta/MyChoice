@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../../../alternative_management/domain/entities/alternative.dart';
 
@@ -30,7 +31,7 @@ class MockAlternativeDataSource {
       }
     } catch (e) {
       // Fallback to mock data if file not found
-      print('Error loading alternatives: $e, using mock data');
+      debugPrint('Error loading alternatives: $e, using mock data');
     }
 
     // Return mock data based on subcategory

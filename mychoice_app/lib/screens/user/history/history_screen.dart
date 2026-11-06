@@ -6,6 +6,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
 import 'history_detail_screen.dart';
+import 'history_sample_data.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -22,59 +23,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   String _statusFilter = 'All';
   DateTimeRange? _customDateRange;
 
-  final List<HistoryDecision> _decisions = [
-    HistoryDecision(
-      category: 'Technology',
-      title: 'Lenovo IdeaPad Slim 5',
-      score: 0.89,
-      dateGroup: 'Today',
-      date: 'October 3, 2026',
-      recordedAt: DateTime(2026, 10, 3),
-    ),
-    HistoryDecision(
-      category: 'Internship',
-      title: 'Company A',
-      score: 0.86,
-      dateGroup: 'Today',
-      date: 'October 3, 2026',
-      recordedAt: DateTime(2026, 10, 3),
-      priorities: {'Learning': 40, 'Culture': 30, 'Location': 20, 'Salary': 10},
-      status: 'Decision Made',
-    ),
-    HistoryDecision(
-      category: 'Technology',
-      title: 'Samsung Galaxy A56',
-      score: 0.84,
-      dateGroup: 'Yesterday',
-      date: 'October 2, 2026',
-      recordedAt: DateTime(2026, 10, 2),
-      status: 'Decision Made',
-    ),
-    HistoryDecision(
-      category: 'Fashion',
-      title: 'Nike Air Max 95 Big Bubble Gore-Tex',
-      score: 0.89,
-      dateGroup: 'Yesterday',
-      date: 'October 2, 2026',
-      recordedAt: DateTime(2026, 10, 2),
-    ),
-    HistoryDecision(
-      category: 'Technology',
-      title: 'Lenovo IdeaPad Slim 5',
-      score: 0.88,
-      dateGroup: 'Yesterday',
-      date: 'October 2, 2026',
-      recordedAt: DateTime(2026, 10, 2),
-    ),
-    HistoryDecision(
-      category: 'Education',
-      title: 'UX Design Program',
-      score: 0.82,
-      dateGroup: 'Earlier',
-      date: 'September 15, 2026',
-      recordedAt: DateTime(2026, 9, 15),
-    ),
-  ];
+  final List<HistoryDecision> _decisions = historySampleDecisions;
 
   @override
   void dispose() {
@@ -238,9 +187,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       case 1:
         Navigator.of(context).pushNamed('/create-decision');
       case 2:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Insight feature coming soon')),
-        );
+        Navigator.of(context).pushNamed('/insight');
       case 3:
         break;
       case 4:
@@ -256,15 +203,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
       groups.putIfAbsent(decision.dateGroup, () => []).add(decision);
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      extendBody: true,
-      body: MobileBackground(
-        child: SafeArea(
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBody: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text('Decision History', style: AppTypography.appBarTitle),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: SafeArea(
           bottom: false,
           child: Column(
             children: [
-              const _HistoryHeader(),
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.fromLTRB(
@@ -397,10 +350,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigation(
-        selectedIndex: 3,
-        onSelected: _onNavigation,
+        bottomNavigationBar: BottomNavigation(
+          selectedIndex: 3,
+          onSelected: _onNavigation,
+        ),
       ),
     );
   }
@@ -479,27 +432,6 @@ class _ActiveFilterChip extends StatelessWidget {
       onDeleted: onDeleted,
       deleteIconColor: AppColors.textPurple,
       backgroundColor: AppColors.primary20,
-    );
-  }
-}
-
-class _HistoryHeader extends StatelessWidget {
-  const _HistoryHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 32, 12, 7),
-      child: SizedBox(
-        width: double.infinity,
-        child: Text(
-          'Decision History',
-          textAlign: TextAlign.center,
-          style: AppTypography.sectionInnerTitle.copyWith(
-            color: AppColors.textPurple,
-          ),
-        ),
-      ),
     );
   }
 }

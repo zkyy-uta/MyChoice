@@ -33,8 +33,8 @@ class SimulationProvider extends ChangeNotifier {
   SimulationProvider({
     required RecalculateSimulationUseCase recalculateUseCase,
     required AutoBalanceUseCase autoBalanceUseCase,
-  })  : _recalculateUseCase = recalculateUseCase,
-        _autoBalanceUseCase = autoBalanceUseCase;
+  }) : _recalculateUseCase = recalculateUseCase,
+       _autoBalanceUseCase = autoBalanceUseCase;
 
   // ── Getters ────────────────────────────────────────────────────────────────
   DecisionResult? get originalResult => _originalResult;
@@ -154,4 +154,3 @@ class SimulationProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-

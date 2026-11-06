@@ -21,6 +21,7 @@ import '../../screens/user/comparison/mf08_manual_choice_structuring_screen.dart
 import '../../screens/user/dashboard/dashboard_screen.dart';
 import '../../screens/user/decision/create_decision_screen.dart';
 import '../../screens/user/history/history_screen.dart';
+import '../../screens/user/insight/insight_screen.dart';
 import '../../screens/guest/mf04_public_home_catalog_screen.dart';
 import '../../screens/onboarding/onboarding_screen.dart';
 import '../../screens/user/profile/language_screen.dart';
@@ -57,6 +58,7 @@ Map<String, WidgetBuilder> buildAppRoutes() {
     '/dashboard': userRoute((context) => const DashboardScreen()),
     '/create-decision': userRoute((context) => const CreateDecisionScreen()),
     '/history': userRoute((context) => const HistoryScreen()),
+    '/insight': userRoute((context) => const InsightScreen()),
     '/profile': userRoute((context) => const ProfileScreen()),
     '/profile/personal-information': userRoute(
       (context) => const PersonalInformationScreen(),

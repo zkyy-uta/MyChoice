@@ -4,7 +4,7 @@ import '../../domain/entities/user.dart';
 /// User provider for managing user state and profile
 class UserProvider extends ChangeNotifier {
   User? _user;
-  bool _isLoading = false;
+  final bool _isLoading = false;
   String? _error;
 
   // Getters

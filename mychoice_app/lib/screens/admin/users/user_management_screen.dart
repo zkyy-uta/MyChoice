@@ -7,6 +7,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
+import '../../../core/widgets/page_app_bar.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -88,30 +89,26 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     final users = _visibleUsers;
     final allSelected =
         _selectedStatuses.length == AdminUserStatus.values.length;
-    return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      appBar: AppBar(
-        backgroundColor: AppColors.surfaceLight,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'User Management',
-          style: AppTypography.sectionInnerTitle.copyWith(
-            color: AppColors.primaryDark,
-          ),
+    return MobileBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const PageAppBar(
+          title: 'User Management',
+          showBackButton: false,
         ),
-        centerTitle: true,
-      ),
-      body: MobileBackground(
-        child: Column(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-              child: Text(
-                'Manage MyChoice accounts here.',
-                style: AppTypography.extraSmallSemibold.copyWith(
-                  color: AppColors.textTertiary,
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'Manage MyChoice accounts here.',
+                  textAlign: TextAlign.center,
+                  style: AppTypography.extraSmallSemibold.copyWith(
+                    color: AppColors.textTertiary,
+                  ),
                 ),
               ),
             ),
@@ -225,8 +222,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
             ),
           ],
         ),
+        bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 1),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 1),
     );
   }
 }

@@ -13,6 +13,7 @@ import 'package:mychoice_app/screens/user/profile/language_screen.dart';
 import 'package:mychoice_app/screens/user/profile/my_decision_data_screen.dart';
 import 'package:mychoice_app/screens/user/profile/notification_settings_screen.dart';
 import 'package:mychoice_app/screens/user/history/history_screen.dart';
+import 'package:mychoice_app/screens/user/dashboard/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -129,6 +130,23 @@ void main() {
     await tester.binding.setSurfaceSize(null);
   });
 
+  testWidgets('dashboard greeting uses the authenticated full name', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => AuthProvider(
+          repository: _ProfileAuthRepository(name: 'Alya Rahma Putri'),
+        ),
+        child: const MaterialApp(home: DashboardScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Alya Rahma Putri'), findsOneWidget);
+    expect(find.text('Kim Ryul'), findsNothing);
+  });
+
   testWidgets('user can confirm account deletion from profile', (
     WidgetTester tester,
   ) async {
@@ -203,9 +221,10 @@ void main() {
 }
 
 class _ProfileAuthRepository implements AuthRepository {
-  _ProfileAuthRepository({this.isAdmin = false});
+  _ProfileAuthRepository({this.isAdmin = false, this.name});
 
   final bool isAdmin;
+  final String? name;
   bool didDeleteAccount = false;
 
   @override
@@ -213,7 +232,7 @@ class _ProfileAuthRepository implements AuthRepository {
     user: User(
       id: 'test-user',
       email: isAdmin ? 'admin@mychoice.com' : 'kimryul4sho@gmail.com',
-      name: isAdmin ? 'Admin User' : 'Kim Ryul',
+      name: name ?? (isAdmin ? 'Admin User' : 'Kim Ryul'),
       role: isAdmin ? UserRole.admin : UserRole.basic,
       plan: UserPlan.forTier(isAdmin ? UserPlanTier.admin : UserPlanTier.basic),
       createdAt: DateTime(2026),

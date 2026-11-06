@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
+import '../../../core/widgets/mobile_background.dart';
 import 'manage_subcategory_screen.dart';
 
 class TechnologyScreen extends StatelessWidget {
@@ -15,101 +16,101 @@ class TechnologyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceLight,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        _statCard('5', 'Subcategories'),
-                        const SizedBox(width: 8),
-                        _statCard('23', 'Criteria'),
-                        const SizedBox(width: 8),
-                        _statCard('45', 'Options'),
-                      ],
-                    ),
-                    const SizedBox(height: 22),
-                    Text(
-                      'Subcategories',
-                      style: AppTypography.sectionInnerTitle.copyWith(
-                        color: _darkPurple,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
+      backgroundColor: Colors.transparent,
+      body: MobileBackground(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          _statCard('5', 'Subcategories'),
+                          const SizedBox(width: 8),
+                          _statCard('23', 'Criteria'),
+                          const SizedBox(width: 8),
+                          _statCard('45', 'Options'),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
+                      const SizedBox(height: 22),
+                      Text(
+                        'Subcategories',
+                        style: AppTypography.sectionInnerTitle.copyWith(
+                          color: _darkPurple,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
 
-                    // 1. LAPTOP
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Laptop',
-                      icon: Icons.laptop_mac_rounded,
-                      incomplete: true,
-                    ),
+                      // 1. LAPTOP
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Laptop',
+                        icon: Icons.laptop_mac_rounded,
+                        incomplete: true,
+                      ),
 
-                    // 2. SMARTPHONE
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Smartphone',
-                      icon: Icons.smartphone_rounded,
-                      incomplete: false,
-                    ),
+                      // 2. SMARTPHONE
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Smartphone',
+                        icon: Icons.smartphone_rounded,
+                        incomplete: false,
+                      ),
 
-                    // 3. TABLET
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Tablet',
-                      icon: Icons.tablet_mac_rounded,
-                      incomplete: false,
-                    ),
+                      // 3. TABLET
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Tablet',
+                        icon: Icons.tablet_mac_rounded,
+                        incomplete: false,
+                      ),
 
-                    // 4. PC
-                    _subcategoryCard(
-                      context: context,
-                      name: 'PC',
-                      icon: Icons.desktop_windows_rounded,
-                      incomplete: false,
-                      criteriaTags: const [
-                        'Price',
-                        'RAM',
-                        'Storage',
-                        'CPU Score',
-                      ],
-                    ),
+                      // 4. PC
+                      _subcategoryCard(
+                        context: context,
+                        name: 'PC',
+                        icon: Icons.desktop_windows_rounded,
+                        incomplete: false,
+                        criteriaTags: const [
+                          'Price',
+                          'RAM',
+                          'Storage',
+                          'CPU Score',
+                        ],
+                      ),
 
-                    // 5. MONITOR
-                    _subcategoryCard(
-                      context: context,
-                      name: 'Monitor',
-                      icon: Icons.monitor_rounded,
-                      incomplete: false,
-                      criteriaTags: const [
-                        'Price',
-                        'Screen Size',
-                        'Refresh Rate',
-                        'Response Time',
-                        'Resolution',
-                      ],
-                    ),
-                  ],
+                      // 5. MONITOR
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Monitor',
+                        icon: Icons.monitor_rounded,
+                        incomplete: false,
+                        criteriaTags: const [
+                          'Price',
+                          'Screen Size',
+                          'Refresh Rate',
+                          'Response Time',
+                          'Resolution',
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: const AdminBottomNavigation(
-        selectedIndex: 2,
-      ),
+      bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
     );
   }
 
@@ -160,20 +161,13 @@ class TechnologyScreen extends StatelessWidget {
   Widget _statCard(String value, String label) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 20,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             stops: [0.0, 0.55, 1.0],
-            colors: [
-              Color(0xFF7B4378),
-              Color(0xFF9783D6),
-              Color(0xFFB4A8F6),
-            ],
+            colors: [Color(0xFF7B4378), Color(0xFF9783D6), Color(0xFFB4A8F6)],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -221,13 +215,7 @@ class TechnologyScreen extends StatelessWidget {
     required bool incomplete,
     List<String>? criteriaTags,
   }) {
-    final allTags = criteriaTags ??
-        const [
-          'Price',
-          'RAM',
-          'Storage',
-          'Weight',
-        ];
+    final allTags = criteriaTags ?? const ['Price', 'RAM', 'Storage', 'Weight'];
 
     return Container(
       width: double.infinity,
@@ -271,11 +259,7 @@ class TechnologyScreen extends StatelessWidget {
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        icon,
-                        color: _plum,
-                        size: 24,
-                      ),
+                      child: Icon(icon, color: _plum, size: 24),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -328,9 +312,7 @@ class TechnologyScreen extends StatelessWidget {
                           Navigator.of(context).push(
                             MaterialPageRoute<void>(
                               builder: (context) =>
-                                  ManageSubcategoryScreen(
-                                subcategory: name,
-                              ),
+                                  ManageSubcategoryScreen(subcategory: name),
                             ),
                           );
                         },
@@ -339,9 +321,7 @@ class TechnologyScreen extends StatelessWidget {
                           foregroundColor: _plum,
                           elevation: 3,
                           shadowColor: Colors.black.withValues(alpha: 0.35),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -357,10 +337,7 @@ class TechnologyScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 6),
-                            Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 18,
-                            ),
+                            Icon(Icons.arrow_forward_rounded, size: 18),
                           ],
                         ),
                       ),
@@ -413,7 +390,8 @@ class TechnologyScreen extends StatelessWidget {
           }
           final hidden = tags.length - visible;
           if (hidden > 0) {
-            total += (visible > 0 ? _tagSpacing : 0) +
+            total +=
+                (visible > 0 ? _tagSpacing : 0) +
                 _tagWidth(context, '+$hidden');
           }
           return total;
@@ -458,11 +436,7 @@ class TechnologyScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(
-        text,
-        maxLines: 1,
-        style: _tagTextStyle(),
-      ),
+      child: Text(text, maxLines: 1, style: _tagTextStyle()),
     );
   }
 

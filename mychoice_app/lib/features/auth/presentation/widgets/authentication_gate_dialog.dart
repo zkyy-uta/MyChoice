@@ -93,5 +93,3 @@ class AuthenticationGateDialog extends StatelessWidget {
     );
   }
 }
-
-
