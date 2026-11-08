@@ -3,14 +3,22 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/mobile_background.dart';
+import '../comparison/mf08_manual_choice_structuring_screen.dart';
+import 'result_screen.dart';
 
 class DetailAnalysisScreen extends StatelessWidget {
   const DetailAnalysisScreen({
     super.key,
+    this.category = 'Technology',
+    this.subcategory = 'Laptop',
+    this.choices = const [],
     this.onComparison,
     this.onTabSelected,
   });
 
+  final String category;
+  final String subcategory;
+  final List<RankedChoice> choices;
   final VoidCallback? onComparison;
   final ValueChanged<int>? onTabSelected;
 
@@ -243,30 +251,67 @@ class DetailAnalysisScreen extends StatelessWidget {
 
   Widget _buildComparisonButton(BuildContext context) {
     return SizedBox(
-      width: 139,
-      height: 39,
+      width: 148,
+      height: 42,
       child: Material(
         color: darkPurple,
         borderRadius: BorderRadius.circular(22),
         child: InkWell(
-          onTap:
-              onComparison ??
+          onTap: onComparison ??
               () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Comparison screen is not connected yet.'),
+                final compChoices = choices.isNotEmpty
+                    ? choices
+                        .map(
+                          (c) => ComparisonChoice(
+                            name: c.name,
+                            finalScore: c.score,
+                          ),
+                        )
+                        .toList()
+                    : const [
+                        ComparisonChoice(
+                          name: 'Lenovo IdeaPad Slim 5',
+                          finalScore: 0.86,
+                        ),
+                        ComparisonChoice(
+                          name: 'ASUS Vivobook 14',
+                          finalScore: 0.79,
+                        ),
+                        ComparisonChoice(
+                          name: 'Acer Aspire 5',
+                          finalScore: 0.74,
+                        ),
+                      ];
+
+                Navigator.of(context).pushNamed(
+                  '/mf08-comparison',
+                  arguments: Mf08ComparisonArguments(
+                    category: category,
+                    subcategory: subcategory,
+                    choices: compChoices,
                   ),
                 );
               },
           borderRadius: BorderRadius.circular(22),
           child: Center(
-            child: Text(
-              'View Comparison',
-              style: AppTypography.buttonMedium.copyWith(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.compare_arrows_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  'View Comparison',
+                  style: AppTypography.buttonMedium.copyWith(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
         ),

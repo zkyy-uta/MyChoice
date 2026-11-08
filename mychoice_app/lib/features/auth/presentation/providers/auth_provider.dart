@@ -84,7 +84,7 @@ class AuthProvider extends ChangeNotifier {
       if (!didLaunch && _googleSignInPending) {
         throw AuthenticationError(
           message:
-              'Tidak dapat membuka halaman login Google. Silakan coba lagi.',
+              'Unable to open Google sign-in. Please try again.',
         );
       }
       if (_googleSignInPending) {
@@ -105,7 +105,7 @@ class AuthProvider extends ChangeNotifier {
       final result = await _repository.getCurrentUser();
       if (result == null) {
         throw AuthenticationError(
-          message: 'Login Google tidak berhasil. Silakan coba lagi.',
+          message: 'Google sign-in was not successful. Please try again.',
         );
       }
       _googleSignInPending = false;
@@ -263,17 +263,19 @@ class AuthProvider extends ChangeNotifier {
       AppException exception => exception.message,
       AuthException exception => exception.message,
       _
+          when errorText.contains('error sending confirmation email') ||
+              errorText.contains('unexpected_failure') =>
+        'Unable to send verification email. Please verify your Supabase SMTP configuration or disable "Confirm email" in Supabase Auth settings.',
+      _
           when errorText.contains('unsupported provider') &&
               errorText.contains('not enabled') =>
-        'Login Google belum diaktifkan di Supabase. Aktifkan provider Google '
-            'di Authentication → Sign In / Providers.',
+        'Google Sign-In is not enabled in Supabase. Please enable the Google provider in Authentication → Sign In / Providers.',
       _
           when errorText.contains('failed host lookup') ||
               errorText.contains('socketexception') ||
               errorText.contains('no address associated with hostname') =>
-        'Tidak dapat terhubung ke server. Periksa koneksi internet atau DNS '
-            'di HP, lalu coba lagi.',
-      _ => 'Terjadi kesalahan autentikasi. Silakan coba lagi. ($error)',
+        'Unable to connect to the server. Please check your internet connection and try again.',
+      _ => 'An authentication error occurred. Please try again. ($error)',
     };
   }
 }

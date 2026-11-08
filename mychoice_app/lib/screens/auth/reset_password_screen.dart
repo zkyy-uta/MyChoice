@@ -115,7 +115,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         autofillHints: const [AutofillHints.newPassword],
                         onChanged: (_) => setState(() {}),
                         decoration: InputDecoration(
-                          hintText: 'Password baru',
+                          hintText: 'New Password',
                           suffixIcon: IconButton(
                             onPressed: () => setState(
                               () => _obscurePassword = !_obscurePassword,
@@ -138,7 +138,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         autofillHints: const [AutofillHints.newPassword],
                         onChanged: (_) => setState(() {}),
                         decoration: InputDecoration(
-                          hintText: 'Konfirmasi password baru',
+                          hintText: 'Confirm New Password',
                           suffixIcon: IconButton(
                             onPressed: () => setState(
                               () =>
@@ -159,7 +159,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           !_passwordsMatch) ...[
                         const SizedBox(height: AppSpacing.sm),
                         const Text(
-                          'Password belum sama.',
+                          'Passwords do not match.',
                           style: TextStyle(color: AppColors.error80),
                         ),
                       ],

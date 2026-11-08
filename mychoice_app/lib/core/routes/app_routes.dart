@@ -6,6 +6,7 @@ import '../../screens/guest/guest_category_detail_screen.dart';
 import '../../screens/guest/guest_create_decision_screen.dart';
 import '../../screens/guest/guest_explore_screen.dart';
 import '../../screens/user/comparison/comparison_screen.dart';
+import '../../screens/user/decision/continue_decision_screen.dart';
 import '../../screens/user/decision/what_if_screen.dart';
 import '../../screens/admin/catalogue/catalogue_screen.dart';
 import '../../screens/admin/dashboard/admin_dashboard_screen.dart';
@@ -57,6 +58,7 @@ Map<String, WidgetBuilder> buildAppRoutes() {
     '/reset-password': (context) => const ResetPasswordScreen(),
     '/dashboard': userRoute((context) => const DashboardScreen()),
     '/create-decision': userRoute((context) => const CreateDecisionScreen()),
+    '/continue-decision': userRoute((context) => const ContinueDecisionScreen()),
     '/history': userRoute((context) => const HistoryScreen()),
     '/insight': userRoute((context) => const InsightScreen()),
     '/profile': userRoute((context) => const ProfileScreen()),

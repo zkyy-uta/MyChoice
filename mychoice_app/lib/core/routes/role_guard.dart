@@ -65,16 +65,16 @@ class _RoleGuardState extends State<RoleGuard> {
             final isAdmin = auth.user!.role == UserRole.admin;
             if (widget.adminOnly && !isAdmin) {
               return const _AccessRequired(
-                message: 'Halaman ini hanya dapat diakses oleh admin.',
+                message: 'This page can only be accessed by administrators.',
                 route: '/dashboard',
-                action: 'Ke beranda user',
+                action: 'Go to user dashboard',
               );
             }
             if (!widget.adminOnly && isAdmin) {
               return const _AccessRequired(
-                message: 'Gunakan halaman admin untuk akun ini.',
+                message: 'Please use the admin dashboard for this account.',
                 route: '/admin',
-                action: 'Ke dashboard admin',
+                action: 'Go to admin dashboard',
               );
             }
 

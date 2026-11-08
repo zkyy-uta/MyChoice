@@ -381,7 +381,7 @@ class Mf08ComparisonScreen extends StatelessWidget {
       backgroundColor: AppColors.surfaceLight,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: const Text(
-        'Perhitungan skor',
+        'Score Calculation',
         style: TextStyle(color: AppColors.textPurple),
       ),
       content: SizedBox(
@@ -392,7 +392,7 @@ class Mf08ComparisonScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Skor akhir adalah jumlah kontribusi setiap kriteria.',
+                'Final score is the sum of contributions from each criterion.',
                 style: TextStyle(color: AppColors.textSecondary, height: 1.4),
               ),
               const SizedBox(height: 14),
@@ -449,7 +449,7 @@ class Mf08ComparisonScreen extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext),
-          child: const Text('Tutup'),
+          child: const Text('Close'),
         ),
       ],
     ),
@@ -492,8 +492,7 @@ class _ComparisonEmptyState extends StatelessWidget {
     child: Padding(
       padding: EdgeInsets.all(28),
       child: Text(
-        'Perbandingan tersedia setelah hasil analisis memiliki '
-        'minimal dua pilihan.',
+        'Comparison available after analysis results have at least two choices.',
         textAlign: TextAlign.center,
         style: TextStyle(color: AppColors.textSecondary),
       ),

@@ -15,20 +15,20 @@ class ProfileScreen extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Hapus akun?'),
+        title: const Text('Delete Account?'),
         content: const Text(
-          'Akun dan data keputusan yang terkait akan dihapus permanen. '
-          'Tindakan ini tidak dapat dibatalkan.',
+          'Your account and all associated decision data will be permanently deleted. '
+          'This action cannot be undone.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: const Text('Batal'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: TextButton.styleFrom(foregroundColor: AppColors.error80),
-            child: const Text('Hapus akun'),
+            child: const Text('Delete Account'),
           ),
         ],
       ),

@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/bottom_navigation.dart';
+import '../history/history_sample_data.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -17,6 +18,10 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   void _createNewDecision() {
     Navigator.of(context).pushNamed('/create-decision');
+  }
+
+  void _continueDecision(String title) {
+    Navigator.of(context).pushNamed('/continue-decision', arguments: title);
   }
 
   void _onNavigation(int index) {
@@ -163,9 +168,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.screenHorizontal,
                 ),
-                child: Text(
-                  'Continue Your Decision',
-                  style: AppTypography.sectionTitle,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Continue Your Decision',
+                      style: AppTypography.sectionTitle,
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/continue-decision'),
+                      child: Text(
+                        'View All',
+                        style: AppTypography.buttonMedium.copyWith(
+                          color: AppColors.primary88,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -178,23 +198,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     horizontal: AppSpacing.screenHorizontal,
                   ),
                   scrollDirection: Axis.horizontal,
-                  children: const [
+                  children: [
                     _OngoingDecisionCard(
                       category: 'Technology',
                       title: 'Laptop',
-                      subtitle: '(3 Choice dan 5 Criteria)',
+                      subtitle: '(3 choices, 5 criteria)',
                       progress: 0.7,
                       color: AppColors.categoryTechnology,
                       icon: Icons.laptop_mac,
+                      onTap: () => _continueDecision('Laptop'),
                     ),
-                    SizedBox(width: AppSpacing.md),
+                    const SizedBox(width: AppSpacing.md),
                     _OngoingDecisionCard(
                       category: 'Education',
                       title: 'Course',
-                      subtitle: '(3 Choice dan 5 Criteria)',
+                      subtitle: '(3 choices, 5 criteria)',
                       progress: 0.4,
                       color: AppColors.categoryEducation,
                       icon: Icons.school,
+                      onTap: () => _continueDecision('Course'),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    _OngoingDecisionCard(
+                      category: 'Technology',
+                      title: 'Smartphone',
+                      subtitle: '(3 choices, 5 criteria)',
+                      progress: 0.85,
+                      color: AppColors.categoryTechnology,
+                      icon: Icons.smartphone,
+                      onTap: () => _continueDecision('Smartphone'),
                     ),
                   ],
                 ),
@@ -260,7 +292,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Text('Recent Decision', style: AppTypography.sectionTitle),
                     TextButton(
-                      onPressed: () => _showComingSoon('View All'),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('/history'),
                       child: Text(
                         'View All',
                         style: AppTypography.buttonMedium.copyWith(
@@ -273,31 +306,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
 
-              // Recent Decisions List
-              const Padding(
-                padding: EdgeInsets.symmetric(
+              // Recent Decisions List (dynamically from shared decision history)
+              Padding(
+                padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.screenHorizontal,
                 ),
                 child: Column(
-                  children: [
-                    _RecentDecisionCard(
-                      category: 'Technology',
-                      title: 'Laptop',
-                      subtitle: 'Lenovo',
-                      status: 'Done',
-                      icon: Icons.laptop_mac,
-                      color: AppColors.categoryTechnology,
-                    ),
-                    SizedBox(height: AppSpacing.md),
-                    _RecentDecisionCard(
-                      category: 'Education',
-                      title: 'Course',
-                      subtitle: 'Data Analyst',
-                      status: 'Done',
-                      icon: Icons.school,
-                      color: AppColors.categoryEducation,
-                    ),
-                  ],
+                  children: historySampleDecisions.take(3).map((decision) {
+                    final Color cardColor;
+                    final IconData cardIcon;
+                    switch (decision.category.toLowerCase()) {
+                      case 'education':
+                        cardColor = AppColors.categoryEducation;
+                        cardIcon = Icons.school;
+                        break;
+                      case 'fashion':
+                        cardColor = AppColors.categoryFashion;
+                        cardIcon = Icons.checkroom;
+                        break;
+                      default:
+                        cardColor = AppColors.categoryTechnology;
+                        cardIcon = Icons.laptop_mac;
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: _RecentDecisionCard(
+                        category: decision.category,
+                        title: decision.title,
+                        subtitle:
+                            'Score: ${(decision.score * 100).toInt()}% · ${decision.dateGroup}',
+                        status: decision.status,
+                        icon: cardIcon,
+                        color: cardColor,
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('/history'),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
             ],
@@ -323,6 +369,7 @@ class _OngoingDecisionCard extends StatelessWidget {
   final double progress;
   final Color color;
   final IconData icon;
+  final VoidCallback? onTap;
 
   const _OngoingDecisionCard({
     required this.category,
@@ -331,6 +378,7 @@ class _OngoingDecisionCard extends StatelessWidget {
     required this.progress,
     required this.color,
     required this.icon,
+    this.onTap,
   });
 
   @override
@@ -339,7 +387,7 @@ class _OngoingDecisionCard extends StatelessWidget {
       color: color.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
       child: InkWell(
-        onTap: null,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
         child: Container(
           width: 280,
@@ -470,6 +518,7 @@ class _RecentDecisionCard extends StatelessWidget {
   final String status;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   const _RecentDecisionCard({
     required this.category,
@@ -478,73 +527,81 @@ class _RecentDecisionCard extends StatelessWidget {
     required this.status,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadowLight,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.lg),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowLight,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.lg),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 32,
-            ), // BIGGER ICON: 32 (was 24)
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$category - $title',
-                  style: AppTypography.sectionInnerTitle,
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: AppTypography.small.copyWith(
-                    color: AppColors.textSecondary,
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: 32,
+                ), // BIGGER ICON: 32 (was 24)
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$category - $title',
+                      style: AppTypography.sectionInnerTitle,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: AppTypography.small.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.success20,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  status,
+                  style: AppTypography.smallSemibold.copyWith(
+                    color: AppColors.success80,
                   ),
                 ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.xs,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.success20,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Text(
-              status,
-              style: AppTypography.smallSemibold.copyWith(
-                color: AppColors.success80,
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

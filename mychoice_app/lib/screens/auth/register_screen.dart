@@ -64,15 +64,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       await showDialog<void>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Check email'),
+          title: const Text('Check your email'),
           content: const Text(
-            'Account successfully created. Please confirm your email first before '
-            'login.',
+            'Account successfully created! Please check your email inbox to verify your email address before logging in.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Understood'),
+              child: const Text('OK'),
             ),
           ],
         ),

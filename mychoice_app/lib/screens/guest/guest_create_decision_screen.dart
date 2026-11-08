@@ -43,14 +43,136 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
     'Storage': 15,
   };
 
-  // Available options (mock data)
-  final List<String> _availableOptions = [
-    'ASUS Vivobook 14',
-    'Lenovo IdeaPad Slim 5',
-    'Acer Aspire 5',
-    'HP Pavilion 15',
-    'Dell Inspiron 15',
-  ];
+  // Real brand/model options per subcategory
+  final Map<String, List<String>> _optionsBySubcategory = {
+    'Laptop': [
+      'Apple MacBook Pro 14" (M3 Pro)',
+      'Apple MacBook Air 13" (M3)',
+      'Dell XPS 13',
+      'Lenovo ThinkPad X1 Carbon Gen 12',
+      'Lenovo IdeaPad Slim 5',
+      'ASUS Zenbook 14 OLED',
+      'ASUS VivoBook 15',
+      'HP Spectre x360 14',
+      'HP Pavilion 15',
+      'Acer Swift Go 14',
+      'Acer Aspire 5',
+      'MSI Stealth 16 Studio',
+    ],
+    'Smartphone': [
+      'Apple iPhone 15 Pro Max',
+      'Samsung Galaxy S24 Ultra',
+      'Google Pixel 8 Pro',
+      'Xiaomi 14 Ultra',
+      'Poco X6 Pro 5G',
+      'OnePlus 12',
+      'Vivo X100 Pro',
+      'Realme GT 5 Pro',
+    ],
+    'Tablet': [
+      'Apple iPad Pro 13" (M4)',
+      'Apple iPad Air 11" (M2)',
+      'Samsung Galaxy Tab S9 Ultra',
+      'Xiaomi Pad 6',
+      'Microsoft Surface Pro 10',
+    ],
+    'Monitor': [
+      'Dell UltraSharp U2724D',
+      'LG UltraGear 27GR95QE OLED',
+      'ASUS ProArt Display PA279CV',
+      'Samsung Odyssey OLED G9',
+    ],
+    'Gaming PC': [
+      'Alienware Aurora R16',
+      'ASUS ROG Strix G16CHR',
+      'HP OMEN 45L Gaming Desktop',
+      'Corsair Vengeance i7500',
+    ],
+    'PC': [
+      'Apple Mac Studio (M2 Max)',
+      'Apple Mac mini (M2)',
+      'Dell OptiPlex 7010',
+      'Lenovo ThinkCentre M70q',
+      'HP Elite Mini 800',
+    ],
+    'Course': [
+      'Coursera Machine Learning Specialization (DeepLearning.AI)',
+      'Coursera Google Data Analytics Professional Certificate',
+      'Udemy The Complete 2026 Web Development Bootcamp (Angela Yu)',
+      'edX CS50: Introduction to Computer Science (Harvard)',
+      'Coursera IBM Data Science Professional Certificate',
+      'Dicoding Menjadi Flutter Developer Expert',
+      'Bangkit Academy Google Android & Cloud Architecture',
+      'Udacity AI & Machine Learning Engineer Nanodegree',
+    ],
+    'Certification': [
+      'AWS Certified Solutions Architect - Associate',
+      'Google Cloud Professional Cloud Architect',
+      'Microsoft Certified: Azure Solutions Architect Expert',
+      'CompTIA Security+ (SY0-701)',
+      'Cisco Certified Network Associate (CCNA 200-301)',
+      'Certified Information Systems Security Professional (CISSP)',
+    ],
+    'Bootcamp': [
+      'General Assembly Software Engineering Immersive',
+      'Flatiron School Full-Stack Software Engineering',
+      'Le Wagon Web Development Bootcamp',
+      'Springboard Data Science Career Track',
+      'Hack Reactor Software Engineering Bootcamp',
+    ],
+    'University': [
+      'Massachusetts Institute of Technology (MIT)',
+      'Stanford University',
+      'Harvard University',
+      'University of Oxford',
+      'National University of Singapore (NUS)',
+      'Universitas Indonesia (UI)',
+      'Institut Teknologi Bandung (ITB)',
+    ],
+    'Bags': [
+      'Louis Vuitton Neverfull MM',
+      'Gucci Ophidia GG Medium Tote',
+      'Coach Tabby Shoulder Bag 26',
+      'Michael Kors Jet Set Large Tote',
+      'Tumi Alpha 3 Continental Carry-On',
+      'Samsonite Winfield 3 DLX Hardside Spinner',
+      'Eiger Rhinos 60L Adventure Backpack',
+      'Herschel Little America Backpack',
+      'Fjallraven Kanken Classic Backpack',
+    ],
+    'Shoes': [
+      'Nike Air Max 90 Classic',
+      'Nike Air Jordan 1 Retro High OG',
+      'Adidas Ultraboost Light',
+      'Adidas Samba OG',
+      'New Balance 574 Core',
+      'Converse Chuck Taylor All Star 70',
+      'Vans Old Skool Classic',
+      'On Cloud 5 Running Shoes',
+    ],
+    'Dress': [
+      'Zara Satin Effect Cut-Out Midi Dress',
+      'H&M Ribbed Lyocell Wrap Dress',
+      'Mango Floral Print Chiffon Midi Dress',
+      'ASOS DESIGN Pleated Halter Maxi Dress',
+      'Uniqlo Linen Blend A-Line Dress',
+    ],
+    'Accessories': [
+      'Ray-Ban Original Wayfarer RB2140 Sunglasses',
+      'Oakley Holbrook Prizm Sunglasses',
+      'Gucci Double G Smooth Leather Belt',
+      'Hermès Carre 90 Silk Twill Scarf',
+      'Coach Signature Canvas Card Case Lanyard',
+    ],
+  };
+
+  List<String> get _availableOptions {
+    if (_selectedSubcategory != null &&
+        _optionsBySubcategory.containsKey(_selectedSubcategory)) {
+      return _optionsBySubcategory[_selectedSubcategory!]!;
+    }
+    return _optionsBySubcategory['Laptop']!;
+  }
 
   // Categories with icon assets
   final Map<String, String> _categoryIcons = {
@@ -210,7 +332,7 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
         context,
         title: 'Sign In Required',
         message:
-            'Anda sedang dalam mode Guest. Silakan login atau buat akun terlebih dahulu untuk membuat dan menyimpan keputusan.',
+            'You are currently in Guest mode. Please sign in or create an account first to create and save your decisions.',
       );
       return;
     }

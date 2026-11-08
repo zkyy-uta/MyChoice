@@ -24,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: 'Welcome to MyChoice',
       subtitle: 'Clarity Before You Decide.',
       description:
-          'MyChoice membantu kamu membandingkan berbagai pilihan berdasarkan kebutuhan, prioritas, dan kondisi kamu.',
+          'MyChoice helps you compare various choices based on your unique needs, priorities, and conditions.',
       illustration:
           'assets/illustrations/onboarding_welcome.png', // Placeholder - Replace with actual illustration
     ),
@@ -32,7 +32,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: '🔍 Understand Your Needs',
       subtitle: 'Know What Matters Most',
       description:
-          'Bingung menentukan apa yang paling penting? MyChoice membantu memahami kebutuhan kamu dan menyarankan kriteria yang relevan.',
+          'Not sure what matters most? MyChoice helps you understand your needs and suggests relevant criteria.',
       illustration:
           'assets/illustrations/onboarding_understand.png', // Placeholder
     ),
@@ -40,7 +40,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: '⚖️ Compare Your Options',
       subtitle: 'Compare Without the Confusion',
       description:
-          'Bandingkan beberapa pilihan berdasarkan kriteria yang benar-benar penting buat kamu.',
+          'Compare multiple options side-by-side based on the criteria that truly matter to you.',
       illustration:
           'assets/illustrations/onboarding_compare.png', // Placeholder
     ),
@@ -48,7 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: '✨ Understand the Result',
       subtitle: 'You Decide. MyChoice Helps.',
       description:
-          'MyChoice memberikan hasil berdasarkan data dan prioritasmu, menjelaskan alasannya, dan membantu melihat kemungkinan hasil jika prioritasmu berubah.',
+          'MyChoice delivers data-driven results tailored to your priorities, explains the reasoning, and shows how outcomes shift if your priorities change.',
       illustration: 'assets/illustrations/onboarding_result.png', // Placeholder
     ),
   ];

@@ -5,6 +5,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/mobile_background.dart';
 import '../comparison/mf08_manual_choice_structuring_screen.dart';
+import '../history/history_detail_screen.dart';
+import '../history/history_sample_data.dart';
 import 'detail_analysis_screen.dart';
 import 'package:mychoice_app/features/what_if_simulation/presentation/providers/simulation_provider.dart';
 import 'package:mychoice_app/features/decision_engine/domain/entities/decision_result.dart';
@@ -69,18 +71,33 @@ class _ResultScreenState extends State<ResultScreen> {
 
   Future<void> _save() async {
     if (saving || saved) return;
-    if (widget.onSave == null) {
-      _unavailable('Save Decision');
-      return;
-    }
 
     setState(() => saving = true);
     try {
-      await widget.onSave!();
+      if (widget.onSave != null) {
+        await widget.onSave!();
+      } else {
+        final sorted = [...widget.choices]
+          ..sort((a, b) => b.score.compareTo(a.score));
+        final top = sorted.isEmpty ? null : sorted.first;
+        final newDecision = HistoryDecision(
+          category: widget.category,
+          title: top?.name ?? widget.subcategory,
+          score: top?.score ?? 0.85,
+          dateGroup: 'Today',
+          date: 'Today',
+          recordedAt: DateTime.now(),
+          status: 'Decision Made',
+        );
+        historySampleDecisions.insert(0, newDecision);
+      }
       if (!mounted) return;
       setState(() => saved = true);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Decision saved successfully.')),
+        const SnackBar(
+          content: Text('Decision saved successfully! View it in History.'),
+          backgroundColor: AppColors.success80,
+        ),
       );
     } catch (_) {
       if (!mounted) return;
@@ -372,7 +389,27 @@ class _ResultScreenState extends State<ResultScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const DetailAnalysisScreen(),
+                                            DetailAnalysisScreen(
+                                          category: widget.category,
+                                          subcategory: widget.subcategory,
+                                          choices: widget.choices,
+                                          onComparison: () =>
+                                              Navigator.of(context).pushNamed(
+                                            '/mf08-comparison',
+                                            arguments: Mf08ComparisonArguments(
+                                              category: widget.category,
+                                              subcategory: widget.subcategory,
+                                              choices: widget.choices
+                                                  .map(
+                                                    (c) => ComparisonChoice(
+                                                      name: c.name,
+                                                      finalScore: c.score,
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     );
                                   },

@@ -75,7 +75,7 @@ class _Mf04PublicHomeCatalogScreenState
     } catch (error) {
       if (!mounted) return;
       setState(() => _isLoading = false);
-      _showMessage('Pilihan tersimpan gagal dimuat: $error');
+      _showMessage('Failed to load saved choices: $error');
     }
   }
 
@@ -87,7 +87,7 @@ class _Mf04PublicHomeCatalogScreenState
     ];
     if (mergedChoices.length > _maxChoices) {
       _showMessage(
-        '${widget.isPremium ? 'Premium' : 'Basic'} maksimal $_maxChoices pilihan.',
+        '${widget.isPremium ? 'Premium' : 'Basic'} maximum $_maxChoices choices.',
       );
       return;
     }
@@ -96,7 +96,7 @@ class _Mf04PublicHomeCatalogScreenState
     );
     if (incompleteChoices.isNotEmpty) {
       _showMessage(
-        'Lengkapi atau tandai data yang tidak tersedia pada setiap pilihan.',
+        'Please complete or mark unavailable data for each choice.',
       );
       return;
     }
@@ -108,16 +108,16 @@ class _Mf04PublicHomeCatalogScreenState
         jsonEncode(mergedChoices.map((choice) => choice.toJson()).toList()),
       );
       if (!saved) {
-        throw StateError('Penyimpanan lokal tidak berhasil.');
+        throw StateError('Local storage failed.');
       }
       if (!mounted) return;
       setState(() => _savedChoices = mergedChoices);
       _showMessage(
-        '${mergedChoices.length} pilihan disimpan untuk dianalisis.',
+        '${mergedChoices.length} choices saved for analysis.',
       );
     } catch (error) {
       if (!mounted) return;
-      _showMessage('Pilihan gagal disimpan: $error');
+      _showMessage('Failed to save choices: $error');
     }
   }
 
@@ -179,11 +179,11 @@ class _Mf04PublicHomeCatalogScreenState
         jsonEncode(choices.map((choice) => choice.toJson()).toList()),
       );
       if (!saved) {
-        throw StateError('Penyimpanan lokal tidak berhasil.');
+        throw StateError('Local storage failed.');
       }
       if (mounted) setState(() => _savedChoices = choices);
     } catch (error) {
-      if (mounted) _showMessage('Perubahan pilihan gagal disimpan: $error');
+      if (mounted) _showMessage('Failed to save choice changes: $error');
     }
   }
 
@@ -217,13 +217,13 @@ class _Mf04PublicHomeCatalogScreenState
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Pilih alternatif dari katalog atau tambahkan pilihan sendiri.',
+                  'Select alternatives from the catalog or add your own choices.',
                   style: TextStyle(color: Colors.white, height: 1.4),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   '${widget.isPremium ? 'Premium' : 'Basic'} · '
-                  'maksimal $_maxChoices pilihan',
+                  'maximum $_maxChoices choices',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -234,7 +234,7 @@ class _Mf04PublicHomeCatalogScreenState
           ),
           const SizedBox(height: 24),
           const Text(
-            'Pilih kategori',
+            'Select category',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -243,7 +243,7 @@ class _Mf04PublicHomeCatalogScreenState
           ),
           const SizedBox(height: 6),
           const Text(
-            'Tambahkan pilihan yang ingin dibandingkan.',
+            'Add choices you want to compare.',
             style: TextStyle(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 12),
@@ -283,7 +283,7 @@ class _Mf04PublicHomeCatalogScreenState
               children: [
                 const Expanded(
                   child: Text(
-                    'Pilihan tersimpan',
+                    'Saved choices',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -297,7 +297,7 @@ class _Mf04PublicHomeCatalogScreenState
             const SizedBox(height: 8),
             if (_savedChoices.isEmpty)
               const Text(
-                'Pilihan yang disimpan untuk dianalisis akan muncul di sini.',
+                'Choices saved for analysis will appear here.',
                 style: TextStyle(color: AppColors.textSecondary),
               )
             else
@@ -314,12 +314,12 @@ class _Mf04PublicHomeCatalogScreenState
                       spacing: 0,
                       children: [
                         IconButton(
-                          tooltip: 'Lengkapi data',
+                          tooltip: 'Complete data',
                           onPressed: () => _editSavedChoice(choice),
                           icon: const Icon(Icons.edit_outlined),
                         ),
                         IconButton(
-                          tooltip: 'Hapus pilihan',
+                          tooltip: 'Delete choice',
                           onPressed: () => _removeSavedChoice(choice),
                           icon: const Icon(Icons.delete_outline),
                         ),
@@ -387,7 +387,7 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
           const SizedBox(width: 12),
           const Expanded(
             child: Text(
-              'Batas pilihan tercapai',
+              'Choice limit reached',
               style: TextStyle(
                 color: AppColors.textPurple,
                 fontWeight: FontWeight.bold,
@@ -398,15 +398,15 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
       ),
       content: Text(
         widget.isPremium
-            ? 'Paket Premium maksimal ${widget.maxChoices} opsi.'
-            : 'Paket Basic maksimal ${widget.maxChoices} opsi. '
-                  'Upgrade ke Premium untuk memilih hingga 10 opsi.',
+            ? 'Premium package allows comparing up to ${widget.maxChoices} options.'
+            : 'Basic plan allows a maximum of ${widget.maxChoices} options. '
+                  'Upgrade to Premium to select up to 10 options.',
         style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(dialogContext).pop(),
-          child: const Text('Tutup'),
+          child: const Text('Close'),
         ),
         if (!widget.isPremium)
           FilledButton(
@@ -421,7 +421,7 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
               Navigator.of(dialogContext).pop();
               Navigator.of(context).pushNamed('/profile/premium-plan');
             },
-            child: const Text('Lihat Premium'),
+            child: const Text('View Premium'),
           ),
       ],
     ),
@@ -436,7 +436,7 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
       (item) => item.name.toLowerCase() == choice.name.toLowerCase(),
     )) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pilihan tersebut sudah ditambahkan.')),
+        const SnackBar(content: Text('This choice has already been added.')),
       );
       return;
     }
@@ -507,7 +507,7 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
           Text(widget.category.description),
           const SizedBox(height: 20),
           Text(
-            'Pilihan dibandingkan '
+            'Compared choices '
             '(${widget.otherChoiceCount + _choices.length}/${widget.maxChoices})',
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
@@ -528,12 +528,12 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
           OutlinedButton.icon(
             onPressed: _addManualChoice,
             icon: const Icon(Icons.add),
-            label: const Text('Tambah pilihan manual'),
+            label: const Text('Add custom choice'),
           ),
           if (_choices.isNotEmpty) ...[
             const SizedBox(height: 12),
             const Text(
-              'Lengkapi informasi pilihan atau tandai yang tidak tersedia:',
+              'Complete choice details or mark unavailable:',
               style: TextStyle(color: AppColors.textSecondary),
             ),
             ..._choices.map(
@@ -545,12 +545,12 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
                   spacing: 0,
                   children: [
                     IconButton(
-                      tooltip: 'Lengkapi informasi',
+                      tooltip: 'Complete details',
                       onPressed: () => _editChoice(choice),
                       icon: const Icon(Icons.edit_outlined),
                     ),
                     IconButton(
-                      tooltip: 'Hapus pilihan',
+                      tooltip: 'Delete choice',
                       onPressed: () => setState(() => _choices.remove(choice)),
                       icon: const Icon(Icons.close_rounded),
                     ),
@@ -574,8 +574,8 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
-                              'Lengkapi atau tandai data yang tidak tersedia '
-                              'pada setiap pilihan.',
+                              'Please complete or mark unavailable data '
+                              'for each choice.',
                             ),
                           ),
                         );
@@ -583,7 +583,7 @@ class _ChoiceSelectionSheetState extends State<_ChoiceSelectionSheet> {
                       }
                       Navigator.pop(context, List<_Choice>.of(_choices));
                     },
-              child: const Text('Simpan pilihan'),
+              child: const Text('Save choices'),
             ),
           ),
         ],
@@ -603,7 +603,7 @@ Future<_Choice?> _showManualChoiceDialog(
     return await showDialog<_Choice>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Tambah pilihan manual'),
+        title: const Text('Add custom choice'),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -611,7 +611,7 @@ Future<_Choice?> _showManualChoiceDialog(
               TextField(
                 controller: nameController,
                 autofocus: true,
-                decoration: const InputDecoration(labelText: 'Nama pilihan'),
+                decoration: const InputDecoration(labelText: 'Choice name'),
               ),
               const SizedBox(height: 12),
               TextField(
@@ -619,14 +619,14 @@ Future<_Choice?> _showManualChoiceDialog(
                 minLines: 2,
                 maxLines: 4,
                 decoration: const InputDecoration(
-                  labelText: 'Informasi yang kamu ketahui (opsional)',
-                  hintText: 'Tuliskan hanya informasi yang kamu berikan',
+                  labelText: 'Information you know (optional)',
+                  hintText: 'Provide only the details you know',
                 ),
               ),
               const SizedBox(height: 8),
               const Text(
-                'Informasi kosong dapat dilengkapi atau ditandai tidak tersedia '
-                'setelah pilihan ditambahkan.',
+                'Empty information can be completed or marked unavailable '
+                'after the choice is added.',
                 style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
             ],
@@ -635,7 +635,7 @@ Future<_Choice?> _showManualChoiceDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Batal'),
+            child: const Text('Cancel'),
           ),
           FilledButton(
             onPressed: () {
@@ -655,7 +655,7 @@ Future<_Choice?> _showManualChoiceDialog(
                 ),
               );
             },
-            child: const Text('Tambah'),
+            child: const Text('Add'),
           ),
         ],
       ),
@@ -681,7 +681,7 @@ Future<_Choice?> _showChoiceDetailsDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: Text('Informasi: ${choice.name}'),
+          title: Text('Information: ${choice.name}'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -694,12 +694,12 @@ Future<_Choice?> _showChoiceDetailsDialog(
                       enabled: !unavailable,
                       decoration: InputDecoration(
                         labelText: field,
-                        hintText: 'Isi data atau tandai tidak tersedia',
+                        hintText: 'Enter data or mark unavailable',
                       ),
                     ),
                     CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Tandai tidak tersedia'),
+                      title: const Text('Mark unavailable'),
                       value: unavailable,
                       onChanged: (checked) => setDialogState(() {
                         if (checked ?? false) {
@@ -718,7 +718,7 @@ Future<_Choice?> _showChoiceDetailsDialog(
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Batal'),
+              child: const Text('Cancel'),
             ),
             FilledButton(
               onPressed: () {
@@ -736,7 +736,7 @@ Future<_Choice?> _showChoiceDetailsDialog(
                   ),
                 );
               },
-              child: const Text('Simpan'),
+              child: const Text('Save'),
             ),
           ],
         ),

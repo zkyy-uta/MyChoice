@@ -19,7 +19,7 @@ class SupabaseAuthRepository implements AuthRepository {
 
     final authUser = _client.auth.currentUser;
     if (authUser == null) {
-      throw AuthenticationError(message: 'Sesi login tidak valid.');
+      throw AuthenticationError(message: 'Invalid login session.');
     }
 
     return AuthResult(
@@ -37,7 +37,7 @@ class SupabaseAuthRepository implements AuthRepository {
     final authUser = response.user;
     final session = response.session;
     if (authUser == null || session == null) {
-      throw AuthenticationError(message: 'Login gagal. Periksa akunmu.');
+      throw AuthenticationError(message: 'Login failed. Please check your credentials.');
     }
 
     try {
@@ -69,7 +69,7 @@ class SupabaseAuthRepository implements AuthRepository {
     final authUser = response.user;
     if (authUser == null) {
       throw AuthenticationError(
-        message: 'Akun belum berhasil dibuat. Silakan coba lagi.',
+        message: 'Account could not be created. Please try again.',
       );
     }
 
@@ -83,8 +83,9 @@ class SupabaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> requestPasswordReset(String email) {
-    return _client.auth.resetPasswordForEmail(email.trim());
+  Future<void> requestPasswordReset(String email) async {
+    // Sends a recovery OTP / code to user email using Supabase password recovery
+    await _client.auth.resetPasswordForEmail(email.trim());
   }
 
   @override
@@ -112,44 +113,63 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> logout() => _client.auth.signOut();
 
   Future<app_user.User> _loadUser(supabase.User authUser) async {
-    final profile = await _client
-        .from('pengguna')
-        .select('nama, role, tanggal_dibuat')
-        .eq('id_pengguna', authUser.id)
-        .maybeSingle();
+    try {
+      final profile = await _client
+          .from('pengguna')
+          .select('nama, role, tanggal_dibuat')
+          .eq('id_pengguna', authUser.id)
+          .maybeSingle();
 
-    if (profile == null) {
-      throw AuthorizationError(
-        message: 'Data pengguna belum tersedia. Hubungi administrator.',
-      );
+      if (profile != null) {
+        final role = profile['role'];
+        final app_user.UserRole userRole = role == 'admin'
+            ? app_user.UserRole.admin
+            : app_user.UserRole.basic;
+
+        return app_user.User(
+          id: authUser.id,
+          email: authUser.email ?? '',
+          name: (profile['nama'] as String?) ?? '',
+          role: userRole,
+          plan: UserPlan.forTier(
+            userRole == app_user.UserRole.admin
+                ? UserPlanTier.admin
+                : UserPlanTier.basic,
+          ),
+          createdAt: DateTime.tryParse(profile['tanggal_dibuat'] as String? ?? '') ??
+              DateTime.now(),
+        );
+      }
+    } catch (_) {
+      // If table query fails, continue to fallback
     }
 
-    final role = profile['role'];
-    final app_user.UserRole userRole;
-    switch (role) {
-      case 'user':
-        userRole = app_user.UserRole.basic;
-        break;
-      case 'admin':
-        userRole = app_user.UserRole.admin;
-        break;
-      default:
-        throw AuthorizationError(
-          message: 'Akun tidak memiliki peran akses yang valid.',
-        );
+    // Fallback: Use auth user metadata and create entry if possible
+    final metadata = authUser.userMetadata ?? const <String, dynamic>{};
+    final fullName = (metadata['full_name'] as String?) ??
+        (metadata['nama'] as String?) ??
+        (authUser.email != null && authUser.email!.contains('@')
+            ? authUser.email!.split('@').first
+            : 'User');
+
+    try {
+      await _client.from('pengguna').insert({
+        'id_pengguna': authUser.id,
+        'nama': fullName,
+        'email': authUser.email ?? '',
+        'role': 'user',
+      });
+    } catch (_) {
+      // Ignored if insert permission denied or already created
     }
 
     return app_user.User(
       id: authUser.id,
       email: authUser.email ?? '',
-      name: (profile['nama'] as String?) ?? '',
-      role: userRole,
-      plan: UserPlan.forTier(
-        userRole == app_user.UserRole.admin
-            ? UserPlanTier.admin
-            : UserPlanTier.basic,
-      ),
-      createdAt: DateTime.parse(profile['tanggal_dibuat'] as String),
+      name: fullName,
+      role: app_user.UserRole.basic,
+      plan: UserPlan.forTier(UserPlanTier.basic),
+      createdAt: DateTime.tryParse(authUser.createdAt) ?? DateTime.now(),
     );
   }
 

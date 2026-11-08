@@ -6,14 +6,27 @@ import 'package:mychoice_app/core/theme/app_typography.dart';
 import 'package:mychoice_app/core/theme/app_spacing.dart';
 import 'package:mychoice_app/core/widgets/bottom_navigation.dart';
 import 'package:mychoice_app/core/widgets/mobile_background.dart';
+import '../history/history_detail_screen.dart';
+import '../history/history_sample_data.dart';
 import 'result_screen.dart';
 
 /// Create New Decision Screen (MF-2 & MF-3)
 /// For authenticated users only — full access to create and save decisions.
 class CreateDecisionScreen extends StatefulWidget {
-  const CreateDecisionScreen({super.key, this.isPremium = false});
+  const CreateDecisionScreen({
+    super.key,
+    this.isPremium = false,
+    this.initialCategory,
+    this.initialSubcategory,
+    this.initialOptions,
+    this.initialPriorities,
+  });
 
   final bool isPremium;
+  final String? initialCategory;
+  final String? initialSubcategory;
+  final List<String>? initialOptions;
+  final Map<String, double>? initialPriorities;
 
   @override
   State<CreateDecisionScreen> createState() => _CreateDecisionScreenState();
@@ -41,14 +54,22 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     'Storage': 15,
   };
 
-  // Available options (mock data)
-  final List<String> _availableOptions = [
-    'ASUS Vivobook 14',
-    'Lenovo IdeaPad Slim 5',
-    'Acer Aspire 5',
-    'HP Pavilion 15',
-    'Dell Inspiron 15',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialCategory != null) {
+      _selectedCategory = widget.initialCategory;
+    }
+    if (widget.initialSubcategory != null) {
+      _selectedSubcategory = widget.initialSubcategory;
+    }
+    if (widget.initialOptions != null) {
+      _selectedOptions.addAll(widget.initialOptions!);
+    }
+    if (widget.initialPriorities != null) {
+      _priorities.addAll(widget.initialPriorities!);
+    }
+  }
 
   // Categories with icon assets
   final Map<String, String> _categoryIcons = {
@@ -57,12 +78,258 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     'Fashion': 'assets/icons/fashion.png',
   };
 
-  // Subcategories by category
+  // Subcategories by category (matching categories.json)
   final Map<String, List<String>> _subcategories = {
-    'Technology': ['Laptop', 'Smartphone', 'Tablet', 'Monitor', 'PC'],
-    'Education': ['Course', 'Certification', 'Bootcamp', 'University'],
-    'Fashion': ['Dress', 'Shoes', 'Accessories', 'Bags'],
+    'Technology': [
+      'Laptop',
+      'Smartphone',
+      'Tablet',
+      'Monitor',
+      'Gaming PC',
+      'Processor',
+      'Graphics Card',
+    ],
+    'Education': [
+      'Course',
+      'Certification',
+      'Bootcamp',
+      'University',
+      'Training Program',
+    ],
+    'Fashion': [
+      'Dress',
+      'Shoes',
+      'Accessories',
+      'Bags',
+      'Jewelry',
+      'Outerwear',
+    ],
   };
+
+  // Real brand/model options per subcategory (from authentic catalogs)
+  final Map<String, List<String>> _optionsBySubcategory = {
+    'Laptop': [
+      'Apple MacBook Pro 14" (M3 Pro)',
+      'Apple MacBook Air 13" (M3)',
+      'Dell XPS 13',
+      'Dell XPS 15',
+      'Lenovo ThinkPad X1 Carbon Gen 12',
+      'Lenovo IdeaPad Slim 5',
+      'ASUS Zenbook 14 OLED',
+      'ASUS VivoBook 15',
+      'HP Spectre x360 14',
+      'HP Pavilion 15',
+      'HP Envy x360',
+      'Acer Swift Go 14',
+      'Acer Aspire 5',
+      'MSI Stealth 16 Studio',
+      'Huawei MateBook D16',
+      'Microsoft Surface Laptop 6',
+    ],
+    'Smartphone': [
+      'Apple iPhone 15 Pro Max',
+      'Apple iPhone 15',
+      'Samsung Galaxy S24 Ultra',
+      'Samsung Galaxy S24',
+      'Samsung Galaxy A55 5G',
+      'Google Pixel 8 Pro',
+      'Google Pixel 8a',
+      'Xiaomi 14 Ultra',
+      'Xiaomi 14',
+      'Poco X6 Pro 5G',
+      'OnePlus 12',
+      'Vivo X100 Pro',
+      'OPPO Find X7 Ultra',
+      'Realme GT 5 Pro',
+    ],
+    'Tablet': [
+      'Apple iPad Pro 13" (M4)',
+      'Apple iPad Air 11" (M2)',
+      'Apple iPad (10th Generation)',
+      'Samsung Galaxy Tab S9 Ultra',
+      'Samsung Galaxy Tab S9 FE',
+      'Xiaomi Pad 6',
+      'OnePlus Pad 2',
+      'Microsoft Surface Pro 10',
+      'Lenovo Tab P12 Pro',
+      'Huawei MatePad Pro 13.2',
+    ],
+    'Monitor': [
+      'Dell UltraSharp U2724D',
+      'Dell Alienware AW3423DWF',
+      'LG UltraGear 27GR95QE OLED',
+      'LG DualUp 28MQ780-B',
+      'ASUS ROG Swift PG27AQDM',
+      'ASUS ProArt Display PA279CV',
+      'BenQ DesignVue PD2705U',
+      'Samsung Odyssey OLED G9',
+      'Samsung Smart Monitor M8',
+    ],
+    'Gaming PC': [
+      'Alienware Aurora R16',
+      'ASUS ROG Strix G16CHR',
+      'MSI MEG Trident X2',
+      'HP OMEN 45L Gaming Desktop',
+      'Corsair Vengeance i7500',
+      'NZXT Player: Three Prime',
+      'Lenovo Legion Tower 7i',
+      'CyberPowerPC Gamer Supreme',
+    ],
+    'Processor': [
+      'Intel Core i9-14900KS',
+      'Intel Core i7-14700K',
+      'Intel Core i5-14600K',
+      'AMD Ryzen 9 7950X3D',
+      'AMD Ryzen 7 7800X3D',
+      'AMD Ryzen 5 7600X',
+      'AMD Ryzen 9 9950X',
+    ],
+    'Graphics Card': [
+      'NVIDIA GeForce RTX 4090',
+      'NVIDIA GeForce RTX 4080 Super',
+      'NVIDIA GeForce RTX 4070 Ti Super',
+      'NVIDIA GeForce RTX 4070 Super',
+      'NVIDIA GeForce RTX 4060 Ti',
+      'AMD Radeon RX 7900 XTX',
+      'AMD Radeon RX 7900 XT',
+      'AMD Radeon RX 7800 XT',
+    ],
+    'Course': [
+      'Coursera Machine Learning Specialization (DeepLearning.AI)',
+      'Coursera Google Data Analytics Professional Certificate',
+      'Udemy The Complete 2026 Web Development Bootcamp (Angela Yu)',
+      'edX CS50: Introduction to Computer Science (Harvard)',
+      'Coursera IBM Data Science Professional Certificate',
+      'Udemy 100 Days of Code: The Complete Python Pro Bootcamp',
+      'Dicoding Menjadi Flutter Developer Expert',
+      'Bangkit Academy Google Android & Cloud Architecture',
+      'Udacity AI & Machine Learning Engineer Nanodegree',
+      'edX MITx MicroMasters in Data Science',
+      'LinkedIn Learning Project Management Foundations',
+      'Codecademy Full-Stack Engineer Career Path',
+    ],
+    'Certification': [
+      'AWS Certified Solutions Architect - Associate',
+      'Google Cloud Professional Cloud Architect',
+      'Microsoft Certified: Azure Solutions Architect Expert',
+      'CompTIA Security+ (SY0-701)',
+      'Cisco Certified Network Associate (CCNA 200-301)',
+      'Certified Information Systems Security Professional (CISSP)',
+      'Project Management Professional (PMP)',
+      'Certified Kubernetes Administrator (CKA)',
+      'HashiCorp Certified: Terraform Associate',
+    ],
+    'Bootcamp': [
+      'General Assembly Software Engineering Immersive',
+      'Flatiron School Full-Stack Software Engineering',
+      'Le Wagon Web Development Bootcamp',
+      'Springboard Data Science Career Track',
+      'Hack Reactor Software Engineering Bootcamp',
+      'App Academy Software Engineering Immersive',
+      'BrainStation Software Engineering Bootcamp',
+      'Thinkful Software Engineering Bootcamp',
+    ],
+    'University': [
+      'Massachusetts Institute of Technology (MIT)',
+      'Stanford University',
+      'Harvard University',
+      'University of Oxford',
+      'University of Cambridge',
+      'California Institute of Technology (Caltech)',
+      'National University of Singapore (NUS)',
+      'ETH Zurich - Swiss Federal Institute of Technology',
+      'Universitas Indonesia (UI)',
+      'Institut Teknologi Bandung (ITB)',
+      'Universitas Gadjah Mada (UGM)',
+    ],
+    'Training Program': [
+      'Dale Carnegie Effective Communications & Human Relations',
+      'Toastmasters International Public Speaking & Leadership',
+      'Google Project Management Apprenticeship',
+      'McKinsey Forward Leadership Development Program',
+      'Coursera for Business Enterprise Leadership Academy',
+      'Skillsoft Executive Leadership Development',
+    ],
+    'Bags': [
+      'Louis Vuitton Neverfull MM',
+      'Gucci Ophidia GG Medium Tote',
+      'Chanel Classic Double Flap Bag',
+      'Dior Medium Lady Dior Bag',
+      'Prada Re-Nylon Backpack',
+      'Coach Tabby Shoulder Bag 26',
+      'Michael Kors Jet Set Large Tote',
+      'Tumi Alpha 3 Continental Carry-On',
+      'Samsonite Winfield 3 DLX Hardside Spinner',
+      'Eiger Rhinos 60L Adventure Backpack',
+      'Herschel Little America Backpack',
+      'Fjallraven Kanken Classic Backpack',
+      'Longchamp Le Pliage Original Shoulder Bag',
+      'Bottega Veneta Teen Jodie Bag',
+      'Tory Burch Robinson Small Tote',
+    ],
+    'Shoes': [
+      'Nike Air Max 90 Classic',
+      'Nike Air Jordan 1 Retro High OG',
+      'Adidas Ultraboost Light',
+      'Adidas Samba OG',
+      'New Balance 574 Core',
+      'New Balance 990v6 Made in USA',
+      'Converse Chuck Taylor All Star 70',
+      'Vans Old Skool Classic',
+      'On Cloud 5 Running Shoes',
+      'Hoka Clifton 9 Road Running Shoes',
+      'Asics Gel-Kayano 30',
+      'Dr. Martens 1460 8-Eye Smooth Leather Boots',
+      'Birkenstock Arizona Birko-Flor Sandals',
+      'Puma RS-X Reinvent Sneakers',
+    ],
+    'Dress': [
+      'Zara Satin Effect Cut-Out Midi Dress',
+      'H&M Ribbed Lyocell Wrap Dress',
+      'Mango Floral Print Chiffon Midi Dress',
+      'ASOS DESIGN Pleated Halter Maxi Dress',
+      'Uniqlo Linen Blend A-Line Dress',
+      'Massimo Dutti Knitted Halter Midi Dress',
+      'Reformation Juliette High-Slit Dress',
+      'Ted Baker London Elegant Floral Skater Dress',
+    ],
+    'Accessories': [
+      'Ray-Ban Original Wayfarer RB2140 Sunglasses',
+      'Ray-Ban Aviator Classic RB3025',
+      'Oakley Holbrook Prizm Sunglasses',
+      'Gucci Double G Smooth Leather Belt',
+      'Hermès Carre 90 Silk Twill Scarf',
+      'Coach Signature Canvas Card Case Lanyard',
+      'Montblanc Meisterstuck Leather Billfold Wallet',
+      'Bellroy Hide & Seek RFID Leather Wallet',
+    ],
+    'Jewelry': [
+      'Pandora Moments Silver Snake Chain Bracelet',
+      'Swarovski Sparkling Dance Round Crystal Necklace',
+      'Tiffany & Co. Return to Tiffany Heart Tag Pendant',
+      'Cartier Love Ring 18K Yellow Gold',
+      'Casio G-Shock GA-2100-1A1 "CasiOak"',
+      'Seiko 5 Sports Automatic SRPD55K1',
+      'Tissot PRX Powermatic 80 Steel Watch',
+      'Fossil Gen 6 Hybrid Smartwatch',
+    ],
+    'Outerwear': [
+      'The North Face 1996 Retro Nuptse Jacket',
+      'Patagonia Nano Puff Insulated Jacket',
+      'Arc\'teryx Beta AR Gore-Tex Waterproof Jacket',
+      'Uniqlo Ultra Light Down Seamless Puffer',
+      'Columbia Watertight II Omni-Tech Rain Jacket',
+      'Barbour Classic Bedale Waxed Cotton Jacket',
+      'Zara Water-Repellent Quilted Parka',
+      'Canada Goose Expedition Down Parka',
+    ],
+  };
+
+  /// Returns the available options for the currently selected subcategory.
+  List<String> get _availableOptions {
+    if (_selectedSubcategory == null) return [];
+    return _optionsBySubcategory[_selectedSubcategory!] ?? [];
+  }
 
   void _selectCategory(String category) {
     setState(() {
@@ -118,7 +385,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           const SizedBox(width: 12),
           const Expanded(
             child: Text(
-              'Batas pilihan tercapai',
+              'Option limit reached',
               style: TextStyle(
                 color: AppColors.textPurple,
                 fontWeight: FontWeight.bold,
@@ -133,11 +400,11 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         children: [
           Text(
             widget.isPremium
-                ? 'Paket Premium dapat membandingkan maksimal '
-                      '$maxOptions pilihan.'
-                : 'Tidak bisa menambahkan lebih dari 3 barang. Maksimal 3 '
-                      'pilihan barang. Kalau ingin membandingkan lebih banyak, '
-                      'kamu perlu membeli paket Premium.',
+                ? 'Premium package allows comparing up to '
+                      '$maxOptions options.'
+                : 'Cannot add more than 3 items. Maximum 3 item options. '
+                      'If you want to compare more, you need to purchase a '
+                      'Premium package.',
             style: const TextStyle(color: AppColors.textSecondary, height: 1.5),
           ),
           if (!widget.isPremium) ...[
@@ -169,7 +436,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          '3 pilihan',
+                          '3 options',
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontWeight: FontWeight.w700,
@@ -211,7 +478,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'Hingga 10',
+                          'Up to 10',
                           style: TextStyle(
                             color: AppColors.textPurple,
                             fontWeight: FontWeight.w700,
@@ -229,7 +496,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(dialogContext).pop(),
-          child: Text(widget.isPremium ? 'Tutup' : 'Nanti saja'),
+          child: Text(widget.isPremium ? 'Close' : 'Not now'),
         ),
         if (!widget.isPremium)
           FilledButton(
@@ -244,7 +511,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
               Navigator.of(dialogContext).pop();
               Navigator.of(context).pushNamed('/profile/premium-plan');
             },
-            child: const Text('Upgrade Premium'),
+            child: const Text('Upgrade to Premium'),
           ),
       ],
     ),
@@ -270,6 +537,34 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
 
   double get _totalPriority {
     return _priorities.values.fold(0, (sum, value) => sum + value);
+  }
+
+  Future<void> _saveDecision() async {
+    final topOption = _selectedOptions.isNotEmpty
+        ? _selectedOptions.first
+        : (_selectedSubcategory ?? 'Decision');
+
+    final newDecision = HistoryDecision(
+      category: _selectedCategory ?? 'Technology',
+      title: topOption,
+      score: 0.88,
+      dateGroup: 'Today',
+      date: 'Today',
+      recordedAt: DateTime.now(),
+      status: 'Decision Made',
+      priorities: Map.from(_priorities),
+    );
+
+    // Save into history sample decisions so History & Dashboard reflect it
+    historySampleDecisions.insert(0, newDecision);
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Decision saved successfully! View it in History.'),
+        backgroundColor: AppColors.success80,
+      ),
+    );
   }
 
   Future<void> _makeDecision() async {
@@ -305,11 +600,27 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     );
     if (calculationComplete != true || !mounted) return;
 
+    final rankedChoices = _selectedOptions.isNotEmpty
+        ? _selectedOptions.asMap().entries.map((entry) {
+            final score = (0.89 - entry.key * 0.06).clamp(0.50, 0.99);
+            return RankedChoice(
+              name: entry.value,
+              score: double.parse(score.toStringAsFixed(2)),
+            );
+          }).toList()
+        : const [
+            RankedChoice(name: 'Lenovo IdeaPad Slim 5', score: 0.86),
+            RankedChoice(name: 'ASUS Vivobook 14', score: 0.79),
+            RankedChoice(name: 'Acer Aspire 5', score: 0.74),
+          ];
+
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ResultScreen(
           category: _selectedCategory ?? 'Technology',
           subcategory: _selectedSubcategory ?? 'Laptop',
+          choices: rankedChoices,
+          onSave: _saveDecision,
         ),
       ),
     );
