@@ -153,6 +153,88 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               icon: Icons.directions_walk_rounded,
             ),
           ];
+        case 'bootcamp':
+          return [
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Duration',
+              type: 'Cost',
+              unit: 'weeks',
+              icon: Icons.schedule_rounded,
+            ),
+            _Criterion(
+              name: 'Job Placement',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.work_outline_rounded,
+            ),
+          ];
+        case 'university':
+          return [
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Campus Safety',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.security_rounded,
+            ),
+            _Criterion(
+              name: 'Student Satisfaction',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.sentiment_very_satisfied_rounded,
+            ),
+            _Criterion(
+              name: 'Job Placement Rate',
+              type: 'Benefit',
+              unit: '%',
+              icon: Icons.work_outline_rounded,
+            ),
+          ];
+        case 'training program':
+        case 'training_program':
+          return [
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Rating',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.star_rounded,
+            ),
+            _Criterion(
+              name: 'Duration',
+              type: 'Cost',
+              unit: 'weeks',
+              icon: Icons.schedule_rounded,
+            ),
+            _Criterion(
+              name: 'Curriculum Quality',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.menu_book_rounded,
+            ),
+          ];
       }
     }
 
@@ -215,10 +297,9 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               icon: Icons.scale_outlined,
             ),
           ];
-        case 'tops':
-        case 'top':
-        case 'atasan':
-        case 'atasan baju':
+        case 'dress':
+        case 'dresses':
+        case 'gaun':
           return [
             _Criterion(
               name: 'Price',
@@ -227,33 +308,16 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               icon: Icons.payments_outlined,
             ),
             _Criterion(
-              name: 'Rating',
-              type: 'Benefit',
-              unit: 'scale 1-5',
-              icon: Icons.star_rounded,
-            ),
-            _Criterion(
-              name: 'Fabric Quality',
+              name: 'Style',
               type: 'Benefit',
               unit: 'scale 1-5',
               icon: Icons.checkroom_rounded,
             ),
-          ];
-        case 'bottoms':
-        case 'bottom':
-        case 'bawahan':
-          return [
             _Criterion(
-              name: 'Price',
-              type: 'Cost',
-              unit: 'Rp',
-              icon: Icons.payments_outlined,
-            ),
-            _Criterion(
-              name: 'Rating',
+              name: 'Material',
               type: 'Benefit',
               unit: 'scale 1-5',
-              icon: Icons.star_rounded,
+              icon: Icons.checkroom_rounded,
             ),
             _Criterion(
               name: 'Comfort',
@@ -262,15 +326,15 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               icon: Icons.weekend_outlined,
             ),
             _Criterion(
-              name: 'Fabric Quality',
+              name: 'Durability',
               type: 'Benefit',
               unit: 'scale 1-5',
-              icon: Icons.checkroom_rounded,
+              icon: Icons.timelapse_rounded,
             ),
           ];
-        case 'watches':
-        case 'watch':
-        case 'jam tangan':
+        case 'accessories':
+        case 'accessory':
+        case 'aksesoris':
           return [
             _Criterion(
               name: 'Price',
@@ -279,22 +343,86 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               icon: Icons.payments_outlined,
             ),
             _Criterion(
-              name: 'Rating',
+              name: 'Material',
               type: 'Benefit',
               unit: 'scale 1-5',
-              icon: Icons.star_rounded,
+              icon: Icons.checkroom_rounded,
+            ),
+            _Criterion(
+              name: 'Style',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.checkroom_rounded,
+            ),
+            _Criterion(
+              name: 'Durability',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.timelapse_rounded,
+            ),
+          ];
+        case 'jewelry':
+        case 'jewellery':
+        case 'perhiasan':
+          return [
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Material',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.checkroom_rounded,
+            ),
+            _Criterion(
+              name: 'Style',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.checkroom_rounded,
+            ),
+            _Criterion(
+              name: 'Durability',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.timelapse_rounded,
+            ),
+          ];
+        case 'outerwear':
+        case 'outer wears':
+        case 'jaket':
+          return [
+            _Criterion(
+              name: 'Price',
+              type: 'Cost',
+              unit: 'Rp',
+              icon: Icons.payments_outlined,
+            ),
+            _Criterion(
+              name: 'Warmth',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.thermostat_rounded,
             ),
             _Criterion(
               name: 'Water Resistance',
               type: 'Benefit',
-              unit: 'meters',
+              unit: 'scale 1-5',
               icon: Icons.water_drop_outlined,
             ),
             _Criterion(
-              name: 'Warranty',
+              name: 'Material',
               type: 'Benefit',
-              unit: 'years',
-              icon: Icons.verified_outlined,
+              unit: 'scale 1-5',
+              icon: Icons.checkroom_rounded,
+            ),
+            _Criterion(
+              name: 'Durability',
+              type: 'Benefit',
+              unit: 'scale 1-5',
+              icon: Icons.timelapse_rounded,
             ),
           ];
       }
@@ -395,6 +523,8 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
           ),
         ];
       case 'pc':
+      case 'gaming pc':
+      case 'gaming_pc':
         return [
           _Criterion(
             name: 'Price',
@@ -614,6 +744,97 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               },
             ),
           ];
+        case 'bootcamp':
+          return [
+            _OptionItem(
+              name: 'General Assembly Software Engineering Immersive',
+              values: {
+                'Price': '15000000',
+                'Rating': '4.7',
+                'Duration': '12',
+                'Job Placement': '4.5',
+              },
+            ),
+            _OptionItem(
+              name: 'Hack Reactor Software Engineering Bootcamp',
+              values: {
+                'Price': '18000000',
+                'Rating': '4.8',
+                'Duration': '12',
+                'Job Placement': '4.8',
+              },
+            ),
+            _OptionItem(
+              name: 'Le Wagon Web Development Bootcamp',
+              values: {
+                'Price': '12000000',
+                'Rating': '4.6',
+                'Duration': '9',
+                'Job Placement': '4.4',
+              },
+            ),
+          ];
+        case 'university':
+          return [
+            _OptionItem(
+              name: 'Universitas Indonesia (UI)',
+              values: {
+                'Price': '12000000',
+                'Campus Safety': '4.5',
+                'Student Satisfaction': '4.4',
+                'Job Placement Rate': '85',
+              },
+            ),
+            _OptionItem(
+              name: 'Institut Teknologi Bandung (ITB)',
+              values: {
+                'Price': '14000000',
+                'Campus Safety': '4.7',
+                'Student Satisfaction': '4.6',
+                'Job Placement Rate': '90',
+              },
+            ),
+            _OptionItem(
+              name: 'Universitas Gadjah Mada (UGM)',
+              values: {
+                'Price': '10000000',
+                'Campus Safety': '4.4',
+                'Student Satisfaction': '4.5',
+                'Job Placement Rate': '82',
+              },
+            ),
+          ];
+        case 'training program':
+        case 'training_program':
+          return [
+            _OptionItem(
+              name: 'Google Project Management Apprenticeship',
+              values: {
+                'Price': '5000000',
+                'Rating': '4.7',
+                'Duration': '24',
+                'Curriculum Quality': '4.6',
+              },
+            ),
+            _OptionItem(
+              name: 'McKinsey Forward Leadership Development Program',
+              values: {
+                'Price': '8000000',
+                'Rating': '4.8',
+                'Duration': '12',
+                'Curriculum Quality': '4.9',
+              },
+            ),
+            _OptionItem(
+              name: 'Dale Carnegie Effective Communications',
+              values: {
+                'Price': '3000000',
+                'Rating': '4.5',
+                'Duration': '8',
+                'Curriculum Quality': '4.3',
+              },
+            ),
+          ];
       }
     }
 
@@ -684,97 +905,137 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               },
             ),
           ];
-        case 'tops':
-        case 'top':
-        case 'atasan':
-        case 'atasan baju':
+        case 'dress':
+        case 'dresses':
+        case 'gaun':
           return [
             _OptionItem(
-              name: 'Uniqlo AIRism Cotton Oversized T-Shirt',
+              name: 'Zara Midi Dress',
               values: {
-                'Price': '199000',
-                'Rating': '4.7',
-                'Fabric Quality': '4.6',
-              },
-            ),
-            _OptionItem(
-              name: 'H&M Regular Fit Cotton T-Shirt',
-              values: {
-                'Price': '149900',
-                'Rating': '4.3',
-                'Fabric Quality': '4.1',
-              },
-            ),
-            _OptionItem(
-              name: 'Zara Basic Cotton T-Shirt',
-              values: {
-                'Price': '299900',
-                'Rating': '4.4',
-                'Fabric Quality': '4.3',
-              },
-            ),
-          ];
-        case 'bottoms':
-        case 'bottom':
-        case 'bawahan':
-          return [
-            _OptionItem(
-              name: "Levi's 501 Original Jeans",
-              values: {
-                'Price': '1499000',
-                'Rating': '4.7',
+                'Price': '699000',
+                'Style': '4.5',
+                'Material': '4.3',
                 'Comfort': '4.4',
-                'Fabric Quality': '4.7',
+                'Durability': '4.2',
               },
             ),
             _OptionItem(
-              name: 'Uniqlo Wide Fit Jeans',
-              values: {
-                'Price': '599000',
-                'Rating': '4.5',
-                'Comfort': '4.5',
-                'Fabric Quality': '4.4',
-              },
-            ),
-            _OptionItem(
-              name: 'H&M Straight Regular Jeans',
-              values: {
-                'Price': '499900',
-                'Rating': '4.2',
-                'Comfort': '4.1',
-                'Fabric Quality': '4.0',
-              },
-            ),
-          ];
-        case 'watches':
-        case 'watch':
-        case 'jam tangan':
-          return [
-            _OptionItem(
-              name: 'Casio G-Shock DW-5600UE',
-              values: {
-                'Price': '1399000',
-                'Rating': '4.8',
-                'Water Resistance': '200',
-                'Warranty': '1',
-              },
-            ),
-            _OptionItem(
-              name: 'Casio AE-1200WH',
+              name: 'H&M Wrap Dress',
               values: {
                 'Price': '499000',
-                'Rating': '4.6',
-                'Water Resistance': '100',
-                'Warranty': '1',
+                'Style': '4.3',
+                'Material': '4.1',
+                'Comfort': '4.5',
+                'Durability': '4.0',
               },
             ),
             _OptionItem(
-              name: 'Seiko 5 Sports SRPD55',
+              name: 'Mango Floral Dress',
               values: {
-                'Price': '4200000',
-                'Rating': '4.7',
-                'Water Resistance': '100',
-                'Warranty': '1',
+                'Price': '899000',
+                'Style': '4.7',
+                'Material': '4.4',
+                'Comfort': '4.3',
+                'Durability': '4.5',
+              },
+            ),
+          ];
+        case 'accessories':
+        case 'accessory':
+        case 'aksesoris':
+          return [
+            _OptionItem(
+              name: 'Ray-Ban Wayfarer Sunglasses',
+              values: {
+                'Price': '2500000',
+                'Material': '4.8',
+                'Style': '4.9',
+                'Durability': '4.7',
+              },
+            ),
+            _OptionItem(
+              name: 'Gucci Leather Belt',
+              values: {
+                'Price': '6500000',
+                'Material': '4.9',
+                'Style': '4.8',
+                'Durability': '4.9',
+              },
+            ),
+            _OptionItem(
+              name: 'Hermès Silk Scarf',
+              values: {
+                'Price': '6500000',
+                'Material': '5.0',
+                'Style': '4.9',
+                'Durability': '4.8',
+              },
+            ),
+          ];
+        case 'jewelry':
+        case 'jewellery':
+        case 'perhiasan':
+          return [
+            _OptionItem(
+              name: 'Pandora Charm Bracelet',
+              values: {
+                'Price': '1200000',
+                'Material': '4.7',
+                'Style': '4.6',
+                'Durability': '4.5',
+              },
+            ),
+            _OptionItem(
+              name: 'Swarovski Crystal Necklace',
+              values: {
+                'Price': '1500000',
+                'Material': '4.8',
+                'Style': '4.9',
+                'Durability': '4.7',
+              },
+            ),
+            _OptionItem(
+              name: 'Tiffany Open Heart Pendant',
+              values: {
+                'Price': '4500000',
+                'Material': '5.0',
+                'Style': '4.9',
+                'Durability': '5.0',
+              },
+            ),
+          ];
+        case 'outerwear':
+        case 'outer wears':
+        case 'jaket':
+          return [
+            _OptionItem(
+              name: 'The North Face Thermoball Jacket',
+              values: {
+                'Price': '3500000',
+                'Warmth': '4.6',
+                'Water Resistance': '4.4',
+                'Material': '4.5',
+                'Durability': '4.7',
+              },
+            ),
+            _OptionItem(
+              name: 'Uniqlo Ultra Light Down',
+              values: {
+                'Price': '1500000',
+                'Warmth': '4.2',
+                'Water Resistance': '3.8',
+                'Material': '4.4',
+                'Durability': '4.3',
+              },
+            ),
+            _OptionItem(
+              name: 'Patagonia Nano Puff Jacket',
+              values: {
+                'Price': '4500000',
+                'Warmth': '4.8',
+                'Water Resistance': '4.5',
+                'Material': '4.9',
+                'Durability': '4.8',
               },
             ),
           ];
@@ -881,6 +1142,8 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
           ),
         ];
       case 'pc':
+      case 'gaming pc':
+      case 'gaming_pc':
         return [
           _OptionItem(
             name: 'HP Pavilion Desktop TP01',
@@ -1074,73 +1337,95 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               category: 'New',
             ),
           ];
-        case 'tops':
-        case 'top':
-        case 'atasan':
-        case 'atasan baju':
+        case 'dress':
+        case 'dresses':
+        case 'gaun':
           return [
             _Suggestion(
-              name: 'Fit',
+              name: 'Length',
               users: 8,
-              unit: 'regular/slim/oversized',
+              unit: 'mini/midi/maxi',
               category: 'Popular',
             ),
             _Suggestion(
-              name: 'Breathability',
+              name: 'Occasion',
               users: 6,
-              unit: 'scale 1-5',
+              unit: 'casual/formal',
               category: 'Popular',
             ),
             _Suggestion(
-              name: 'Color Options',
+              name: 'Sleeve Type',
               users: 5,
-              unit: 'count',
+              unit: 'short/long/sleeveless',
               category: 'New',
             ),
           ];
-        case 'bottoms':
-        case 'bottom':
-        case 'bawahan':
+        case 'accessories':
+        case 'accessory':
+        case 'aksesoris':
           return [
             _Suggestion(
-              name: 'Stretchability',
+              name: 'UV Protection',
               users: 8,
-              unit: 'scale 1-5',
+              unit: 'yes/no',
               category: 'Popular',
             ),
             _Suggestion(
-              name: 'Fit',
+              name: 'Hypoallergenic',
               users: 6,
-              unit: 'fit type',
+              unit: 'yes/no',
               category: 'Popular',
             ),
             _Suggestion(
-              name: 'Pocket Count',
+              name: 'Adjustable',
               users: 5,
-              unit: 'count',
+              unit: 'yes/no',
               category: 'New',
             ),
           ];
-        case 'watches':
-        case 'watch':
-        case 'jam tangan':
+        case 'jewelry':
+        case 'jewellery':
+        case 'perhiasan':
           return [
             _Suggestion(
-              name: 'Movement Type',
+              name: 'Metal Type',
               users: 8,
-              unit: 'quartz/automatic',
+              unit: 'gold/silver/platinum',
               category: 'Popular',
             ),
             _Suggestion(
-              name: 'Battery Life',
+              name: 'Gemstone',
               users: 6,
-              unit: 'years',
+              unit: 'diamond/ruby/emerald',
               category: 'Popular',
             ),
             _Suggestion(
-              name: 'Display Type',
+              name: 'Hypoallergenic',
               users: 5,
-              unit: 'analog/digital',
+              unit: 'yes/no',
+              category: 'New',
+            ),
+          ];
+        case 'outerwear':
+        case 'outer wears':
+        case 'jaket':
+          return [
+            _Suggestion(
+              name: 'Hood',
+              users: 8,
+              unit: 'yes/no',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Pockets',
+              users: 6,
+              unit: 'count',
+              category: 'Popular',
+            ),
+            _Suggestion(
+              name: 'Lining Material',
+              users: 5,
+              unit: 'polyester/silk/cotton',
               category: 'New',
             ),
           ];
@@ -2490,21 +2775,29 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
     } else if (normalizedSubcategory == 'pc') {
       icon = Icons.desktop_windows_rounded;
     } else if (normalizedSubcategory == 'shoes' ||
-        normalizedSubcategory == 'sepatu' ||
-        normalizedSubcategory == 'bottoms' ||
-        normalizedSubcategory == 'bottom' ||
-        normalizedSubcategory == 'bawahan') {
+        normalizedSubcategory == 'sepatu') {
       icon = Icons.checkroom_rounded;
     } else if (normalizedSubcategory == 'bags' ||
         normalizedSubcategory == 'bag' ||
         normalizedSubcategory == 'tas') {
       icon = Icons.shopping_bag_outlined;
-    } else if (normalizedSubcategory == 'tops' ||
-        normalizedSubcategory == 'top' ||
-        normalizedSubcategory == 'atasan' ||
-        normalizedSubcategory == 'atasan baju') {
+    } else if (normalizedSubcategory == 'dress' ||
+        normalizedSubcategory == 'dresses' ||
+        normalizedSubcategory == 'gaun' ||
+        normalizedSubcategory == 'accessories' ||
+        normalizedSubcategory == 'accessory' ||
+        normalizedSubcategory == 'aksesoris' ||
+        normalizedSubcategory == 'bottoms' ||
+        normalizedSubcategory == 'bottom' ||
+        normalizedSubcategory == 'bawahan' ||
+        normalizedSubcategory == 'outerwear' ||
+        normalizedSubcategory == 'outer wears' ||
+        normalizedSubcategory == 'jaket') {
       icon = Icons.checkroom_rounded;
-    } else if (normalizedSubcategory == 'watches' ||
+    } else if (normalizedSubcategory == 'jewelry' ||
+        normalizedSubcategory == 'jewellery' ||
+        normalizedSubcategory == 'perhiasan' ||
+        normalizedSubcategory == 'watches' ||
         normalizedSubcategory == 'watch' ||
         normalizedSubcategory == 'jam tangan') {
       icon = Icons.watch_outlined;

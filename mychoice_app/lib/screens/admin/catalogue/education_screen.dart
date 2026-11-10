@@ -32,7 +32,7 @@ class EducationScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          _statCard('3', 'Subcategories'),
+                          _statCard('5', 'Subcategories'),
                           const SizedBox(width: 8),
                           _statCard('11', 'Criteria'),
                           const SizedBox(width: 8),
@@ -50,19 +50,19 @@ class EducationScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
 
-                      // 1. COURSES
+                      // 1. COURSE
                       _subcategoryCard(
                         context: context,
-                        name: 'Courses',
+                        name: 'Course',
                         icon: Icons.menu_book_rounded,
                         incomplete: false,
                         criteriaTags: const ['Price', 'Rating', 'Duration'],
                       ),
 
-                      // 2. CERTIFICATIONS
+                      // 2. CERTIFICATION
                       _subcategoryCard(
                         context: context,
-                        name: 'Certifications',
+                        name: 'Certification',
                         icon: Icons.workspace_premium_rounded,
                         incomplete: false,
                         criteriaTags: const [
@@ -73,17 +73,45 @@ class EducationScreen extends StatelessWidget {
                         ],
                       ),
 
-                      // 3. INTERNSHIPS
+                      // 3. BOOTCAMP
                       _subcategoryCard(
                         context: context,
-                        name: 'Internships',
+                        name: 'Bootcamp',
                         icon: Icons.work_outline_rounded,
                         incomplete: false,
                         criteriaTags: const [
-                          'Monthly Allowance',
-                          'Field Relevance',
-                          'Company Rating',
-                          'Distance',
+                          'Price',
+                          'Rating',
+                          'Duration',
+                          'Job Placement',
+                        ],
+                      ),
+
+                      // 4. UNIVERSITY
+                      _subcategoryCard(
+                        context: context,
+                        name: 'University',
+                        icon: Icons.school_rounded,
+                        incomplete: false,
+                        criteriaTags: const [
+                          'Price',
+                          'Campus Safety',
+                          'Student Satisfaction',
+                          'Job Placement Rate',
+                        ],
+                      ),
+
+                      // 5. TRAINING PROGRAM
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Training Program',
+                        icon: Icons.business_rounded,
+                        incomplete: false,
+                        criteriaTags: const [
+                          'Price',
+                          'Rating',
+                          'Duration',
+                          'Curriculum Quality',
                         ],
                       ),
                     ],

@@ -222,20 +222,20 @@ class _WhatIfScreenState extends State<WhatIfScreen> {
     switch (critId.toLowerCase()) {
       case 'price':
       case 'harga':
-        return 'Harga';
+        return 'Price';
       case 'performance':
       case 'performa':
-        return 'Performa';
+        return 'Performance';
       case 'battery':
       case 'battery life':
       case 'baterai':
-        return 'Baterai';
+        return 'Battery';
       case 'storage':
       case 'penyimpanan':
-        return 'Penyimpanan';
+        return 'Storage';
       case 'weight':
       case 'berat':
-        return 'Berat';
+        return 'Weight';
       default:
         return critId;
     }

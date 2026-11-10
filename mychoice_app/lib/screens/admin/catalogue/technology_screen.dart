@@ -74,10 +74,10 @@ class TechnologyScreen extends StatelessWidget {
                         incomplete: false,
                       ),
 
-                      // 4. PC
+                      // 4. Gaming PC
                       _subcategoryCard(
                         context: context,
-                        name: 'PC',
+                        name: 'Gaming PC',
                         icon: Icons.desktop_windows_rounded,
                         incomplete: false,
                         criteriaTags: const [

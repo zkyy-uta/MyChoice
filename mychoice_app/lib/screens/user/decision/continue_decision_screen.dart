@@ -162,7 +162,15 @@ class _ContinueDecisionScreenState extends State<ContinueDecisionScreen> {
   }
 
   void _resumeDecision(InProgressDecision decision) {
-    Navigator.of(context).pushNamed('/create-decision');
+    Navigator.of(context).pushNamed(
+      '/create-decision',
+      arguments: {
+        'category': decision.category,
+        'subcategory': decision.subcategory,
+        'options': decision.options,
+        'priorities': decision.priorities,
+      },
+    );
   }
 
   void _deleteDraft(String id) {

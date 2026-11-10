@@ -32,7 +32,7 @@ class FashionScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          _statCard('5', 'Subcategories'),
+                          _statCard('6', 'Subcategories'),
                           const SizedBox(width: 8),
                           _statCard('19', 'Criteria'),
                           const SizedBox(width: 8),
@@ -50,7 +50,21 @@ class FashionScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
 
-                      // 1. SHOES
+                      // 1. DRESS
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Dress',
+                        icon: Icons.checkroom_rounded,
+                        criteriaTags: const [
+                          'Price',
+                          'Style',
+                          'Material',
+                          'Comfort',
+                          'Durability',
+                        ],
+                      ),
+
+                      // 2. SHOES
                       _subcategoryCard(
                         context: context,
                         name: 'Shoes',
@@ -63,7 +77,20 @@ class FashionScreen extends StatelessWidget {
                         ],
                       ),
 
-                      // 2. BAGS
+                      // 3. ACCESSORIES
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Accessories',
+                        icon: Icons.style_outlined,
+                        criteriaTags: const [
+                          'Price',
+                          'Material',
+                          'Style',
+                          'Durability',
+                        ],
+                      ),
+
+                      // 4. BAGS
                       _subcategoryCard(
                         context: context,
                         name: 'Bags',
@@ -76,41 +103,30 @@ class FashionScreen extends StatelessWidget {
                         ],
                       ),
 
-                      // 3. TOPS
+                      // 5. JEWELRY
                       _subcategoryCard(
                         context: context,
-                        name: 'Tops',
-                        icon: Icons.checkroom_rounded,
-                        criteriaTags: const [
-                          'Price',
-                          'Rating',
-                          'Fabric Quality',
-                        ],
-                      ),
-
-                      // 4. BOTTOMS
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Bottoms',
-                        icon: Icons.style_outlined,
-                        criteriaTags: const [
-                          'Price',
-                          'Rating',
-                          'Comfort',
-                          'Fabric Quality',
-                        ],
-                      ),
-
-                      // 5. WATCHES
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Watches',
+                        name: 'Jewelry',
                         icon: Icons.watch_outlined,
                         criteriaTags: const [
                           'Price',
-                          'Rating',
+                          'Material',
+                          'Style',
+                          'Durability',
+                        ],
+                      ),
+
+                      // 6. OUTERWEAR
+                      _subcategoryCard(
+                        context: context,
+                        name: 'Outerwear',
+                        icon: Icons.checkroom_outlined,
+                        criteriaTags: const [
+                          'Price',
+                          'Warmth',
                           'Water Resistance',
-                          'Warranty',
+                          'Material',
+                          'Durability',
                         ],
                       ),
                     ],

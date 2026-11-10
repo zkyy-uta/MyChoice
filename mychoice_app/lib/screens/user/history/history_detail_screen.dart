@@ -20,7 +20,7 @@ class HistoryDecision {
       'Storage': 15,
     },
     this.status = 'Decision Made',
-    this.review = 'Performance sesuai dengan kebutuhan.',
+    this.review = '',
     this.rating = 5,
   });
 
@@ -43,29 +43,29 @@ class HistoryDecision {
   };
 }
 
-class HistoryDetailScreen extends StatelessWidget {
+class HistoryDetailScreen extends StatefulWidget {
   const HistoryDetailScreen({required this.decision, super.key});
 
   final HistoryDecision decision;
 
-  // void _onNavigation(BuildContext context, int index) {
-  //   switch (index) {
-  //     case 0:
-  //       Navigator.of(context).pushNamed('/dashboard');
-  //     case 1:
-  //       Navigator.of(context).pushNamed('/create-decision');
-  //     case 2:
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Insight feature coming soon')),
-  //       );
-  //     case 3:
-  //       Navigator.of(context).maybePop();
-  //     case 4:
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Profile feature coming soon')),
-  //       );
-  //   }
-  // }
+  @override
+  State<HistoryDetailScreen> createState() => _HistoryDetailScreenState();
+}
+
+class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
+  late TextEditingController _reviewController;
+
+  @override
+  void initState() {
+    super.initState();
+    _reviewController = TextEditingController(text: widget.decision.review);
+  }
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,10 +95,10 @@ class HistoryDetailScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(decision.icon, color: AppColors.primaryDark),
+                          Icon(widget.decision.icon, color: AppColors.primaryDark),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
-                            decision.category,
+                            widget.decision.category,
                             style: AppTypography.oneLinerSemibold.copyWith(
                               color: AppColors.textPurple,
                             ),
@@ -106,17 +106,17 @@ class HistoryDetailScreen extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: AppSpacing.sm),
-                      Text(decision.title, style: AppTypography.small),
+                      Text(widget.decision.title, style: AppTypography.small),
                       const SizedBox(height: AppSpacing.md),
                       _DetailSection(
                         title: 'Decision Date',
-                        child: Text(decision.date, style: AppTypography.small),
+                        child: Text(widget.decision.date, style: AppTypography.small),
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       _DetailSection(
                         title: 'Final Score',
                         child: Text(
-                          'Score: ${decision.score.toStringAsFixed(2)}',
+                          'Score: ${widget.decision.score.toStringAsFixed(2)}',
                           style: AppTypography.small,
                         ),
                       ),
@@ -124,7 +124,7 @@ class HistoryDetailScreen extends StatelessWidget {
                       _DetailSection(
                         title: 'Your Priorities',
                         child: Column(
-                          children: decision.priorities.entries.map((entry) {
+                          children: widget.decision.priorities.entries.map((entry) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 2),
                               child: Row(
@@ -156,7 +156,7 @@ class HistoryDetailScreen extends StatelessWidget {
                               color: AppColors.primary88,
                             ),
                             const SizedBox(width: AppSpacing.xs),
-                            Text(decision.status, style: AppTypography.small),
+                            Text(widget.decision.status, style: AppTypography.small),
                           ],
                         ),
                       ),
@@ -174,17 +174,38 @@ class HistoryDetailScreen extends StatelessWidget {
                                 (index) => Icon(
                                   Icons.star_rounded,
                                   size: 18,
-                                  color: index < decision.rating
+                                  color: index < widget.decision.rating
                                       ? AppColors.warning80
                                       : AppColors.grey300,
                                 ),
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xs),
-                            Text(
-                              decision.review,
+                            TextField(
+                              controller: _reviewController,
+                              maxLines: 3,
                               style: AppTypography.small.copyWith(
-                                color: AppColors.textPurple,
+                                color: AppColors.textPrimary,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'Write your review here...',
+                                hintStyle: AppTypography.small.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                                  borderSide: const BorderSide(color: AppColors.border),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                                  borderSide: const BorderSide(color: AppColors.primary88, width: 1.4),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: AppSpacing.md,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white.withValues(alpha: 0.8),
                               ),
                             ),
                           ],

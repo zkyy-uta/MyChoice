@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:mychoice_app/core/theme/app_colors.dart';
@@ -40,18 +41,60 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   final Set<String> _tappedOptions =
       {}; // Options user tapped to select (before adding)
   final TextEditingController _newCriteriaController = TextEditingController();
-  final Map<String, bool> _selectedCriteria = {
-    'Price': true,
-    'Performance': true,
-    'Battery': true,
-    'Weight': false,
-    'Storage': true,
+  final Map<String, bool> _selectedCriteria = {};
+  final Map<String, double> _priorities = {};
+
+  // Manual option input (user-typed option not found in catalog)
+  final TextEditingController _manualOptionController = TextEditingController();
+  final List<String> _manualOptions = []; // user-typed options awaiting admin review
+  final Set<String> _manualOptionIds = {}; // ids of manual options added to selection
+
+  // Option specifications loaded from alternatives_catalog.json
+  final Map<String, Map<String, String>> _optionSpecs = {};
+
+  // Default criteria per subcategory (so criteria match the subcategory specs).
+  // e.g. Fashion → no Battery; Laptop → Price, RAM, Storage, Weight, etc.
+  final Map<String, List<String>> _defaultCriteriaBySubcategory = {
+    'Laptop': ['Price', 'RAM', 'Storage', 'Processor', 'Battery', 'Weight'],
+    'Smartphone': ['Price', 'RAM', 'Storage', 'Battery', 'Camera', 'Display'],
+    'Tablet': ['Price', 'RAM', 'Storage', 'Battery', 'Screen Size'],
+    'Monitor': ['Price', 'Screen Size', 'Refresh Rate', 'Resolution', 'Panel'],
+    'Gaming PC': ['Price', 'RAM', 'Storage', 'GPU', 'CPU Score'],
+    'Processor': ['Price', 'Cores', 'Threads', 'Base Clock', 'TDP'],
+    'Graphics Card': ['Price', 'VRAM', 'CUDA Cores', 'Boost Clock', 'TDP'],
+    'Course': ['Price', 'Rating', 'Duration', 'Instructor Experience'],
+    'Certification': ['Price', 'Industry Recognition', 'Validity', 'Preparation Time'],
+    'Bootcamp': ['Price', 'Rating', 'Duration', 'Job Placement'],
+    'University': ['Price', 'Campus Safety', 'Student Satisfaction', 'Job Placement Rate'],
+    'Training Program': ['Price', 'Rating', 'Duration', 'Curriculum Quality'],
+    'Dress': ['Price', 'Style', 'Material', 'Comfort', 'Durability'],
+    'Shoes': ['Price', 'Rating', 'Comfort', 'Weight', 'Durability'],
+    'Accessories': ['Price', 'Material', 'Style', 'Durability'],
+    'Bags': ['Price', 'Rating', 'Capacity', 'Weight', 'Durability'],
+    'Jewelry': ['Price', 'Material', 'Style', 'Durability'],
+    'Outerwear': ['Price', 'Warmth', 'Water Resistance', 'Material', 'Durability'],
   };
-  final Map<String, double> _priorities = {
-    'Price': 30,
-    'Performance': 35,
-    'Battery': 20,
-    'Storage': 15,
+
+  // Default priority split for each subcategory's default criteria.
+  final Map<String, Map<String, double>> _defaultPrioritiesBySubcategory = {
+    'Laptop': {'Price': 25, 'RAM': 20, 'Storage': 20, 'Processor': 20, 'Battery': 10, 'Weight': 5},
+    'Smartphone': {'Price': 25, 'RAM': 15, 'Storage': 15, 'Battery': 20, 'Camera': 15, 'Display': 10},
+    'Tablet': {'Price': 25, 'RAM': 15, 'Storage': 15, 'Battery': 25, 'Screen Size': 20},
+    'Monitor': {'Price': 25, 'Screen Size': 20, 'Refresh Rate': 15, 'Resolution': 20, 'Panel': 20},
+    'Gaming PC': {'Price': 20, 'RAM': 20, 'Storage': 15, 'GPU': 25, 'CPU Score': 20},
+    'Processor': {'Price': 25, 'Cores': 20, 'Threads': 15, 'Base Clock': 20, 'TDP': 20},
+    'Graphics Card': {'Price': 20, 'VRAM': 25, 'CUDA Cores': 20, 'Boost Clock': 15, 'TDP': 20},
+    'Course': {'Price': 30, 'Rating': 25, 'Duration': 20, 'Instructor Experience': 25},
+    'Certification': {'Price': 30, 'Industry Recognition': 25, 'Validity': 25, 'Preparation Time': 20},
+    'Bootcamp': {'Price': 30, 'Rating': 25, 'Duration': 20, 'Job Placement': 25},
+    'University': {'Price': 25, 'Campus Safety': 15, 'Student Satisfaction': 25, 'Job Placement Rate': 35},
+    'Training Program': {'Price': 30, 'Rating': 25, 'Duration': 20, 'Curriculum Quality': 25},
+    'Dress': {'Price': 30, 'Style': 25, 'Material': 20, 'Comfort': 15, 'Durability': 10},
+    'Shoes': {'Price': 30, 'Rating': 20, 'Comfort': 25, 'Weight': 10, 'Durability': 15},
+    'Accessories': {'Price': 30, 'Material': 20, 'Style': 25, 'Durability': 25},
+    'Bags': {'Price': 25, 'Rating': 20, 'Capacity': 20, 'Weight': 15, 'Durability': 20},
+    'Jewelry': {'Price': 30, 'Material': 20, 'Style': 25, 'Durability': 25},
+    'Outerwear': {'Price': 25, 'Warmth': 20, 'Water Resistance': 15, 'Material': 20, 'Durability': 20},
   };
 
   @override
@@ -62,6 +105,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     }
     if (widget.initialSubcategory != null) {
       _selectedSubcategory = widget.initialSubcategory;
+      _applyCriteriaForSubcategory(widget.initialSubcategory!);
     }
     if (widget.initialOptions != null) {
       _selectedOptions.addAll(widget.initialOptions!);
@@ -69,6 +113,28 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     if (widget.initialPriorities != null) {
       _priorities.addAll(widget.initialPriorities!);
     }
+    _loadOptionSpecs();
+  }
+
+  Future<void> _loadOptionSpecs() async {
+    try {
+      final jsonString = await DefaultAssetBundle.of(context)
+          .loadString('assets/data/alternatives_catalog.json');
+      final data = jsonDecode(jsonString) as Map<String, dynamic>;
+      final categories = data['categories'] as Map<String, dynamic>;
+
+      for (final catEntry in categories.entries) {
+        final alternatives = catEntry.value['alternatives'] as List<dynamic>?;
+        if (alternatives == null) continue;
+        for (final alt in alternatives) {
+          final name = alt['name'] as String?;
+          final specs = alt['specs'] as Map<String, dynamic>?;
+          if (name == null || specs == null) continue;
+          _optionSpecs[name] = specs.map((k, v) => MapEntry(k, v.toString()));
+        }
+      }
+
+    } catch (e) {}
   }
 
   // Categories with icon assets
@@ -342,6 +408,75 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     setState(() {
       _selectedSubcategory = subcategory;
     });
+    _applyCriteriaForSubcategory(subcategory);
+  }
+
+  void _applyCriteriaForSubcategory(String subcategory) {
+    final defaults = _defaultCriteriaBySubcategory[subcategory];
+    if (defaults == null) return;
+
+    final newCriteria = <String, bool>{};
+    final newPriorities = <String, double>{};
+    final preset = _defaultPrioritiesBySubcategory[subcategory];
+    final totalDefault = preset != null
+        ? preset.values.fold(0.0, (sum, v) => sum + v)
+        : 0.0;
+
+    for (var i = 0; i < defaults.length; i++) {
+      final c = defaults[i];
+      newCriteria[c] = true;
+      if (preset != null && preset.containsKey(c)) {
+        newPriorities[c] = preset[c]!;
+      } else {
+        // Equal split for any extra criteria not in preset
+        newPriorities[c] = totalDefault > 0
+            ? 100.0 / defaults.length
+            : 100.0 / defaults.length;
+      }
+    }
+
+    setState(() {
+      _selectedCriteria.clear();
+      _selectedCriteria.addAll(newCriteria);
+      _priorities.clear();
+      _priorities.addAll(newPriorities);
+    });
+  }
+
+  /// Returns a short spec summary string for the given option specs,
+  /// filtered to the keys most relevant for the subcategory.
+  String _specSummaryForSubcategory(
+      Map<String, String> specs, String subcategory) {
+    final relevantKeys = switch (subcategory) {
+      'Laptop' => ['Processor', 'RAM', 'Storage', 'Battery', 'Price'],
+      'Smartphone' => ['Processor', 'RAM', 'Storage', 'Battery', 'Camera', 'Price'],
+      'Tablet' => ['Processor', 'RAM', 'Storage', 'Battery', 'Screen Size', 'Price'],
+      'Monitor' => ['Resolution', 'Refresh Rate', 'Screen Size', 'Price'],
+      'Gaming PC' => ['Processor', 'RAM', 'Storage', 'GPU', 'Price'],
+      'Processor' => ['Cores', 'Threads', 'Base Clock', 'Price'],
+      'Graphics Card' => ['VRAM', 'Boost Clock', 'Price'],
+      'Course' => ['Price', 'Duration', 'Rating'],
+      'Certification' => ['Price', 'Validity', 'Industry Recognition'],
+      'Bootcamp' => ['Price', 'Duration', 'Rating'],
+      'University' => ['Price', 'Job Placement Rate', 'Student Satisfaction'],
+      'Training Program' => ['Price', 'Duration', 'Rating'],
+      'Dress' => ['Price', 'Material', 'Style'],
+      'Shoes' => ['Price', 'Weight', 'Rating'],
+      'Accessories' => ['Price', 'Material'],
+      'Bags' => ['Price', 'Capacity', 'Weight'],
+      'Jewelry' => ['Price', 'Material'],
+      'Outerwear' => ['Price', 'Warmth', 'Material'],
+      _ => ['Price'],
+    };
+
+    final parts = <String>[];
+    for (final key in relevantKeys) {
+      final value = specs[key];
+      if (value != null && value.isNotEmpty) {
+        parts.add('$key: $value');
+      }
+    }
+    return parts.join(' • ');
   }
 
   void _addOptions(Iterable<String> options) {
@@ -523,9 +658,50 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     });
   }
 
+  void _addManualOption() {
+    final name = _manualOptionController.text.trim();
+    if (name.isEmpty || _manualOptions.contains(name)) {
+      _manualOptionController.clear();
+      return;
+    }
+    setState(() {
+      _manualOptions.add(name);
+    });
+    _manualOptionController.clear();
+  }
+
+  void _addManualOptionToSelection(String option) {
+    final maxOptions = widget.isPremium ? 10 : 3;
+    if (_selectedOptions.length >= maxOptions) {
+      _showOptionLimitDialog(maxOptions);
+      return;
+    }
+    setState(() {
+      _selectedOptions.add(option);
+      _manualOptionIds.add(option);
+    });
+  }
+
+  void _removeManualOption(String option) {
+    setState(() {
+      _manualOptions.remove(option);
+      _selectedOptions.remove(option);
+      _manualOptionIds.remove(option);
+    });
+  }
+
   void _toggleCriteria(String criteria) {
     setState(() {
-      _selectedCriteria[criteria] = !_selectedCriteria[criteria]!;
+      final nowSelected = !(_selectedCriteria[criteria] ?? false);
+      _selectedCriteria[criteria] = nowSelected;
+
+      // Auto-assign priority when a criterion is turned on.
+      if (nowSelected) {
+        _priorities.putIfAbsent(criteria, () => 10);
+        _rebalancePriorities();
+      } else {
+        _priorities.remove(criteria);
+      }
     });
   }
 
@@ -533,6 +709,19 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     setState(() {
       _priorities[criteria] = value;
     });
+  }
+
+  /// Rebalance all active criteria priorities so they total 100%.
+  void _rebalancePriorities() {
+    final active = _selectedCriteria.entries
+        .where((e) => e.value)
+        .map((e) => e.key)
+        .toList();
+    if (active.isEmpty) return;
+    final perCriterion = 100 / active.length;
+    for (final c in active) {
+      _priorities[c] = perCriterion;
+    }
   }
 
   double get _totalPriority {
@@ -629,6 +818,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   @override
   void dispose() {
     _newCriteriaController.dispose();
+    _manualOptionController.dispose();
     super.dispose();
   }
 
@@ -924,7 +1114,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     }
     setState(() {
       _selectedCriteria[name] = false; // Not selected by default
-      _priorities[name] = 0; // Weight starts at 0
+      _priorities[name] = 0; // Weight starts at 0 until user enables it
     });
     Navigator.of(context).pop();
   }
@@ -1017,6 +1207,10 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           ..._availableOptions.map((option) {
             final isAdded = _selectedOptions.contains(option);
             final isTapped = _tappedOptions.contains(option);
+            final specs = _optionSpecs[option];
+            final specSummary = specs != null && _selectedSubcategory != null
+                ? _specSummaryForSubcategory(specs, _selectedSubcategory!)
+                : null;
             return Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: Material(
@@ -1047,32 +1241,63 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                         width: isAdded || isTapped ? 1.5 : 1,
                       ),
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            option,
-                            style: AppTypography.body.copyWith(
-                              color: isAdded
-                                  ? AppColors.primary88
-                                  : AppColors.textPrimary,
-                              fontWeight: isAdded
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                option,
+                                style: AppTypography.body.copyWith(
+                                  color: isAdded
+                                      ? AppColors.primary88
+                                      : AppColors.textPrimary,
+                                  fontWeight: isAdded
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
+                            if (isAdded)
+                              const Icon(
+                                Icons.check_circle,
+                                color: AppColors.primary88,
+                                size: 20,
+                              )
+                            else if (isTapped)
+                              const Icon(
+                                Icons.radio_button_checked,
+                                color: AppColors.primary88,
+                                size: 20,
+                              ),
+                          ],
                         ),
-                        if (isAdded)
-                          const Icon(
-                            Icons.check_circle,
-                            color: AppColors.primary88,
-                            size: 20,
-                          )
-                        else if (isTapped)
-                          const Icon(
-                            Icons.radio_button_checked,
-                            color: AppColors.primary88,
-                            size: 20,
+                        if (specSummary != null && specSummary.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.info_outline,
+                                  size: 14,
+                                  color: AppColors.textSecondary,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    specSummary,
+                                    style: AppTypography.small.copyWith(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 11,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                       ],
                     ),
@@ -1081,6 +1306,178 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
               ),
             );
           }),
+
+          // Manual option input (option not found in catalog)
+          Text(
+            "Option not in the list? Add it manually",
+            style: AppTypography.small.copyWith(
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _manualOptionController,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    hintText: 'Type option name (e.g. custom laptop model)',
+                    prefixIcon: const Icon(
+                      Icons.edit,
+                      size: 20,
+                      color: AppColors.textTertiary,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderSide: const BorderSide(color: AppColors.border),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderSide: const BorderSide(color: AppColors.primary88),
+                    ),
+                  ),
+                  onSubmitted: (_) => _addManualOption(),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              SizedBox(
+                height: 44,
+                child: OutlinedButton(
+                  onPressed: _manualOptionController.text.trim().isEmpty
+                      ? null
+                      : _addManualOption,
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.border),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    size: 20,
+                    color: AppColors.textPurple,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+
+          // Manual options already added (pending admin review)
+          if (_manualOptions.isNotEmpty) ...[
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.warning20,
+                borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                border: Border.all(color: AppColors.warning80),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.pending_actions,
+                        color: AppColors.warning80,
+                        size: 18,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Expanded(
+                        child: Text(
+                          'Manual options (pending admin review)',
+                          style: AppTypography.smallSemibold.copyWith(
+                            color: AppColors.warning80,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'These options are not yet in the system catalog. '
+                    'They have been sent to the admin for review and may become '
+                    'default options for all users.',
+                    style: AppTypography.small.copyWith(
+                      color: AppColors.warning80,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  ..._manualOptions.map((opt) {
+                    final isSelected = _selectedOptions.contains(opt);
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceLight,
+                        borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                        border: Border.all(color: AppColors.border),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.person_add,
+                                  size: 16,
+                                  color: AppColors.warning80,
+                                ),
+                                const SizedBox(width: AppSpacing.xs),
+                                Expanded(
+                                  child: Text(
+                                    opt,
+                                    style: AppTypography.sectionInnerTitle.copyWith(
+                                      color: AppColors.textPrimary,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isSelected)
+                            const Icon(
+                              Icons.check_circle,
+                              color: AppColors.primary88,
+                              size: 20,
+                            )
+                          else
+                            IconButton(
+                              onPressed: () => _addManualOptionToSelection(opt),
+                              icon: const Icon(
+                                Icons.add_circle_outline,
+                                color: AppColors.textPurple,
+                                size: 20,
+                              ),
+                            ),
+                          IconButton(
+                            onPressed: () => _removeManualOption(opt),
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: AppColors.error80,
+                              size: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
 
           // Selected options count
           if (_selectedOptions.isNotEmpty) ...[
@@ -1102,6 +1499,11 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
 
             // Selected options with remove button
             ..._selectedOptions.map((option) {
+              final isManual = _manualOptions.contains(option);
+              final specs = _optionSpecs[option];
+              final specSummary = specs != null && _selectedSubcategory != null
+                  ? _specSummaryForSubcategory(specs, _selectedSubcategory!)
+                  : null;
               return Container(
                 margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                 padding: const EdgeInsets.all(AppSpacing.md),
@@ -1110,22 +1512,65 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                   borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
                   border: Border.all(color: AppColors.border),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        option,
-                        style: AppTypography.sectionInnerTitle,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              if (isManual)
+                                const Icon(
+                                  Icons.person_add,
+                                  size: 16,
+                                  color: AppColors.warning80,
+                                ),
+                              if (isManual) const SizedBox(width: AppSpacing.xs),
+                              Expanded(
+                                child: Text(
+                                  option,
+                                  style: AppTypography.sectionInnerTitle,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => _removeOption(option),
+                          icon: const Icon(
+                            Icons.delete_outline,
+                            color: AppColors.error80,
+                            size: 20,
+                          ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: () => _removeOption(option),
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        color: AppColors.error80,
-                        size: 20,
+                    if (specSummary != null && specSummary.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: AppColors.textSecondary,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              specSummary,
+                              style: AppTypography.small.copyWith(
+                                color: AppColors.textSecondary,
+                                fontSize: 11,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    ],
                   ],
                 ),
               );

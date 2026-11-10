@@ -57,7 +57,19 @@ Map<String, WidgetBuilder> buildAppRoutes() {
     },
     '/reset-password': (context) => const ResetPasswordScreen(),
     '/dashboard': userRoute((context) => const DashboardScreen()),
-    '/create-decision': userRoute((context) => const CreateDecisionScreen()),
+    '/create-decision': userRoute((context) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is Map) {
+        return CreateDecisionScreen(
+          initialCategory: args['category'] as String?,
+          initialSubcategory: args['subcategory'] as String?,
+          initialOptions: (args['options'] as List?)?.cast<String>(),
+          initialPriorities: (args['priorities'] as Map?)
+              ?.map((k, v) => MapEntry(k as String, (v as num).toDouble())),
+        );
+      }
+      return const CreateDecisionScreen();
+    }),
     '/continue-decision': userRoute((context) => const ContinueDecisionScreen()),
     '/history': userRoute((context) => const HistoryScreen()),
     '/insight': userRoute((context) => const InsightScreen()),
