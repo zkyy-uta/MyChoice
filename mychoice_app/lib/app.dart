@@ -9,6 +9,15 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/data/repositories/supabase_auth_repository.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
+import 'features/decision_history/data/repositories/supabase_decision_history_repository.dart';
+import 'features/decision_history/domain/repositories/decision_history_repository.dart';
+import 'features/decision_history/presentation/providers/decision_history_provider.dart';
+import 'features/keputusan/data/repositories/supabase_keputusan_repository.dart';
+import 'features/keputusan/domain/repositories/keputusan_repository.dart';
+import 'features/keputusan/presentation/providers/keputusan_provider.dart';
+import 'features/user_profile/data/repositories/supabase_user_profile_repository.dart';
+import 'features/user_profile/domain/repositories/user_profile_repository.dart';
+import 'features/user_profile/presentation/providers/user_profile_provider.dart';
 import 'features/category_selection/data/datasources/category_datasource.dart';
 import 'features/category_selection/data/repositories/category_repository_impl.dart';
 import 'features/category_selection/presentation/providers/category_provider.dart';
@@ -113,6 +122,37 @@ class _MyChoiceAppState extends State<MyChoiceApp> {
             repository: CategoryRepositoryImpl(
               dataSource: context.read<MockCategoryDataSource>(),
             ),
+          ),
+        ),
+        // Decision History Provider
+        Provider<DecisionHistoryRepository>(
+          create: (_) => SupabaseDecisionHistoryRepository(
+            supabase.Supabase.instance.client,
+          ),
+        ),
+        ChangeNotifierProvider<DecisionHistoryProvider>(
+          create: (context) => DecisionHistoryProvider(
+            repository: context.read<DecisionHistoryRepository>(),
+          ),
+        ),
+        // Keputusan Provider
+        Provider<KeputusanRepository>(
+          create: (_) =>
+              SupabaseKeputusanRepository(supabase.Supabase.instance.client),
+        ),
+        ChangeNotifierProvider<KeputusanProvider>(
+          create: (context) => KeputusanProvider(
+            repository: context.read<KeputusanRepository>(),
+          ),
+        ),
+        // User Profile Provider
+        Provider<UserProfileRepository>(
+          create: (_) =>
+              SupabaseUserProfileRepository(supabase.Supabase.instance.client),
+        ),
+        ChangeNotifierProvider<UserProfileProvider>(
+          create: (context) => UserProfileProvider(
+            repository: context.read<UserProfileRepository>(),
           ),
         ),
         // Decision Engine Provider

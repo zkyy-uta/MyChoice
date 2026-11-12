@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/mobile_background.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
+import 'package:mychoice_app/features/keputusan/presentation/providers/keputusan_provider.dart';
 import '../comparison/mf08_manual_choice_structuring_screen.dart';
 import '../history/history_detail_screen.dart';
 import '../history/history_sample_data.dart';
@@ -35,6 +37,7 @@ class ResultScreen extends StatefulWidget {
       RankedChoice(name: 'ASUS Vivobook 14', score: 0.79),
       RankedChoice(name: 'Acer Aspire 5', score: 0.74),
     ],
+    this.priorities = const {},
     this.onComparison,
     this.onAnalysis,
     this.onWhatIf,
@@ -45,6 +48,9 @@ class ResultScreen extends StatefulWidget {
   final String category;
   final String subcategory;
   final List<RankedChoice> choices;
+
+  /// Priorities dari criteria yang dipilih user, e.g. {"Price": 30.0, "RAM": 40.0}
+  final Map<String, dynamic> priorities;
   final VoidCallback? onComparison;
   final VoidCallback? onAnalysis;
   final VoidCallback? onWhatIf;
@@ -63,6 +69,7 @@ class _ResultScreenState extends State<ResultScreen> {
   bool saving = false;
   bool saved = false;
 
+  // ignore: unused_element
   void _unavailable(String feature) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('$feature screen is not connected yet.')),
@@ -74,23 +81,51 @@ class _ResultScreenState extends State<ResultScreen> {
 
     setState(() => saving = true);
     try {
-      if (widget.onSave != null) {
-        await widget.onSave!();
-      } else {
-        final sorted = [...widget.choices]
-          ..sort((a, b) => b.score.compareTo(a.score));
-        final top = sorted.isEmpty ? null : sorted.first;
-        final newDecision = HistoryDecision(
-          category: widget.category,
-          title: top?.name ?? widget.subcategory,
-          score: top?.score ?? 0.85,
-          dateGroup: 'Today',
-          date: 'Today',
-          recordedAt: DateTime.now(),
-          status: 'Decision Made',
+      final historyProvider = context.read<DecisionHistoryProvider>();
+      final keputusanProvider = context.read<KeputusanProvider>();
+
+      final sorted = [...widget.choices]
+        ..sort((a, b) => b.score.compareTo(a.score));
+      final top = sorted.isEmpty ? null : sorted.first;
+
+      // 1. Simpan ke decision_histories (untuk history screen)
+      final created = await historyProvider.addHistory(
+        category: widget.category,
+        subcategory: widget.subcategory,
+        title: top?.name ?? widget.subcategory,
+        score: top?.score ?? 0.85,
+        finalOption: top?.name,
+        decisionDate: DateTime.now(),
+        priorities: widget.priorities,
+      );
+
+      // 2. Simpan ke tabel keputusan (ERD) — tidak block jika gagal
+      if (created != null) {
+        await keputusanProvider.addKeputusan(
+          namaKategori: widget.category,
+          namaSubkategori: widget.subcategory,
+          judul: top?.name ?? widget.subcategory,
+          status: 'selesai',
+          decisionHistoryId: created.id,
         );
-        historySampleDecisions.insert(0, newDecision);
       }
+
+      if (created != null) {
+        historySampleDecisions.insert(
+          0,
+          HistoryDecision(
+            id: created.id,
+            category: created.category,
+            title: created.title,
+            score: created.score,
+            dateGroup: 'Today',
+            date: 'Today',
+            recordedAt: created.createdAt,
+            status: 'Decision Made',
+          ),
+        );
+      }
+
       if (!mounted) return;
       setState(() => saved = true);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -98,6 +133,13 @@ class _ResultScreenState extends State<ResultScreen> {
           content: Text('Decision saved successfully! View it in History.'),
           backgroundColor: AppColors.success80,
         ),
+      );
+      // Langsung navigate ke History dan reload datanya
+      await Future<void>.delayed(const Duration(milliseconds: 600));
+      if (!mounted) return;
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/history',
+        (route) => route.settings.name == '/dashboard',
       );
     } catch (_) {
       if (!mounted) return;
@@ -388,27 +430,30 @@ class _ResultScreenState extends State<ResultScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            DetailAnalysisScreen(
+                                        builder: (context) => DetailAnalysisScreen(
                                           category: widget.category,
                                           subcategory: widget.subcategory,
                                           choices: widget.choices,
                                           onComparison: () =>
                                               Navigator.of(context).pushNamed(
-                                            '/mf08-comparison',
-                                            arguments: Mf08ComparisonArguments(
-                                              category: widget.category,
-                                              subcategory: widget.subcategory,
-                                              choices: widget.choices
-                                                  .map(
-                                                    (c) => ComparisonChoice(
-                                                      name: c.name,
-                                                      finalScore: c.score,
+                                                '/mf08-comparison',
+                                                arguments:
+                                                    Mf08ComparisonArguments(
+                                                      category: widget.category,
+                                                      subcategory:
+                                                          widget.subcategory,
+                                                      choices: widget.choices
+                                                          .map(
+                                                            (c) =>
+                                                                ComparisonChoice(
+                                                                  name: c.name,
+                                                                  finalScore:
+                                                                      c.score,
+                                                                ),
+                                                          )
+                                                          .toList(),
                                                     ),
-                                                  )
-                                                  .toList(),
-                                            ),
-                                          ),
+                                              ),
                                         ),
                                       ),
                                     );

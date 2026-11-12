@@ -6,7 +6,9 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
 import 'history_detail_screen.dart';
-import 'history_sample_data.dart';
+import 'package:mychoice_app/features/decision_history/domain/entities/decision_history.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
+import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -23,12 +25,30 @@ class _HistoryScreenState extends State<HistoryScreen> {
   String _statusFilter = 'All';
   DateTimeRange? _customDateRange;
 
-  final List<HistoryDecision> _decisions = historySampleDecisions;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        Provider.of<DecisionHistoryProvider>(context, listen: false)
+            .loadHistories();
+      }
+    });
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  List<DecisionHistory> get _decisions {
+    try {
+      return Provider.of<DecisionHistoryProvider>(context, listen: false)
+          .histories;
+    } on ProviderNotFoundException {
+      return [];
+    }
   }
 
   List<HistoryDecision> get _filteredDecisions {
@@ -39,24 +59,64 @@ class _HistoryScreenState extends State<HistoryScreen> {
           (_categoryFilter == 'Education' && decision.category == 'Internship');
       final matchesDate = switch (_dateFilter) {
         'This Week' =>
-          decision.dateGroup == 'Today' || decision.dateGroup == 'Yesterday',
+          _dateGroupLabel(decision.createdAt) == 'Today' ||
+              _dateGroupLabel(decision.createdAt) == 'Yesterday',
         'This Month' =>
-          decision.recordedAt.year == DateTime.now().year &&
-              decision.recordedAt.month == DateTime.now().month,
+          decision.createdAt.year == DateTime.now().year &&
+              decision.createdAt.month == DateTime.now().month,
         'Custom' =>
           _customDateRange == null ||
-              (!decision.recordedAt.isBefore(_customDateRange!.start) &&
-                  !decision.recordedAt.isAfter(_customDateRange!.end)),
+              (!decision.createdAt.isBefore(_customDateRange!.start) &&
+                  !decision.createdAt.isAfter(_customDateRange!.end)),
         _ => true,
       };
       final matchesStatus =
           _statusFilter == 'All' || decision.status == _statusFilter;
-      final searchText = '${decision.category} ${decision.title}'.toLowerCase();
+      final searchText =
+          '${decision.category} ${decision.title}'.toLowerCase();
       return matchesCategory &&
           matchesDate &&
           matchesStatus &&
           searchText.contains(_query.toLowerCase());
-    }).toList();
+    }).map((d) => _toHistoryDecision(d)).toList();
+  }
+
+  HistoryDecision _toHistoryDecision(DecisionHistory d) {
+    return HistoryDecision(
+      id: d.id,
+      category: d.category,
+      title: d.title,
+      score: d.score,
+      dateGroup: _dateGroupLabel(d.createdAt),
+      date: _dateLabel(d.createdAt),
+      recordedAt: d.createdAt,
+      priorities: Map<String, int>.from(
+        d.priorities.map(
+          (key, value) => MapEntry(key, (value as num).toInt()),
+        ),
+      ),
+      status: d.rating > 0 ? 'Rated' : 'Decision Made',
+      review: d.review ?? '',
+      rating: d.rating,
+    );
+  }
+
+  String _dateGroupLabel(DateTime dateTime) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final decisionDay = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    if (decisionDay == today) return 'Today';
+    if (decisionDay == yesterday) return 'Yesterday';
+    return 'Earlier';
+  }
+
+  String _dateLabel(DateTime dateTime) {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    return '${dateTime.day} ${months[dateTime.month - 1]}, ${dateTime.year}';
   }
 
   Future<void> _showFilters() async {
@@ -197,11 +257,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<DecisionHistoryProvider>(context);
     final filtered = _filteredDecisions;
     final groups = <String, List<HistoryDecision>>{};
     for (final decision in filtered) {
       groups.putIfAbsent(decision.dateGroup, () => []).add(decision);
     }
+
+    final isLoading = provider.isLoading;
+    final error = provider.error;
 
     return MobileBackground(
       child: Scaffold(
@@ -326,7 +390,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ],
                     const SizedBox(height: AppSpacing.xl),
-                    if (filtered.isEmpty)
+                    if (isLoading)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 48),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    else if (error != null && _decisions.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 48),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'Gagal memuat riwayat',
+                                style: AppTypography.body,
+                              ),
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {});
+                                  provider.loadHistories();
+                                },
+                                child: const Text('Coba lagi'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    else if (filtered.isEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 48),
                         child: Center(
@@ -361,7 +452,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   void _openDetail(HistoryDecision decision) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => HistoryDetailScreen(decision: decision),
+        builder: (_) => HistoryDetailScreen(
+          decision: decision,
+          decisionHistoryId: decision.id,
+        ),
       ),
     );
   }

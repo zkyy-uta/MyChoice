@@ -2,6 +2,7 @@ import 'history_detail_screen.dart';
 
 final historySampleDecisions = <HistoryDecision>[
   HistoryDecision(
+    id: 'sample_1',
     category: 'Technology',
     title: 'Lenovo IdeaPad Slim 5',
     score: 0.89,
@@ -10,6 +11,7 @@ final historySampleDecisions = <HistoryDecision>[
     recordedAt: DateTime(2026, 10, 3),
   ),
   HistoryDecision(
+    id: 'sample_2',
     category: 'Internship',
     title: 'Company A',
     score: 0.86,
@@ -20,6 +22,7 @@ final historySampleDecisions = <HistoryDecision>[
     status: 'Decision Made',
   ),
   HistoryDecision(
+    id: 'sample_3',
     category: 'Technology',
     title: 'Samsung Galaxy A56',
     score: 0.84,
@@ -29,6 +32,7 @@ final historySampleDecisions = <HistoryDecision>[
     status: 'Decision Made',
   ),
   HistoryDecision(
+    id: 'sample_4',
     category: 'Fashion',
     title: 'Nike Air Max 95 Big Bubble Gore-Tex',
     score: 0.89,
@@ -37,6 +41,7 @@ final historySampleDecisions = <HistoryDecision>[
     recordedAt: DateTime(2026, 10, 2),
   ),
   HistoryDecision(
+    id: 'sample_5',
     category: 'Technology',
     title: 'Lenovo IdeaPad Slim 5',
     score: 0.88,
@@ -45,6 +50,7 @@ final historySampleDecisions = <HistoryDecision>[
     recordedAt: DateTime(2026, 10, 2),
   ),
   HistoryDecision(
+    id: 'sample_6',
     category: 'Education',
     title: 'UX Design Program',
     score: 0.82,

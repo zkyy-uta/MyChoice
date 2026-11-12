@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/mobile_background.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
 
 class HistoryDecision {
   const HistoryDecision({
+    required this.id,
     required this.category,
     required this.title,
     required this.score,
@@ -21,9 +24,10 @@ class HistoryDecision {
     },
     this.status = 'Decision Made',
     this.review = '',
-    this.rating = 5,
+    this.rating = 0,
   });
 
+  final String id;
   final String category;
   final String title;
   final double score;
@@ -44,9 +48,14 @@ class HistoryDecision {
 }
 
 class HistoryDetailScreen extends StatefulWidget {
-  const HistoryDetailScreen({required this.decision, super.key});
+  const HistoryDetailScreen({
+    required this.decision,
+    this.decisionHistoryId,
+    super.key,
+  });
 
   final HistoryDecision decision;
+  final String? decisionHistoryId;
 
   @override
   State<HistoryDetailScreen> createState() => _HistoryDetailScreenState();
@@ -54,17 +63,64 @@ class HistoryDetailScreen extends StatefulWidget {
 
 class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
   late TextEditingController _reviewController;
+  int _selectedRating = 0;
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
     _reviewController = TextEditingController(text: widget.decision.review);
+    _selectedRating = widget.decision.rating;
   }
 
   @override
   void dispose() {
     _reviewController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveReviewAndRating() async {
+    final historyId = widget.decisionHistoryId ?? widget.decision.id;
+    if (historyId.isEmpty) return;
+
+    setState(() => _isSaving = true);
+    try {
+      final provider = context.read<DecisionHistoryProvider>();
+      final success = await provider.saveReviewAndRating(
+        decisionHistoryId: historyId,
+        rating: _selectedRating,
+        review: _reviewController.text.trim().isEmpty
+            ? null
+            : _reviewController.text.trim(),
+      );
+
+      if (!mounted) return;
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ulasan dan bintang rating tersimpan.'),
+            backgroundColor: AppColors.success80,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(provider.error ?? 'Gagal menyimpan ulasan.'),
+            backgroundColor: AppColors.error80,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menyimpan ulasan: $e'),
+          backgroundColor: AppColors.error80,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override
@@ -171,13 +227,31 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                             Row(
                               children: List.generate(
                                 5,
-                                (index) => Icon(
-                                  Icons.star_rounded,
-                                  size: 18,
-                                  color: index < widget.decision.rating
-                                      ? AppColors.warning80
-                                      : AppColors.grey300,
+                                (index) => IconButton(
+                                  padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  icon: Icon(
+                                    Icons.star_rounded,
+                                    size: 20,
+                                    color: index < _selectedRating
+                                        ? AppColors.warning80
+                                        : AppColors.grey300,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedRating = index + 1;
+                                    });
+                                  },
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              _selectedRating == 0
+                                  ? 'Belum memberi rating'
+                                  : 'Rating: $_selectedRating bintang',
+                              style: AppTypography.small.copyWith(
+                                color: AppColors.textSecondary,
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xs),
@@ -206,6 +280,32 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                 ),
                                 filled: true,
                                 fillColor: Colors.white.withValues(alpha: 0.8),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48,
+                              child: FilledButton.icon(
+                                onPressed: _isSaving ? null : _saveReviewAndRating,
+                                icon: _isSaving
+                                    ? const SizedBox(
+                                        width: 16,
+                                        height: 16,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Icon(
+                                        Icons.save_rounded,
+                                        size: 18,
+                                      ),
+                                label: Text(
+                                  _isSaving
+                                      ? 'Menyimpan...'
+                                      : 'Simpan Ulasan & Rating',
+                                ),
                               ),
                             ),
                           ],

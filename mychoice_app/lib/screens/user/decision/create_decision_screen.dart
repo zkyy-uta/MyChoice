@@ -7,6 +7,8 @@ import 'package:mychoice_app/core/theme/app_typography.dart';
 import 'package:mychoice_app/core/theme/app_spacing.dart';
 import 'package:mychoice_app/core/widgets/bottom_navigation.dart';
 import 'package:mychoice_app/core/widgets/mobile_background.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
+import 'package:provider/provider.dart';
 import '../history/history_detail_screen.dart';
 import '../history/history_sample_data.dart';
 import 'result_screen.dart';
@@ -46,8 +48,10 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
 
   // Manual option input (user-typed option not found in catalog)
   final TextEditingController _manualOptionController = TextEditingController();
-  final List<String> _manualOptions = []; // user-typed options awaiting admin review
-  final Set<String> _manualOptionIds = {}; // ids of manual options added to selection
+  final List<String> _manualOptions =
+      []; // user-typed options awaiting admin review
+  final Set<String> _manualOptionIds =
+      {}; // ids of manual options added to selection
 
   // Option specifications loaded from alternatives_catalog.json
   final Map<String, Map<String, String>> _optionSpecs = {};
@@ -63,38 +67,147 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     'Processor': ['Price', 'Cores', 'Threads', 'Base Clock', 'TDP'],
     'Graphics Card': ['Price', 'VRAM', 'CUDA Cores', 'Boost Clock', 'TDP'],
     'Course': ['Price', 'Rating', 'Duration', 'Instructor Experience'],
-    'Certification': ['Price', 'Industry Recognition', 'Validity', 'Preparation Time'],
+    'Certification': [
+      'Price',
+      'Industry Recognition',
+      'Validity',
+      'Preparation Time',
+    ],
     'Bootcamp': ['Price', 'Rating', 'Duration', 'Job Placement'],
-    'University': ['Price', 'Campus Safety', 'Student Satisfaction', 'Job Placement Rate'],
+    'University': [
+      'Price',
+      'Campus Safety',
+      'Student Satisfaction',
+      'Job Placement Rate',
+    ],
     'Training Program': ['Price', 'Rating', 'Duration', 'Curriculum Quality'],
     'Dress': ['Price', 'Style', 'Material', 'Comfort', 'Durability'],
     'Shoes': ['Price', 'Rating', 'Comfort', 'Weight', 'Durability'],
     'Accessories': ['Price', 'Material', 'Style', 'Durability'],
     'Bags': ['Price', 'Rating', 'Capacity', 'Weight', 'Durability'],
     'Jewelry': ['Price', 'Material', 'Style', 'Durability'],
-    'Outerwear': ['Price', 'Warmth', 'Water Resistance', 'Material', 'Durability'],
+    'Outerwear': [
+      'Price',
+      'Warmth',
+      'Water Resistance',
+      'Material',
+      'Durability',
+    ],
   };
 
   // Default priority split for each subcategory's default criteria.
   final Map<String, Map<String, double>> _defaultPrioritiesBySubcategory = {
-    'Laptop': {'Price': 25, 'RAM': 20, 'Storage': 20, 'Processor': 20, 'Battery': 10, 'Weight': 5},
-    'Smartphone': {'Price': 25, 'RAM': 15, 'Storage': 15, 'Battery': 20, 'Camera': 15, 'Display': 10},
-    'Tablet': {'Price': 25, 'RAM': 15, 'Storage': 15, 'Battery': 25, 'Screen Size': 20},
-    'Monitor': {'Price': 25, 'Screen Size': 20, 'Refresh Rate': 15, 'Resolution': 20, 'Panel': 20},
-    'Gaming PC': {'Price': 20, 'RAM': 20, 'Storage': 15, 'GPU': 25, 'CPU Score': 20},
-    'Processor': {'Price': 25, 'Cores': 20, 'Threads': 15, 'Base Clock': 20, 'TDP': 20},
-    'Graphics Card': {'Price': 20, 'VRAM': 25, 'CUDA Cores': 20, 'Boost Clock': 15, 'TDP': 20},
-    'Course': {'Price': 30, 'Rating': 25, 'Duration': 20, 'Instructor Experience': 25},
-    'Certification': {'Price': 30, 'Industry Recognition': 25, 'Validity': 25, 'Preparation Time': 20},
-    'Bootcamp': {'Price': 30, 'Rating': 25, 'Duration': 20, 'Job Placement': 25},
-    'University': {'Price': 25, 'Campus Safety': 15, 'Student Satisfaction': 25, 'Job Placement Rate': 35},
-    'Training Program': {'Price': 30, 'Rating': 25, 'Duration': 20, 'Curriculum Quality': 25},
-    'Dress': {'Price': 30, 'Style': 25, 'Material': 20, 'Comfort': 15, 'Durability': 10},
-    'Shoes': {'Price': 30, 'Rating': 20, 'Comfort': 25, 'Weight': 10, 'Durability': 15},
+    'Laptop': {
+      'Price': 25,
+      'RAM': 20,
+      'Storage': 20,
+      'Processor': 20,
+      'Battery': 10,
+      'Weight': 5,
+    },
+    'Smartphone': {
+      'Price': 25,
+      'RAM': 15,
+      'Storage': 15,
+      'Battery': 20,
+      'Camera': 15,
+      'Display': 10,
+    },
+    'Tablet': {
+      'Price': 25,
+      'RAM': 15,
+      'Storage': 15,
+      'Battery': 25,
+      'Screen Size': 20,
+    },
+    'Monitor': {
+      'Price': 25,
+      'Screen Size': 20,
+      'Refresh Rate': 15,
+      'Resolution': 20,
+      'Panel': 20,
+    },
+    'Gaming PC': {
+      'Price': 20,
+      'RAM': 20,
+      'Storage': 15,
+      'GPU': 25,
+      'CPU Score': 20,
+    },
+    'Processor': {
+      'Price': 25,
+      'Cores': 20,
+      'Threads': 15,
+      'Base Clock': 20,
+      'TDP': 20,
+    },
+    'Graphics Card': {
+      'Price': 20,
+      'VRAM': 25,
+      'CUDA Cores': 20,
+      'Boost Clock': 15,
+      'TDP': 20,
+    },
+    'Course': {
+      'Price': 30,
+      'Rating': 25,
+      'Duration': 20,
+      'Instructor Experience': 25,
+    },
+    'Certification': {
+      'Price': 30,
+      'Industry Recognition': 25,
+      'Validity': 25,
+      'Preparation Time': 20,
+    },
+    'Bootcamp': {
+      'Price': 30,
+      'Rating': 25,
+      'Duration': 20,
+      'Job Placement': 25,
+    },
+    'University': {
+      'Price': 25,
+      'Campus Safety': 15,
+      'Student Satisfaction': 25,
+      'Job Placement Rate': 35,
+    },
+    'Training Program': {
+      'Price': 30,
+      'Rating': 25,
+      'Duration': 20,
+      'Curriculum Quality': 25,
+    },
+    'Dress': {
+      'Price': 30,
+      'Style': 25,
+      'Material': 20,
+      'Comfort': 15,
+      'Durability': 10,
+    },
+    'Shoes': {
+      'Price': 30,
+      'Rating': 20,
+      'Comfort': 25,
+      'Weight': 10,
+      'Durability': 15,
+    },
     'Accessories': {'Price': 30, 'Material': 20, 'Style': 25, 'Durability': 25},
-    'Bags': {'Price': 25, 'Rating': 20, 'Capacity': 20, 'Weight': 15, 'Durability': 20},
+    'Bags': {
+      'Price': 25,
+      'Rating': 20,
+      'Capacity': 20,
+      'Weight': 15,
+      'Durability': 20,
+    },
     'Jewelry': {'Price': 30, 'Material': 20, 'Style': 25, 'Durability': 25},
-    'Outerwear': {'Price': 25, 'Warmth': 20, 'Water Resistance': 15, 'Material': 20, 'Durability': 20},
+    'Outerwear': {
+      'Price': 25,
+      'Warmth': 20,
+      'Water Resistance': 15,
+      'Material': 20,
+      'Durability': 20,
+    },
   };
 
   @override
@@ -118,8 +231,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
 
   Future<void> _loadOptionSpecs() async {
     try {
-      final jsonString = await DefaultAssetBundle.of(context)
-          .loadString('assets/data/alternatives_catalog.json');
+      final jsonString = await DefaultAssetBundle.of(
+        context,
+      ).loadString('assets/data/alternatives_catalog.json');
       final data = jsonDecode(jsonString) as Map<String, dynamic>;
       final categories = data['categories'] as Map<String, dynamic>;
 
@@ -133,8 +247,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           _optionSpecs[name] = specs.map((k, v) => MapEntry(k, v.toString()));
         }
       }
-
-    } catch (e) {}
+    } catch (e) {
+      // Specs load failure is non-fatal; options can still be selected manually.
+    }
   }
 
   // Categories with icon assets
@@ -446,11 +561,27 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   /// Returns a short spec summary string for the given option specs,
   /// filtered to the keys most relevant for the subcategory.
   String _specSummaryForSubcategory(
-      Map<String, String> specs, String subcategory) {
+    Map<String, String> specs,
+    String subcategory,
+  ) {
     final relevantKeys = switch (subcategory) {
       'Laptop' => ['Processor', 'RAM', 'Storage', 'Battery', 'Price'],
-      'Smartphone' => ['Processor', 'RAM', 'Storage', 'Battery', 'Camera', 'Price'],
-      'Tablet' => ['Processor', 'RAM', 'Storage', 'Battery', 'Screen Size', 'Price'],
+      'Smartphone' => [
+        'Processor',
+        'RAM',
+        'Storage',
+        'Battery',
+        'Camera',
+        'Price',
+      ],
+      'Tablet' => [
+        'Processor',
+        'RAM',
+        'Storage',
+        'Battery',
+        'Screen Size',
+        'Price',
+      ],
       'Monitor' => ['Resolution', 'Refresh Rate', 'Screen Size', 'Price'],
       'Gaming PC' => ['Processor', 'RAM', 'Storage', 'GPU', 'Price'],
       'Processor' => ['Cores', 'Threads', 'Base Clock', 'Price'],
@@ -733,19 +864,38 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         ? _selectedOptions.first
         : (_selectedSubcategory ?? 'Decision');
 
-    final newDecision = HistoryDecision(
+    final provider = context.read<DecisionHistoryProvider>();
+    final saved = await provider.addHistory(
       category: _selectedCategory ?? 'Technology',
+      subcategory: _selectedSubcategory,
       title: topOption,
       score: 0.88,
-      dateGroup: 'Today',
-      date: 'Today',
-      recordedAt: DateTime.now(),
-      status: 'Decision Made',
-      priorities: Map.from(_priorities),
+      finalOption: topOption,
+      decisionDate: DateTime.now(),
+      priorities: Map<String, dynamic>.from(
+        _priorities.map((key, value) => MapEntry(key, value)),
+      ),
     );
 
-    // Save into history sample decisions so History & Dashboard reflect it
-    historySampleDecisions.insert(0, newDecision);
+    if (saved != null) {
+      // Tetap masukkan ke sample data agar dashboard refleksif
+      historySampleDecisions.insert(
+        0,
+        HistoryDecision(
+          id: saved.id,
+          category: saved.category,
+          title: saved.title,
+          score: saved.score,
+          dateGroup: 'Today',
+          date: 'Today',
+          recordedAt: saved.createdAt,
+          status: 'Decision Made',
+          priorities: Map<String, int>.from(
+            saved.priorities.map((key, value) => MapEntry(key, value.toInt())),
+          ),
+        ),
+      );
+    }
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -809,6 +959,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           category: _selectedCategory ?? 'Technology',
           subcategory: _selectedSubcategory ?? 'Laptop',
           choices: rankedChoices,
+          priorities: Map<String, dynamic>.from(
+            _priorities.map((key, value) => MapEntry(key, value)),
+          ),
           onSave: _saveDecision,
         ),
       ),
@@ -1334,15 +1487,21 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                       vertical: AppSpacing.sm,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       borderSide: const BorderSide(color: AppColors.border),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       borderSide: const BorderSide(color: AppColors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                       borderSide: const BorderSide(color: AppColors.primary88),
                     ),
                   ),
@@ -1359,7 +1518,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.border),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.inputRadius,
+                      ),
                     ),
                   ),
                   child: const Icon(
@@ -1420,7 +1581,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLight,
-                        borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.inputRadius,
+                        ),
                         border: Border.all(color: AppColors.border),
                       ),
                       child: Row(
@@ -1437,9 +1600,8 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                                 Expanded(
                                   child: Text(
                                     opt,
-                                    style: AppTypography.sectionInnerTitle.copyWith(
-                                      color: AppColors.textPrimary,
-                                    ),
+                                    style: AppTypography.sectionInnerTitle
+                                        .copyWith(color: AppColors.textPrimary),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -1526,7 +1688,8 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                                   size: 16,
                                   color: AppColors.warning80,
                                 ),
-                              if (isManual) const SizedBox(width: AppSpacing.xs),
+                              if (isManual)
+                                const SizedBox(width: AppSpacing.xs),
                               Expanded(
                                 child: Text(
                                   option,
