@@ -21,6 +21,9 @@ import 'features/user_profile/presentation/providers/user_profile_provider.dart'
 import 'features/category_selection/data/datasources/category_datasource.dart';
 import 'features/category_selection/data/repositories/category_repository_impl.dart';
 import 'features/category_selection/presentation/providers/category_provider.dart';
+import 'features/katalog/data/repositories/supabase_katalog_repository.dart';
+import 'features/katalog/domain/repositories/katalog_repository.dart';
+import 'features/katalog/presentation/providers/katalog_provider.dart';
 import 'features/comparison/presentation/providers/comparison_provider.dart';
 import 'features/decision_engine/data/repositories/decision_engine_repository_impl.dart';
 import 'features/decision_engine/domain/usecases/calculate_saw_usecase.dart';
@@ -154,6 +157,15 @@ class _MyChoiceAppState extends State<MyChoiceApp> {
           create: (context) => UserProfileProvider(
             repository: context.read<UserProfileRepository>(),
           ),
+        ),
+        // Katalog Provider
+        Provider<KatalogRepository>(
+          create: (_) =>
+              SupabaseKatalogRepository(supabase.Supabase.instance.client),
+        ),
+        ChangeNotifierProvider<KatalogProvider>(
+          create: (context) =>
+              KatalogProvider(repository: context.read<KatalogRepository>()),
         ),
         // Decision Engine Provider
         Provider<DecisionEngineRepositoryImpl>(

@@ -19,6 +19,7 @@ Fitur: Decision History, User Profile & Account Management, Role/Plan Access Con
 | BUG-007 | Tidak ada kolom plan (basic/premium) | Tabel `pengguna` belum memiliki kolom plan untuk membedakan user basic dan premium. | Tinggi | **Diperbaiki** | Migration `20261110000001_user_plan_management.sql` menambahkan kolom `plan` dengan check constraint `basic`/`premium`. |
 | BUG-008 | Tidak ada fungsi cek admin/premium | Tidak ada fungsi database untuk memeriksa role admin dan plan premium. | Tinggi | **Diperbaiki** | Ditambahkan fungsi `is_admin_user()`, `is_premium_user()`, dan `get_user_profile()`. |
 | BUG-009 | HistoryScreen crash saat provider tidak tersedia | Test widget yang tidak menyediakan `DecisionHistoryProvider` menyebabkan crash di `initState`. | Tinggi | **Diperbaiki** | `_loadHistories()` dibungkus try-catch untuk `ProviderNotFoundException`. |
+| BUG-010 | History kosong setelah menyimpan keputusan | `HistoryScreen` menyalin data ke variabel lokal `_decisions` via `setState` sekali saja di `initState`, sehingga tidak otomatis update saat `addHistory()` dipanggil dari layar lain. Masih memicu error "setState() or markNeedsBuild() called during build". | Tinggi | **Diperbaiki** | `HistoryScreen` sekarang menggunakan `Provider.of<DecisionHistoryProvider>(context)` (listen: true default) di `build()`, sehingga layar otomatis rebuild saat data berubah. Data diambil langsung dari provider, tidak lagi disalin ke variabel lokal. Inisialisasi data dipindahkan ke `addPostFrameCallback` untuk menghindari setState selama build. |
 
 ---
 
