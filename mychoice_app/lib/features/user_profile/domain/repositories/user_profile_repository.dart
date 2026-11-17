@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../entities/user_profile.dart';
 
 /// Antarmuka repository untuk manajemen profil dan akun pengguna.
@@ -7,6 +9,12 @@ abstract class UserProfileRepository {
 
   /// Perbarui nama pengguna sendiri.
   Future<UserProfile> updateProfile({required String name});
+
+  /// Unggah foto profil pengguna sendiri.
+  Future<UserProfile> updateProfilePhoto({
+    required Uint8List imageBytes,
+    required String fileName,
+  });
 
   /// Cek apakah pengguna adalah admin.
   Future<bool> isAdmin();

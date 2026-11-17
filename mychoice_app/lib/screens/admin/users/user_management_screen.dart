@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/models/admin_user.dart';
-import '../../../core/models/admin_user_store.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
 import '../../../core/widgets/page_app_bar.dart';
+import '../../../features/admin_user_management/presentation/providers/admin_user_provider.dart';
+import '../../../features/auth/presentation/providers/auth_provider.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -20,28 +22,23 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   final _searchController = TextEditingController();
   Set<AdminUserStatus> _selectedStatuses = AdminUserStatus.values.toSet();
 
-  List<AdminUser> get _users => AdminUserStore.instance.users.value;
-
   @override
   void initState() {
     super.initState();
-    AdminUserStore.instance.users.addListener(_onUsersChanged);
-  }
-
-  void _onUsersChanged() {
-    if (mounted) setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AdminUserProvider>().loadUsers();
+    });
   }
 
   @override
   void dispose() {
-    AdminUserStore.instance.users.removeListener(_onUsersChanged);
     _searchController.dispose();
     super.dispose();
   }
 
-  List<AdminUser> get _visibleUsers {
+  List<AdminUser> _visibleUsers(List<AdminUser> users) {
     final query = _searchController.text.trim().toLowerCase();
-    return _users.where((user) {
+    return users.where((user) {
       final matchesQuery =
           user.name.toLowerCase().contains(query) ||
           user.email.toLowerCase().contains(query) ||
@@ -51,24 +48,61 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
   }
 
   Future<void> _showUserDetails(AdminUser user) async {
-    final shouldDeactivate = await showDialog<bool>(
+    final provider = context.read<AdminUserProvider>();
+    final currentUserId = context.read<AuthProvider>().user?.id;
+    final action = await showDialog<_UserAction>(
       context: context,
-      builder: (context) => _UserDetailsDialog(user: user),
+      builder: (context) => _UserDetailsDialog(
+        user: user,
+        canChangeRole: currentUserId != user.id,
+        canChangeStatus: user.role != 'admin' && currentUserId != user.id,
+      ),
     );
-    if (shouldDeactivate != true || !mounted) return;
+    if (action == null || !mounted) return;
 
+    if (action.role != null && action.plan != null) {
+      final updated = await provider.updateAccess(
+        userId: user.id,
+        role: action.role!,
+        plan: action.plan!,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            updated
+                ? 'Account access updated successfully.'
+                : provider.error ?? 'Could not update account access.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    final active = action.active;
+    if (active == null || active == (user.status == AdminUserStatus.active)) {
+      return;
+    }
     final confirmed = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => _DeactivateConfirmationDialog(user: user),
+      builder: (context) =>
+          _AccountStatusConfirmationDialog(user: user, active: active),
     );
     if (confirmed != true || !mounted) return;
 
-    AdminUserStore.instance.update(
-      user.copyWith(status: AdminUserStatus.inactive),
-    );
+    final updated = await provider.setActive(userId: user.id, active: active);
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Account deactivated successfully')),
+      SnackBar(
+        content: Text(
+          updated
+              ? active
+                    ? 'Account activated successfully.'
+                    : 'Account deactivated successfully.'
+              : provider.error ?? 'Could not update account status.',
+        ),
+      ),
     );
   }
 
@@ -86,7 +120,8 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final users = _visibleUsers;
+    final provider = context.watch<AdminUserProvider>();
+    final users = _visibleUsers(provider.users);
     final allSelected =
         _selectedStatuses.length == AdminUserStatus.values.length;
     return MobileBackground(
@@ -176,8 +211,32 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
                 ),
               ),
             ),
+            if (provider.error != null && !provider.isLoading)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        provider.error!,
+                        style: AppTypography.extraSmallSemibold.copyWith(
+                          color: AppColors.error80,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: provider.loadUsers,
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
             Expanded(
-              child: users.isEmpty
+              child: provider.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : provider.error != null && provider.users.isEmpty
+                  ? const SizedBox.shrink()
+                  : users.isEmpty
                   ? Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32),
@@ -443,13 +502,28 @@ class _StatusFilterSheetState extends State<_StatusFilterSheet> {
   }
 }
 
-class _UserDetailsDialog extends StatelessWidget {
-  const _UserDetailsDialog({required this.user});
+class _UserDetailsDialog extends StatefulWidget {
+  const _UserDetailsDialog({
+    required this.user,
+    required this.canChangeRole,
+    required this.canChangeStatus,
+  });
 
   final AdminUser user;
+  final bool canChangeRole;
+  final bool canChangeStatus;
+
+  @override
+  State<_UserDetailsDialog> createState() => _UserDetailsDialogState();
+}
+
+class _UserDetailsDialogState extends State<_UserDetailsDialog> {
+  late String _role = widget.user.role;
+  late String _plan = widget.user.plan;
 
   @override
   Widget build(BuildContext context) {
+    final user = widget.user;
     final isActive = user.status == AdminUserStatus.active;
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -469,7 +543,9 @@ class _UserDetailsDialog extends StatelessWidget {
                   radius: 18,
                   backgroundColor: AppColors.primary20,
                   child: Text(
-                    user.name.characters.first.toUpperCase(),
+                    user.name.isEmpty
+                        ? 'U'
+                        : user.name.characters.first.toUpperCase(),
                     style: AppTypography.smallSemibold.copyWith(
                       color: AppColors.primaryDark,
                     ),
@@ -501,7 +577,7 @@ class _UserDetailsDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    user.plan,
+                    user.role == 'admin' ? 'Admin' : user.plan.toUpperCase(),
                     style: AppTypography.extraSmallSemibold.copyWith(
                       color: AppColors.primaryDark,
                     ),
@@ -509,7 +585,7 @@ class _UserDetailsDialog extends StatelessWidget {
                 ),
                 IconButton(
                   tooltip: 'Close',
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(
                     Icons.close,
                     color: AppColors.primaryDark,
@@ -519,35 +595,75 @@ class _UserDetailsDialog extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              initialValue: _role,
+              decoration: const InputDecoration(labelText: 'Account role'),
+              items: const [
+                DropdownMenuItem(value: 'user', child: Text('User')),
+                DropdownMenuItem(value: 'admin', child: Text('Admin')),
+              ],
+              onChanged: widget.canChangeRole
+                  ? (value) {
+                      if (value != null) setState(() => _role = value);
+                    }
+                  : null,
+            ),
+            const SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              initialValue: _plan,
+              decoration: const InputDecoration(labelText: 'Subscription plan'),
+              items: const [
+                DropdownMenuItem(value: 'basic', child: Text('Basic')),
+                DropdownMenuItem(value: 'premium', child: Text('Premium')),
+              ],
+              onChanged: (value) {
+                if (value != null) setState(() => _plan = value);
+              },
+            ),
             const SizedBox(height: 10),
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: isActive
-                    ? () => Navigator.of(context).pop(true)
-                    : null,
-                icon: Icon(
-                  Icons.person_off_outlined,
-                  color: isActive ? AppColors.error80 : AppColors.textTertiary,
-                ),
-                label: Text(
-                  isActive ? 'Deactivate Account' : 'Account Deactivated',
-                  style: AppTypography.buttonMedium.copyWith(
-                    color: isActive
-                        ? AppColors.error80
-                        : AppColors.textTertiary,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: isActive ? AppColors.error20 : AppColors.border,
-                  ),
-                  backgroundColor: isActive
-                      ? AppColors.error20
-                      : AppColors.grey50,
-                ),
+              child: ElevatedButton(
+                onPressed: _role == user.role && _plan == user.plan
+                    ? null
+                    : () => Navigator.of(
+                        context,
+                      ).pop(_UserAction.access(role: _role, plan: _plan)),
+                child: const Text('Save role and plan'),
               ),
             ),
+            if (widget.canChangeStatus) ...[
+              const SizedBox(height: 6),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pop(_UserAction.status(active: !isActive)),
+                  icon: Icon(
+                    isActive ? Icons.person_off_outlined : Icons.person_outline,
+                    color: isActive ? AppColors.error80 : AppColors.primaryDark,
+                  ),
+                  label: Text(
+                    isActive ? 'Deactivate Account' : 'Activate Account',
+                    style: AppTypography.buttonMedium.copyWith(
+                      color: isActive
+                          ? AppColors.error80
+                          : AppColors.primaryDark,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: isActive ? AppColors.error20 : AppColors.border,
+                    ),
+                    backgroundColor: isActive
+                        ? AppColors.error20
+                        : AppColors.grey50,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -555,10 +671,24 @@ class _UserDetailsDialog extends StatelessWidget {
   }
 }
 
-class _DeactivateConfirmationDialog extends StatelessWidget {
-  const _DeactivateConfirmationDialog({required this.user});
+class _UserAction {
+  const _UserAction.access({required this.role, required this.plan})
+    : active = null;
+  const _UserAction.status({required this.active}) : role = null, plan = null;
+
+  final String? role;
+  final String? plan;
+  final bool? active;
+}
+
+class _AccountStatusConfirmationDialog extends StatelessWidget {
+  const _AccountStatusConfirmationDialog({
+    required this.user,
+    required this.active,
+  });
 
   final AdminUser user;
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
@@ -568,25 +698,27 @@ class _DeactivateConfirmationDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 26,
-            backgroundColor: AppColors.error20,
+            backgroundColor: active ? AppColors.primary20 : AppColors.error20,
             child: Icon(
-              Icons.warning_rounded,
-              color: AppColors.error80,
+              active ? Icons.person_outline : Icons.warning_rounded,
+              color: active ? AppColors.primaryDark : AppColors.error80,
               size: 30,
             ),
           ),
           const SizedBox(height: 14),
           Text(
-            'Deactivate account?',
+            active ? 'Activate account?' : 'Deactivate account?',
             textAlign: TextAlign.center,
             style: AppTypography.sectionInnerTitle,
           ),
           const SizedBox(height: 8),
           Text(
-            '${user.name} will no longer be able to sign in to MyChoice. '
-            'Their existing data will be kept.',
+            active
+                ? '${user.name} will be able to sign in to MyChoice again.'
+                : '${user.name} will no longer be able to sign in to MyChoice. '
+                      'Their existing data will be kept.',
             textAlign: TextAlign.center,
             style: AppTypography.small.copyWith(color: AppColors.textSecondary),
           ),
@@ -609,7 +741,7 @@ class _DeactivateConfirmationDialog extends StatelessWidget {
                   backgroundColor: AppColors.error80,
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Deactivate'),
+                child: Text(active ? 'Activate' : 'Deactivate'),
               ),
             ),
           ],

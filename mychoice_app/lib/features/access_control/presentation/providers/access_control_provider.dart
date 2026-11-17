@@ -46,13 +46,16 @@ class AccessControlProvider extends ChangeNotifier {
   }
 
   /// Check if user can create decision
-  bool canCreateDecision() {
-    return true; // All plans can create decisions
+  bool canCreateDecision({int decisionsSavedToday = 0}) {
+    final unlimited =
+        _userPlan.tier == UserPlanTier.premium ||
+        _userPlan.tier == UserPlanTier.admin;
+    return unlimited || decisionsSavedToday < 1;
   }
 
   /// Check if user can create what-if simulation
   bool canCreateWhatIf() {
-    return true; // All plans can create what-if simulations
+    return _userPlan.whatIfEnabled;
   }
 
   /// Check if plan is premium

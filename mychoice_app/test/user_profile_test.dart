@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mychoice_app/features/user_profile/data/models/user_profile_model.dart';
@@ -39,6 +41,20 @@ class MockUserProfileRepository implements UserProfileRepository {
   }
 
   @override
+  Future<UserProfile> updateProfilePhoto({
+    required Uint8List imageBytes,
+    required String fileName,
+  }) async {
+    if (shouldFail) throw Exception(failureMessage ?? 'update photo failed');
+    final profile = await getUserProfile();
+    _profile = profile.copyWith(
+      avatarPath: '${profile.id}/profile.jpg',
+      avatarUrl: 'https://example.com/profile.jpg',
+    );
+    return _profile!;
+  }
+
+  @override
   Future<bool> isAdmin() async {
     if (shouldFail) throw Exception(failureMessage ?? 'isAdmin failed');
     return _profile?.role == 'admin';
@@ -56,7 +72,9 @@ class MockUserProfileRepository implements UserProfileRepository {
     String? role,
     String? plan,
   }) async {
-    if (shouldFail) throw Exception(failureMessage ?? 'update role/plan failed');
+    if (shouldFail) {
+      throw Exception(failureMessage ?? 'update role/plan failed');
+    }
     _profile = UserProfile(
       id: targetUserId,
       name: _profile?.name ?? 'User',
@@ -79,6 +97,7 @@ void main() {
         'role': 'user',
         'plan': 'basic',
         'tanggal_dibuat': '2026-10-01T00:00:00Z',
+        'avatar_path': 'user_1/profile.jpg',
       };
 
       final model = UserProfileModel.fromJson(json);
@@ -88,6 +107,7 @@ void main() {
       expect(model.email, 'budi@example.com');
       expect(model.role, 'user');
       expect(model.plan, 'basic');
+      expect(model.avatarPath, 'user_1/profile.jpg');
     });
 
     test('fromJson defaults missing fields', () {
@@ -120,7 +140,11 @@ void main() {
 
     test('isAdmin returns true for admin role', () {
       final entity = UserProfile(
-        id: 'x', name: 'A', email: 'a@b.com', role: 'admin', plan: 'basic',
+        id: 'x',
+        name: 'A',
+        email: 'a@b.com',
+        role: 'admin',
+        plan: 'basic',
         createdAt: DateTime.now(),
       );
       expect(entity.isAdmin, true);
@@ -128,7 +152,11 @@ void main() {
 
     test('isAdmin returns false for user role', () {
       final entity = UserProfile(
-        id: 'x', name: 'A', email: 'a@b.com', role: 'user', plan: 'basic',
+        id: 'x',
+        name: 'A',
+        email: 'a@b.com',
+        role: 'user',
+        plan: 'basic',
         createdAt: DateTime.now(),
       );
       expect(entity.isAdmin, false);
@@ -136,7 +164,11 @@ void main() {
 
     test('isPremium returns true for premium plan', () {
       final entity = UserProfile(
-        id: 'x', name: 'A', email: 'a@b.com', role: 'user', plan: 'premium',
+        id: 'x',
+        name: 'A',
+        email: 'a@b.com',
+        role: 'user',
+        plan: 'premium',
         createdAt: DateTime.now(),
       );
       expect(entity.isPremium, true);
@@ -144,7 +176,11 @@ void main() {
 
     test('isPremium returns false for basic plan', () {
       final entity = UserProfile(
-        id: 'x', name: 'A', email: 'a@b.com', role: 'user', plan: 'basic',
+        id: 'x',
+        name: 'A',
+        email: 'a@b.com',
+        role: 'user',
+        plan: 'basic',
         createdAt: DateTime.now(),
       );
       expect(entity.isPremium, false);
@@ -183,27 +219,43 @@ void main() {
       expect(provider.error!.contains('DB down'), true);
     });
 
-    test('updateName updates profile locally', () async {
+    test('updateProfile updates name and preserves email locally', () async {
       await provider.loadProfile();
-      final success = await provider.updateName('Budi Updated');
+      final success = await provider.updateProfile(name: 'Budi Updated');
 
       expect(success, true);
       expect(provider.profile!.name, 'Budi Updated');
+      expect(provider.profile!.email, 'budi@example.com');
     });
 
-    test('updateName returns false on failure', () async {
+    test('updateProfile returns false on failure', () async {
       mockRepository.shouldFail = true;
 
-      final success = await provider.updateName('Budi Updated');
+      final success = await provider.updateProfile(name: 'Budi Updated');
 
       expect(success, false);
       expect(provider.error, isNotNull);
     });
 
+    test('updateProfilePhoto updates the avatar locally', () async {
+      final success = await provider.updateProfilePhoto(
+        imageBytes: Uint8List.fromList([1, 2, 3]),
+        fileName: 'profile.jpg',
+      );
+
+      expect(success, true);
+      expect(provider.profile!.avatarPath, 'user_1/profile.jpg');
+      expect(provider.profile!.avatarUrl, 'https://example.com/profile.jpg');
+    });
+
     test('isAdmin and isPremium reflect profile', () async {
       mockRepository._profile = UserProfile(
-        id: 'user_1', name: 'Admin', email: 'admin@example.com',
-        role: 'admin', plan: 'premium', createdAt: DateTime(2026, 10, 1),
+        id: 'user_1',
+        name: 'Admin',
+        email: 'admin@example.com',
+        role: 'admin',
+        plan: 'premium',
+        createdAt: DateTime(2026, 10, 1),
       );
       await provider.loadProfile();
 

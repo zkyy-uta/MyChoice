@@ -14,12 +14,14 @@ import 'package:mychoice_app/features/auth/domain/entities/user.dart'
     as app_user;
 import 'package:mychoice_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
 import 'package:mychoice_app/screens/auth/forgot_password_screen.dart';
 import 'package:mychoice_app/screens/auth/login_screen.dart';
 import 'package:mychoice_app/screens/auth/reset_password_code_screen.dart';
 import 'package:mychoice_app/screens/auth/reset_password_screen.dart';
 import 'package:mychoice_app/screens/user/decision/create_decision_screen.dart';
 import 'package:mychoice_app/screens/user/profile/premium_plan_screen.dart';
+import 'test_support/fake_decision_history_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -91,11 +93,11 @@ void main() {
       find.byKey(const Key('reset-email')),
       'user@example.com',
     );
-    await tester.tap(find.text('Kirim kode reset'));
+    await tester.tap(find.text('Send Reset Code'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.text('Masukkan Kode Reset'), findsOneWidget);
+    expect(find.text('Enter the Reset Code'), findsOneWidget);
     expect(find.byKey(const Key('reset-code')), findsOneWidget);
     expect(find.text('Kembali ke login'), findsNothing);
 
@@ -107,11 +109,11 @@ void main() {
           ?.text,
       '12345678',
     );
-    await tester.tap(find.text('Verifikasi kode'));
+    await tester.tap(find.text('Verify Code'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
     expect(repository.didVerifyPasswordResetCode, isTrue);
-    expect(find.text('Buat Password Baru'), findsOneWidget);
+    expect(find.text('Create New Password'), findsOneWidget);
 
     final saveButton = tester.widget<ElevatedButton>(
       find.byKey(const Key('save-new-password')),
@@ -155,7 +157,7 @@ void main() {
 
     await auth.login('user@example.com', 'Password123');
 
-    expect(auth.error, contains('Periksa koneksi internet atau DNS di HP'));
+    expect(auth.error, contains('check your internet connection'));
     auth.dispose();
   });
 
@@ -189,16 +191,22 @@ void main() {
   ) async {
     await tester.binding.setSurfaceSize(const Size(800, 1200));
     await tester.pumpWidget(
-      MaterialApp(
-        home: const CreateDecisionScreen(),
-        routes: {'/profile/premium-plan': (_) => const PremiumPlanScreen()},
+      ChangeNotifierProvider(
+        create: (_) => AuthProvider(repository: _UnauthenticatedRepository()),
+        child: MaterialApp(
+          home: const CreateDecisionScreen(
+            initialCategory: 'Technology',
+            initialSubcategory: 'Laptop',
+          ),
+          routes: {'/profile/premium-plan': (_) => const PremiumPlanScreen()},
+        ),
       ),
     );
 
     const options = [
-      'ASUS Vivobook 14',
+      'Apple MacBook Pro 14" (M3 Pro)',
       'Lenovo IdeaPad Slim 5',
-      'Acer Aspire 5',
+      'ASUS Zenbook 14 OLED',
       'HP Pavilion 15',
     ];
     for (final option in options) {
@@ -213,20 +221,19 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Options Compared (3)'), findsOneWidget);
-    expect(find.text('Batas pilihan tercapai'), findsOneWidget);
+    expect(find.text('Option limit reached'), findsOneWidget);
     expect(
       find.text(
-        'Tidak bisa menambahkan lebih dari 3 barang. Maksimal 3 pilihan '
-        'barang. Kalau ingin membandingkan lebih banyak, kamu perlu membeli '
-        'paket Premium.',
+        'Cannot add more than 3 items. Maximum 3 item options. '
+        'If you want to compare more, you need to purchase a Premium package.',
       ),
       findsOneWidget,
     );
-    expect(find.text('3 pilihan'), findsOneWidget);
-    expect(find.text('Hingga 10'), findsOneWidget);
-    expect(find.text('Upgrade Premium'), findsOneWidget);
+    expect(find.text('3 options'), findsOneWidget);
+    expect(find.text('Up to 10'), findsOneWidget);
+    expect(find.text('Upgrade to Premium'), findsOneWidget);
 
-    await tester.tap(find.text('Upgrade Premium'));
+    await tester.tap(find.text('Upgrade to Premium'));
     await tester.pumpAndSettle();
     expect(find.text('Premium Plan'), findsOneWidget);
 
@@ -237,7 +244,20 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(800, 1000));
-    await tester.pumpWidget(const MaterialApp(home: CreateDecisionScreen()));
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => DecisionHistoryProvider(
+          repository: FakeDecisionHistoryRepository(),
+        ),
+        child: const MaterialApp(
+          home: CreateDecisionScreen(
+            initialCategory: 'Technology',
+            initialSubcategory: 'Laptop',
+            initialOptions: ['Option 1', 'Option 2'],
+          ),
+        ),
+      ),
+    );
 
     final makeDecisionButton = find.text('Make a Decision');
     await tester.ensureVisible(makeDecisionButton);
@@ -251,12 +271,8 @@ void main() {
     await tester.pump();
 
     expect(find.text('Decision Results'), findsOneWidget);
-    await tester.tap(find.text('Decision Results').last);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Decision Results'), findsOneWidget);
-    expect(find.text('Home'), findsOneWidget);
-    expect(find.text('Decision'), findsOneWidget);
+    expect(find.text('Option 1'), findsOneWidget);
+    expect(find.text('Option 2'), findsOneWidget);
 
     await tester.binding.setSurfaceSize(null);
   });

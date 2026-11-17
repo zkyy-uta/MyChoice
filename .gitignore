@@ -4,6 +4,8 @@
 *.log
 *.pyc
 *.swp
+node_modules/
+mychoice_app/supabase/.temp/
 .buildlog/
 .history
 

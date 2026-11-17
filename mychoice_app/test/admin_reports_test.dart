@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mychoice_app/features/admin_analytics/presentation/providers/admin_analytics_provider.dart';
+import 'package:mychoice_app/features/admin_user_management/presentation/providers/admin_user_provider.dart';
 import 'package:mychoice_app/screens/admin/reports/admin_reports_screen.dart';
+import 'test_support/fake_admin_repositories.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   testWidgets('admin can search and filter user reviews', (
     WidgetTester tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(500, 900));
-    await tester.pumpWidget(const MaterialApp(home: AdminReportsScreen()));
+    final users = AdminUserProvider(FakeAdminUserRepository());
+    await users.loadUsers();
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: users),
+          ChangeNotifierProvider(
+            create: (_) =>
+                AdminAnalyticsProvider(FakeAdminAnalyticsRepository()),
+          ),
+        ],
+        child: const MaterialApp(home: AdminReportsScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     expect(find.text('Reports').first, findsOneWidget);
     expect(find.text('5 reviews'), findsOneWidget);

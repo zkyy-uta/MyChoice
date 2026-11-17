@@ -1,9 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mychoice_app/core/entities/user_plan.dart';
 import 'package:mychoice_app/features/auth/domain/entities/user.dart';
 import 'package:mychoice_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
+import 'package:mychoice_app/features/user_profile/domain/entities/user_profile.dart';
+import 'package:mychoice_app/features/user_profile/domain/repositories/user_profile_repository.dart';
+import 'package:mychoice_app/features/user_profile/presentation/providers/user_profile_provider.dart';
 import 'package:mychoice_app/screens/admin/profile/admin_profile_screen.dart';
 import 'package:mychoice_app/screens/user/profile/personal_information_screen.dart';
 import 'package:mychoice_app/screens/user/profile/premium_plan_screen.dart';
@@ -14,16 +20,25 @@ import 'package:mychoice_app/screens/user/profile/my_decision_data_screen.dart';
 import 'package:mychoice_app/screens/user/profile/notification_settings_screen.dart';
 import 'package:mychoice_app/screens/user/history/history_screen.dart';
 import 'package:mychoice_app/screens/user/dashboard/dashboard_screen.dart';
+import 'test_support/fake_decision_history_repository.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   testWidgets('user profile opens personal information, security and plan', (
     WidgetTester tester,
   ) async {
+    final profileRepository = _ProfileUserProfileRepository();
     await tester.binding.setSurfaceSize(const Size(500, 900));
     await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) => AuthProvider(repository: _ProfileAuthRepository()),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => AuthProvider(repository: _ProfileAuthRepository()),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => UserProfileProvider(repository: profileRepository),
+          ),
+        ],
         child: MaterialApp(
           home: const ProfileScreen(),
           routes: {
@@ -46,6 +61,31 @@ void main() {
     expect(find.text('First Name'), findsOneWidget);
     expect(find.text('Date of Birth'), findsNothing);
     expect(find.text('Save Changes'), findsOneWidget);
+    expect(find.text('Phone'), findsNothing);
+    await tester.enterText(find.byType(TextFormField).at(0), '');
+    await tester.enterText(find.byType(TextFormField).at(1), '');
+    await tester.tap(find.text('Save Changes'));
+    await tester.pumpAndSettle();
+    expect(find.text('First name wajib diisi.'), findsOneWidget);
+    expect(profileRepository.savedName, isNull);
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Alya');
+    await tester.tap(find.text('Save Changes'));
+    await tester.pumpAndSettle();
+    expect(profileRepository.savedName, 'Alya');
+    expect(find.text('kimryul4sho@gmail.com'), findsOneWidget);
+    expect(find.text('Basic'), findsOneWidget);
+    expect(find.text('Subscription'), findsOneWidget);
+    expect(find.text('Role'), findsNothing);
+    expect(find.byType(TextFormField), findsNWidgets(2));
+    expect(find.text('Email'), findsOneWidget);
+    profileRepository.plan = 'premium';
+    await Provider.of<UserProfileProvider>(
+      tester.element(find.text('Save Changes')),
+      listen: false,
+    ).loadProfile();
+    await tester.pumpAndSettle();
+    expect(find.text('Premium'), findsOneWidget);
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
 
@@ -63,7 +103,7 @@ void main() {
     await tester.ensureVisible(
       find.textContaining('Up to 10 choices per decision'),
     );
-    expect(find.text('1 decision per day'), findsNWidgets(2));
+    expect(find.textContaining('1 saved decision per day'), findsNWidgets(2));
     expect(find.text('Up to 3 choices per decision'), findsOneWidget);
     expect(
       find.textContaining('Up to 10 choices per decision'),
@@ -104,9 +144,22 @@ void main() {
   ) async {
     await tester.binding.setSurfaceSize(const Size(500, 900));
     await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) =>
-            AuthProvider(repository: _ProfileAuthRepository(isAdmin: true)),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) =>
+                AuthProvider(repository: _ProfileAuthRepository(isAdmin: true)),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => UserProfileProvider(
+              repository: _ProfileUserProfileRepository(
+                name: 'Admin User',
+                email: 'admin@mychoice.com',
+                role: 'admin',
+              ),
+            ),
+          ),
+        ],
         child: MaterialApp(
           home: const AdminProfileScreen(),
           routes: {
@@ -168,20 +221,20 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       find.text(
-        'Akun dan data keputusan yang terkait akan dihapus '
-        'permanen. Tindakan ini tidak dapat dibatalkan.',
+        'Your account and all associated decision data will be permanently deleted. '
+        'This action cannot be undone.',
       ),
       findsOneWidget,
     );
 
-    await tester.tap(find.text('Batal'));
+    await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
     expect(repository.didDeleteAccount, isFalse);
 
     await tester.ensureVisible(find.text('Delete Account'));
     await tester.tap(find.text('Delete Account'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Hapus akun'));
+    await tester.tap(find.widgetWithText(TextButton, 'Delete Account').last);
     await tester.pumpAndSettle();
 
     expect(repository.didDeleteAccount, isTrue);
@@ -194,8 +247,17 @@ void main() {
   ) async {
     await tester.binding.setSurfaceSize(const Size(500, 900));
     await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) => AuthProvider(repository: _ProfileAuthRepository()),
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => AuthProvider(repository: _ProfileAuthRepository()),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => DecisionHistoryProvider(
+              repository: FakeDecisionHistoryRepository(),
+            ),
+          ),
+        ],
         child: MaterialApp(
           home: const HistoryScreen(),
           routes: {
@@ -218,6 +280,62 @@ void main() {
 
     await tester.binding.setSurfaceSize(null);
   });
+}
+
+class _ProfileUserProfileRepository implements UserProfileRepository {
+  _ProfileUserProfileRepository({
+    this.name = 'Kim Ryul',
+    this.email = 'profile-email@example.com',
+    this.role = 'user',
+  });
+
+  final String name;
+  final String email;
+  final String role;
+  String plan = 'basic';
+  String? savedName;
+
+  @override
+  Future<UserProfile> getUserProfile() async => UserProfile(
+    id: 'test-user',
+    name: savedName ?? name,
+    email: email,
+    role: role,
+    plan: plan,
+    createdAt: DateTime(2026),
+  );
+
+  @override
+  Future<UserProfile> updateProfile({required String name}) async {
+    savedName = name;
+    return UserProfile(
+      id: 'test-user',
+      name: name,
+      email: email,
+      role: role,
+      plan: plan,
+      createdAt: DateTime(2026),
+    );
+  }
+
+  @override
+  Future<UserProfile> updateProfilePhoto({
+    required Uint8List imageBytes,
+    required String fileName,
+  }) async => getUserProfile();
+
+  @override
+  Future<bool> isAdmin() async => role == 'admin';
+
+  @override
+  Future<bool> isPremium() async => false;
+
+  @override
+  Future<UserProfile> updateRoleAndPlan({
+    required String targetUserId,
+    String? role,
+    String? plan,
+  }) async => getUserProfile();
 }
 
 class _ProfileAuthRepository implements AuthRepository {

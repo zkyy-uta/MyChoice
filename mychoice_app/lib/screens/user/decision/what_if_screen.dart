@@ -5,6 +5,8 @@ import 'package:mychoice_app/core/theme/app_colors.dart';
 import 'package:mychoice_app/core/theme/app_spacing.dart';
 import 'package:mychoice_app/core/theme/app_typography.dart';
 import 'package:mychoice_app/core/widgets/mobile_background.dart';
+import 'package:mychoice_app/screens/user/decision/result_screen.dart'
+    as decision_result;
 
 /// What-If Simulation screen – lets the user adjust criterion weights and see
 /// how the ranking changes without permanently altering the decision.
@@ -113,9 +115,26 @@ class _WhatIfScreenState extends State<WhatIfScreen> {
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: weightOk
-                                  ? () {
-                                      provider.recalculate();
+                              onPressed: weightOk && !provider.isCalculating
+                                  ? () async {
+                                      await provider.recalculate();
+                                      if (!context.mounted) return;
+                                      final simulated =
+                                          provider.simulatedResult;
+                                      if (simulated == null) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              provider.error ??
+                                                  'Unable to calculate this scenario.',
+                                            ),
+                                            backgroundColor: AppColors.error80,
+                                          ),
+                                        );
+                                        return;
+                                      }
                                       _showSimulationResultModal(
                                         context,
                                         provider,
@@ -134,10 +153,19 @@ class _WhatIfScreenState extends State<WhatIfScreen> {
                                   ),
                                 ),
                               ),
-                              child: Text(
-                                'Run Simulation',
-                                style: AppTypography.buttonLarge,
-                              ),
+                              child: provider.isCalculating
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Text(
+                                      'Run Simulation',
+                                      style: AppTypography.buttonLarge,
+                                    ),
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xxl),
@@ -256,9 +284,85 @@ class _WhatIfScreenState extends State<WhatIfScreen> {
         original: original,
         simulated: simulated,
         rankChanges: provider.rankChanges,
-        onTryAgain: () {
-          Navigator.of(context).pop();
-        },
+        onTryAgain: () => _tryAnotherScenario(context, provider),
+      ),
+    );
+  }
+
+  Future<void> _tryAnotherScenario(
+    BuildContext context,
+    SimulationProvider provider,
+  ) async {
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    navigator.pop();
+
+    if (!mounted) return;
+
+    final processingDialog = showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const _ScenarioProcessingDialog(),
+    );
+
+    await Future.wait<void>([
+      provider.recalculate(),
+      Future<void>.delayed(const Duration(milliseconds: 900)),
+    ]);
+
+    if (!mounted) return;
+    navigator.pop();
+    await processingDialog;
+
+    final simulated = provider.simulatedResult;
+    if (simulated == null) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(provider.error ?? 'Unable to calculate this scenario.'),
+          backgroundColor: AppColors.error80,
+        ),
+      );
+      return;
+    }
+
+    await navigator.push(
+      MaterialPageRoute<void>(
+        builder: (_) => decision_result.ResultScreen(
+          category: provider.category,
+          subcategory: provider.subcategory,
+          choices: simulated.ranking
+              .map(
+                (ranked) => decision_result.RankedChoice(
+                  name: ranked.alternative.name,
+                  score: ranked.compositeScore / 100,
+                ),
+              )
+              .toList(),
+          priorities: Map<String, dynamic>.from(provider.simulatedWeights),
+        ),
+      ),
+    );
+  }
+}
+
+class _ScenarioProcessingDialog extends StatelessWidget {
+  const _ScenarioProcessingDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return const AlertDialog(
+      content: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircularProgressIndicator(color: AppColors.primary88),
+          SizedBox(width: AppSpacing.md),
+          Flexible(
+            child: Text(
+              'Processing Decisions',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
       ),
     );
   }

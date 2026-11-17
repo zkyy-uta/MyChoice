@@ -9,6 +9,10 @@ class KatalogItem {
     this.harga,
     this.spesifikasi,
     this.rating,
+    this.atribut = const {},
+    this.mataUang,
+    this.sumberUrl,
+    this.lisensiData,
   });
 
   final String id; // id_pilihan_katalog
@@ -19,8 +23,13 @@ class KatalogItem {
   final double? harga;
   final String? spesifikasi;
   final double? rating;
+  final Map<String, dynamic> atribut;
+  final String? mataUang;
+  final String? sumberUrl;
+  final String? lisensiData;
 
   factory KatalogItem.fromMap(Map<String, dynamic> m) {
+    final rawAtribut = m['atribut'];
     return KatalogItem(
       id: m['id_pilihan_katalog'] as String,
       idSubKategori: (m['id_sub_kategori'] as num).toInt(),
@@ -30,9 +39,16 @@ class KatalogItem {
       harga: m['harga'] == null ? null : (m['harga'] as num).toDouble(),
       spesifikasi: m['spesifikasi'] as String?,
       rating: m['rating'] == null ? null : (m['rating'] as num).toDouble(),
+      atribut: rawAtribut is Map
+          ? Map<String, dynamic>.from(rawAtribut)
+          : const {},
+      mataUang: m['mata_uang'] as String?,
+      sumberUrl: m['sumber_url'] as String?,
+      lisensiData: m['lisensi_data'] as String?,
     );
   }
 
   @override
-  String toString() => 'KatalogItem($namaPilihan [$namaSubKategori / $namaKategori])';
+  String toString() =>
+      'KatalogItem($namaPilihan [$namaSubKategori / $namaKategori])';
 }

@@ -6,7 +6,7 @@ import '../../domain/repositories/user_profile_repository.dart';
 /// Provider untuk mengelola profil dan manajemen akun pengguna.
 class UserProfileProvider extends ChangeNotifier {
   UserProfileProvider({required UserProfileRepository repository})
-      : _repository = repository;
+    : _repository = repository;
 
   final UserProfileRepository _repository;
 
@@ -45,11 +45,33 @@ class UserProfileProvider extends ChangeNotifier {
   }
 
   /// Perbarui nama profil pengguna.
-  Future<bool> updateName(String name) async {
+  Future<bool> updateProfile({required String name}) async {
     _setLoading(true);
     _setError(null);
     try {
       _profile = await _repository.updateProfile(name: name);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _setError(e.toString());
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  /// Unggah dan simpan foto profil pengguna.
+  Future<bool> updateProfilePhoto({
+    required Uint8List imageBytes,
+    required String fileName,
+  }) async {
+    _setLoading(true);
+    _setError(null);
+    try {
+      _profile = await _repository.updateProfilePhoto(
+        imageBytes: imageBytes,
+        fileName: fileName,
+      );
       notifyListeners();
       return true;
     } catch (e) {

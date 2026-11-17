@@ -37,7 +37,9 @@ class SupabaseAuthRepository implements AuthRepository {
     final authUser = response.user;
     final session = response.session;
     if (authUser == null || session == null) {
-      throw AuthenticationError(message: 'Login failed. Please check your credentials.');
+      throw AuthenticationError(
+        message: 'Login failed. Please check your credentials.',
+      );
     }
 
     try {
@@ -113,63 +115,46 @@ class SupabaseAuthRepository implements AuthRepository {
   Future<void> logout() => _client.auth.signOut();
 
   Future<app_user.User> _loadUser(supabase.User authUser) async {
-    try {
-      final profile = await _client
-          .from('pengguna')
-          .select('nama, role, tanggal_dibuat')
-          .eq('id_pengguna', authUser.id)
-          .maybeSingle();
-
-      if (profile != null) {
-        final role = profile['role'];
-        final app_user.UserRole userRole = role == 'admin'
-            ? app_user.UserRole.admin
-            : app_user.UserRole.basic;
-
-        return app_user.User(
-          id: authUser.id,
-          email: authUser.email ?? '',
-          name: (profile['nama'] as String?) ?? '',
-          role: userRole,
-          plan: UserPlan.forTier(
-            userRole == app_user.UserRole.admin
-                ? UserPlanTier.admin
-                : UserPlanTier.basic,
-          ),
-          createdAt: DateTime.tryParse(profile['tanggal_dibuat'] as String? ?? '') ??
-              DateTime.now(),
-        );
-      }
-    } catch (_) {
-      // If table query fails, continue to fallback
+    final profile = await _client
+        .from('pengguna')
+        .select('nama, role, plan, status_akun, tanggal_dibuat')
+        .eq('id_pengguna', authUser.id)
+        .maybeSingle();
+    if (profile == null) {
+      throw AuthenticationError(
+        message: 'Your account profile is missing. Please contact support.',
+      );
+    }
+    if (profile['status_akun'] != 'aktif') {
+      await _client.auth.signOut();
+      throw AuthenticationError(
+        message: 'This account has been deactivated. Contact an administrator.',
+      );
     }
 
-    // Fallback: Use auth user metadata and create entry if possible
-    final metadata = authUser.userMetadata ?? const <String, dynamic>{};
-    final fullName = (metadata['full_name'] as String?) ??
-        (metadata['nama'] as String?) ??
-        (authUser.email != null && authUser.email!.contains('@')
-            ? authUser.email!.split('@').first
-            : 'User');
-
-    try {
-      await _client.from('pengguna').insert({
-        'id_pengguna': authUser.id,
-        'nama': fullName,
-        'email': authUser.email ?? '',
-        'role': 'user',
-      });
-    } catch (_) {
-      // Ignored if insert permission denied or already created
-    }
+    final isAdmin = profile['role'] == 'admin';
+    final isPremium = profile['plan'] == 'premium';
+    final planTier = isAdmin
+        ? UserPlanTier.admin
+        : isPremium
+        ? UserPlanTier.premium
+        : UserPlanTier.basic;
+    final userRole = isAdmin
+        ? app_user.UserRole.admin
+        : isPremium
+        ? app_user.UserRole.premium
+        : app_user.UserRole.basic;
 
     return app_user.User(
       id: authUser.id,
       email: authUser.email ?? '',
-      name: fullName,
-      role: app_user.UserRole.basic,
-      plan: UserPlan.forTier(UserPlanTier.basic),
-      createdAt: DateTime.tryParse(authUser.createdAt) ?? DateTime.now(),
+      name: (profile['nama'] as String?) ?? '',
+      role: userRole,
+      plan: UserPlan.forTier(planTier),
+      createdAt:
+          DateTime.tryParse(profile['tanggal_dibuat'] as String? ?? '') ??
+          DateTime.tryParse(authUser.createdAt) ??
+          DateTime.now(),
     );
   }
 

@@ -2,6 +2,9 @@ import '../entities/decision_history.dart';
 
 /// Antarmuka repository untuk riwayat keputusan dan ulasan/bintang rating.
 abstract class DecisionHistoryRepository {
+  /// Whether the current account can save another decision today.
+  Future<bool> canCreateDecisionToday();
+
   /// Simpan riwayat keputusan baru.
   Future<DecisionHistory> createDecisionHistory({
     required String category,

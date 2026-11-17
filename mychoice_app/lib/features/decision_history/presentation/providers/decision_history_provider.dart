@@ -1,32 +1,38 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../../core/errors/app_exception.dart';
 import '../../domain/entities/decision_history.dart';
 import '../../domain/repositories/decision_history_repository.dart';
 
 /// Provider untuk mengelola state riwayat keputusan dan ulasan/bintang rating.
 class DecisionHistoryProvider extends ChangeNotifier {
   DecisionHistoryProvider({required DecisionHistoryRepository repository})
-      : _repository = repository;
+    : _repository = repository;
 
   final DecisionHistoryRepository _repository;
 
   List<DecisionHistory> _histories = [];
   bool _isLoading = false;
   String? _error;
+  String? _errorCode;
 
   List<DecisionHistory> get histories => _histories;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  String? get errorCode => _errorCode;
 
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
   }
 
-  void _setError(String? message) {
+  void _setError(String? message, {String? code}) {
     _error = message;
+    _errorCode = code;
     notifyListeners();
   }
+
+  Future<bool> canCreateDecisionToday() => _repository.canCreateDecisionToday();
 
   /// Muat daftar riwayat keputusan dari backend.
   Future<void> loadHistories() async {
@@ -35,7 +41,7 @@ class DecisionHistoryProvider extends ChangeNotifier {
     try {
       _histories = await _repository.getDecisionHistories();
     } catch (e) {
-      _setError(e.toString());
+      _setError(e.toString(), code: e is AppException ? e.code : null);
     } finally {
       _setLoading(false);
     }
@@ -67,7 +73,7 @@ class DecisionHistoryProvider extends ChangeNotifier {
       notifyListeners();
       return created;
     } catch (e) {
-      _setError(e.toString());
+      _setError(e.toString(), code: e is AppException ? e.code : null);
       return null;
     } finally {
       _setLoading(false);
@@ -81,7 +87,7 @@ class DecisionHistoryProvider extends ChangeNotifier {
     try {
       return await _repository.getDecisionHistoryById(id);
     } catch (e) {
-      _setError(e.toString());
+      _setError(e.toString(), code: e is AppException ? e.code : null);
       return null;
     } finally {
       _setLoading(false);
@@ -114,7 +120,7 @@ class DecisionHistoryProvider extends ChangeNotifier {
       }
       return true;
     } catch (e) {
-      _setError(e.toString());
+      _setError(e.toString(), code: e is AppException ? e.code : null);
       return false;
     } finally {
       _setLoading(false);
@@ -140,6 +146,7 @@ class DecisionHistoryProvider extends ChangeNotifier {
 
   void clearError() {
     _error = null;
+    _errorCode = null;
     notifyListeners();
   }
 }

@@ -15,6 +15,40 @@ Publishable key boleh digunakan oleh aplikasi client. **Jangan pernah
 memasukkan `service_role` key, password SMTP, atau password admin ke kode
 Flutter atau repository.**
 
+## Menjalankan migration dengan Supabase CLI
+
+Dari root repository, install dependency satu kali, login ke Supabase CLI, lalu
+jalankan seluruh migration yang belum diterapkan:
+
+```powershell
+npm install
+npx supabase login
+npm run migrate
+```
+
+Script `migrate` memakai `mychoice_app/supabase/migrations` dan menargetkan
+project `mwthzxveegbjpiujolzb`. CLI meminta konfirmasi sebelum mengubah database;
+jangan menyimpan access token atau password database ke repository. Setelah
+setup awal ini, cukup jalankan `npm run migrate` dari root repository.
+
+Migration `20261116030000_admin_and_entitlements.sql` menghubungkan pengelolaan
+katalog dan laporan admin ke database, membatasi perubahan role/plan pada admin,
+serta menegakkan satu keputusan tersimpan per hari WIB untuk akun Basic.
+Premium mendapat keputusan tanpa batas dan dapat memilih hingga 10 alternatif;
+akses Insight hanya untuk akun Premium.
+
+Penonaktifan akun juga memerlukan Edge Function terpisah. Setelah migration
+berhasil, deploy function dari folder `mychoice_app`:
+
+```powershell
+npx supabase functions deploy manage-user-status --project-ref mwthzxveegbjpiujolzb
+```
+
+Function menyimpan status nonaktif dan memblokir login tanpa menghapus data
+akun. Deploy ulang function setelah mengubah kodenya. Pastikan project ref sudah
+ditinjau sebelum menjalankan perintah karena migration dan function ini mengubah
+project Supabase bersama.
+
 ## Penghapusan akun user
 
 Fitur **Delete Account** di profil user menghapus akun Auth yang sedang login
@@ -64,6 +98,44 @@ sesuai sebelum mengaktifkan fitur.
    `email`, `role`, dan `tanggal_dibuat`. Role harus bernilai `user` atau
    `admin`.
 
+## 2. Aktifkan informasi personal dan foto profil
+
+Jalankan migration
+[`../supabase/migrations/20261115000000_personal_information_and_photos.sql`](../supabase/migrations/20261115000000_personal_information_and_photos.sql)
+setelah migration pengguna sebelumnya. Migration ini menambahkan penyimpanan
+path foto, bucket Storage privat, serta kebijakan agar pengguna hanya dapat
+mengelola foto di folder ID akunnya sendiri. Pada halaman Personal Information,
+email diambil dari akun yang sedang login dan hanya ditampilkan; nama depan dan
+nama belakang dapat diedit, sedangkan Subscription hanya ditampilkan.
+
+Setelah itu, jalankan
+[`../supabase/migrations/20261115010000_profile_subscription_tier.sql`](../supabase/migrations/20261115010000_profile_subscription_tier.sql).
+Migration ini memastikan kolom `plan` tersedia di tabel `pengguna`, mengubah
+nilai lama `jenis_langganan` (`free`/`premium`) menjadi `plan` (`basic`/`premium`)
+jika diperlukan, dan memperbarui fungsi profil Supabase. Aplikasi menampilkan
+nilai ini sebagai **Subscription**; role `user`/`admin` tetap terpisah untuk
+hak akses aplikasi.
+
+## 3. Aktifkan pilihan katalog privat per akun
+
+Setelah tabel `sub_kategori` dan data subkategori tersedia, jalankan migration
+[`../supabase/migrations/20261115020000_user_private_alternatives.sql`](../supabase/migrations/20261115020000_user_private_alternatives.sql)
+melalui **SQL Editor → New query**. Migration ini membuat katalog pilihan
+manual yang terpisah dari katalog publik. Kebijakan RLS membatasi baca dan
+simpan pada akun pemiliknya. Pilihan yang ditambahkan dari Create New Decision
+akan muncul untuk akun tersebut di subkategori yang sama, beserta atribut
+sesuai kriteria subkategori.
+
+Untuk menyimpan kriteria kustom per akun dan per subkategori, jalankan migration
+[`../supabase/migrations/20261116010000_user_personal_criteria.sql`](../supabase/migrations/20261116010000_user_personal_criteria.sql).
+kemudian jalankan
+[`../supabase/migrations/20261116020000_scope_personal_criteria.sql`](../supabase/migrations/20261116020000_scope_personal_criteria.sql).
+Kriteria yang tersimpan hanya akan tersedia kembali pada kategori dan
+subkategori tempat pengguna menambahkannya. RLS membatasi daftar dan
+penambahan kriteria hanya untuk akun pemiliknya. Kriteria lama yang belum
+memiliki subkategori tetap tersimpan, tetapi tidak ditampilkan dalam keputusan;
+tambahkan kembali kriteria tersebut pada subkategori yang sesuai.
+
 Tabel `public.pengguna` adalah sumber data profil dan role aplikasi. Tabel
 `public.profiles` yang mungkin sudah dibuat oleh instruksi sebelumnya tidak
 perlu dihapus sekarang. Migration upgrade menyalin datanya; biarkan tabel itu
@@ -71,7 +143,7 @@ tetap ada sampai login dan role sudah diverifikasi. Trigger lama yang menulis
 ke `profiles` dihentikan oleh migration; pendaftaran baru hanya membuat baris
 di `pengguna`.
 
-## 2. Aktifkan autentikasi email
+## 4. Aktifkan autentikasi email
 
 1. Buka **Authentication → Sign In / Providers → Email**. Nama menu dapat
    sedikit berbeda tergantung versi Dashboard.
@@ -85,7 +157,7 @@ di `pengguna`.
 Saat konfirmasi email aktif, pendaftaran dapat berhasil tanpa membuat sesi
 login. Aplikasi memberi tahu pengguna untuk mengonfirmasi email sebelum login.
 
-## 3. Aktifkan login Google
+## 5. Aktifkan login Google
 
 Error `Unsupported provider: provider is not enabled` berarti provider Google
 belum diaktifkan di Supabase. Tombol aplikasi sudah memulai OAuth, tetapi
@@ -124,7 +196,7 @@ dan pastikan Google sudah **Enabled** pada proyek Supabase yang sama dengan
 URL proyek aplikasi. Jangan taruh Client Secret di aplikasi Flutter atau
 repository.
 
-## 4. Konfigurasikan SMTP
+## 6. Konfigurasikan SMTP
 
 Untuk produksi, siapkan penyedia email SMTP, misalnya Resend, Postmark, atau
 SendGrid.
@@ -142,7 +214,7 @@ commit kredensial tersebut ke Git. Layanan email bawaan Supabase memiliki
 batas pengiriman untuk pengujian dan bukan pengganti konfigurasi email
 produksi.
 
-## 5. Atur reset password tanpa membuka browser
+## 7. Atur reset password tanpa membuka browser
 
 Aplikasi menggunakan kode OTP recovery: pengguna meminta kode melalui email,
 memasukkan kode tersebut di aplikasi, lalu mengatur password baru di form
@@ -195,7 +267,7 @@ cukup untuk mencegah pihak lain mengambil alih akun.
    sudah didaftarkan pada `android/app/src/main/AndroidManifest.xml`; APK lama
    yang dibuat sebelum perubahan itu belum membawa permission tersebut.
 
-## 6. Buat akun admin dengan aman
+## 8. Buat akun admin dengan aman
 
 Tidak ada password admin default di source code. Buat akun admin secara
 terkontrol:
@@ -227,7 +299,7 @@ Promosi role dilakukan operator proyek lewat SQL Editor, bukan oleh pengguna
 dari aplikasi. Jangan memberikan akses SQL Editor atau service-role key
 kepada pengguna biasa.
 
-## 7. Uji setup
+## 9. Uji setup
 
 - Daftar akun user dan konfirmasikan email.
 - Login user: aplikasi membuka dashboard user.

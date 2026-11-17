@@ -46,7 +46,12 @@ create table public.pilihan_katalog (
   nama_pilihan varchar(200) not null,
   harga numeric(16,2) check (harga >= 0),
   spesifikasi text,
-  rating numeric(4,2) check (rating between 0 and 5)
+  rating numeric(4,2) check (rating between 0 and 5),
+  atribut jsonb not null default '{}'::jsonb
+    check (jsonb_typeof(atribut) = 'object'),
+  mata_uang varchar(3) check (mata_uang ~ '^[A-Z]{3}$'),
+  sumber_url text,
+  lisensi_data text
 );
 
 -- 3. Keputusan yang dibuat pengguna.
@@ -86,6 +91,7 @@ create table public.kriteria (
   nama_kriteria varchar(150) not null,
   jenis_kriteria varchar(10) not null check (jenis_kriteria in ('benefit', 'cost')),
   satuan varchar(50),
+  atribut_key varchar(100),
   unique (id_sub_kategori, nama_kriteria)
 );
 

@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../core/entities/user_plan.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/mobile_background.dart';
 import '../../../core/widgets/page_app_bar.dart';
+import '../../../features/auth/presentation/providers/auth_provider.dart';
 
 class PremiumPlanScreen extends StatelessWidget {
   const PremiumPlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userPlan = context.watch<AuthProvider>().user?.plan;
+    final isPremium =
+        userPlan?.tier == UserPlanTier.premium ||
+        userPlan?.tier == UserPlanTier.admin;
     return MobileBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -21,34 +28,44 @@ class PremiumPlanScreen extends StatelessWidget {
             Text('Your Current Plan', style: AppTypography.sectionInnerTitle),
             const SizedBox(height: AppSpacing.md),
             _PlanCard(
-              title: 'FREE PLAN',
-              description: '1 decision per day',
+              title: isPremium ? 'PREMIUM PLAN' : 'BASIC PLAN',
+              description: isPremium
+                  ? 'Unlimited decisions'
+                  : '1 saved decision per day',
               actionLabel: 'Current plan',
               onPressed: null,
             ),
             const SizedBox(height: AppSpacing.xl),
             Text('Your Benefits', style: AppTypography.sectionInnerTitle),
             const SizedBox(height: AppSpacing.sm),
-            const _Benefit(text: '1 decision per day'),
-            const _Benefit(text: 'Up to 3 choices per decision'),
-            const _Benefit(text: 'Basic decision analysis'),
-            const _Benefit(text: 'What-if simulation'),
-            const _Benefit(text: 'Decision review'),
+            if (isPremium) ...const [
+              _Benefit(text: 'Unlimited saved decisions'),
+              _Benefit(text: 'Up to 10 choices per decision'),
+              _Benefit(text: 'Premium-only decision insights'),
+            ] else ...const [
+              _Benefit(text: '1 saved decision per day (WIB)'),
+              _Benefit(text: 'Up to 3 choices per decision'),
+              _Benefit(text: 'Decision history and review'),
+            ],
             const SizedBox(height: AppSpacing.xl),
-            _PlanCard(
-              title: 'UPGRADE TO PREMIUM',
-              description:
-                  'Unlimited decisions\nUp to 10 choices per decision\n'
-                  'Personal decision pattern\nAdvanced insights',
-              actionLabel: 'Upgrade Now',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Premium subscriptions are coming soon'),
-                  ),
-                );
-              },
-            ),
+            if (!isPremium)
+              _PlanCard(
+                title: 'UPGRADE TO PREMIUM',
+                description:
+                    'Unlimited decisions\nUp to 10 choices per decision\n'
+                    'Premium-only insights',
+                actionLabel: 'Upgrade Now',
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Premium payments are not available yet. '
+                        'Please contact an administrator.',
+                      ),
+                    ),
+                  );
+                },
+              ),
           ],
         ),
       ),

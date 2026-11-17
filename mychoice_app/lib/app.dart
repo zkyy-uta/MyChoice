@@ -12,6 +12,18 @@ import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/decision_history/data/repositories/supabase_decision_history_repository.dart';
 import 'features/decision_history/domain/repositories/decision_history_repository.dart';
 import 'features/decision_history/presentation/providers/decision_history_provider.dart';
+import 'features/alternative_management/data/repositories/supabase_personal_alternative_repository.dart';
+import 'features/alternative_management/domain/repositories/personal_alternative_repository.dart';
+import 'features/criteria_selection/data/repositories/supabase_personal_criteria_repository.dart';
+import 'features/criteria_selection/domain/repositories/personal_criteria_repository.dart';
+import 'features/admin_catalog/data/repositories/supabase_admin_catalog_repository.dart';
+import 'features/admin_catalog/domain/repositories/admin_catalog_repository.dart';
+import 'features/admin_user_management/data/repositories/supabase_admin_user_repository.dart';
+import 'features/admin_user_management/domain/repositories/admin_user_repository.dart';
+import 'features/admin_user_management/presentation/providers/admin_user_provider.dart';
+import 'features/admin_analytics/data/repositories/supabase_admin_analytics_repository.dart';
+import 'features/admin_analytics/domain/repositories/admin_analytics_repository.dart';
+import 'features/admin_analytics/presentation/providers/admin_analytics_provider.dart';
 import 'features/keputusan/data/repositories/supabase_keputusan_repository.dart';
 import 'features/keputusan/domain/repositories/keputusan_repository.dart';
 import 'features/keputusan/presentation/providers/keputusan_provider.dart';
@@ -159,13 +171,44 @@ class _MyChoiceAppState extends State<MyChoiceApp> {
           ),
         ),
         // Katalog Provider
+        Provider<PersonalAlternativeRepository>(
+          create: (_) => SupabasePersonalAlternativeRepository(
+            supabase.Supabase.instance.client,
+          ),
+        ),
+        Provider<PersonalCriteriaRepository>(
+          create: (_) => SupabasePersonalCriteriaRepository(
+            supabase.Supabase.instance.client,
+          ),
+        ),
+        Provider<AdminCatalogRepository>(
+          create: (_) =>
+              SupabaseAdminCatalogRepository(supabase.Supabase.instance.client),
+        ),
+        Provider<AdminUserRepository>(
+          create: (_) =>
+              SupabaseAdminUserRepository(supabase.Supabase.instance.client),
+        ),
+        ChangeNotifierProvider<AdminUserProvider>(
+          create: (context) =>
+              AdminUserProvider(context.read<AdminUserRepository>()),
+        ),
+        Provider<AdminAnalyticsRepository>(
+          create: (_) => SupabaseAdminAnalyticsRepository(
+            supabase.Supabase.instance.client,
+          ),
+        ),
+        ChangeNotifierProvider<AdminAnalyticsProvider>(
+          create: (context) =>
+              AdminAnalyticsProvider(context.read<AdminAnalyticsRepository>()),
+        ),
         Provider<KatalogRepository>(
           create: (_) =>
               SupabaseKatalogRepository(supabase.Supabase.instance.client),
         ),
         ChangeNotifierProvider<KatalogProvider>(
           create: (context) =>
-              KatalogProvider(repository: context.read<KatalogRepository>()),
+              KatalogProvider(context.read<KatalogRepository>()),
         ),
         // Decision Engine Provider
         Provider<DecisionEngineRepositoryImpl>(

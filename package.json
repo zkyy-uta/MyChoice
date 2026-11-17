@@ -1,0 +1,10 @@
+{
+  "name": "mychoice-supabase",
+  "private": true,
+  "scripts": {
+    "migrate": "supabase --workdir mychoice_app db push --remote=mwthzxveegbjpiujolzb"
+  },
+  "devDependencies": {
+    "supabase": "3.1.0"
+  }
+}

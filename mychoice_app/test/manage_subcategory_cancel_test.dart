@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mychoice_app/features/admin_catalog/domain/entities/admin_catalog_data.dart';
+import 'package:mychoice_app/features/admin_catalog/domain/repositories/admin_catalog_repository.dart';
 import 'package:mychoice_app/screens/admin/catalogue/manage_subcategory_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   testWidgets('cancelling an option sheet keeps the management screen usable', (
     WidgetTester tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(500, 900));
-    await tester.pumpWidget(
-      const MaterialApp(home: ManageSubcategoryScreen(subcategory: 'Laptop')),
-    );
+    await tester.pumpWidget(_managementApp());
+    await tester.pumpAndSettle();
 
     await tester.ensureVisible(find.text('+ Add Option'));
     await tester.tap(find.text('+ Add Option'));
@@ -40,20 +42,24 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (context) => Scaffold(
-            body: Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) =>
-                          const ManageSubcategoryScreen(subcategory: 'Laptop'),
-                    ),
-                  );
-                },
-                child: const Text('Open management'),
+      Provider<AdminCatalogRepository>.value(
+        value: _FakeAdminCatalogRepository(),
+        child: MaterialApp(
+          home: Builder(
+            builder: (context) => Scaffold(
+              body: Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ManageSubcategoryScreen(
+                          subcategory: 'Laptop',
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Open management'),
+                ),
               ),
             ),
           ),
@@ -69,4 +75,42 @@ void main() {
     expect(find.text('Open management'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+}
+
+Widget _managementApp() => Provider<AdminCatalogRepository>.value(
+  value: _FakeAdminCatalogRepository(),
+  child: const MaterialApp(
+    home: ManageSubcategoryScreen(subcategory: 'Laptop'),
+  ),
+);
+
+class _FakeAdminCatalogRepository implements AdminCatalogRepository {
+  @override
+  Future<AdminCatalogCriterion> addCriterion({
+    required String category,
+    required String subcategory,
+    required String name,
+    required String type,
+    required String unit,
+  }) async => throw UnimplementedError();
+
+  @override
+  Future<void> deleteOption({required String id}) async {}
+
+  @override
+  Future<AdminSubcategoryCatalog> loadSubcategory({
+    required String category,
+    required String subcategory,
+  }) async => const AdminSubcategoryCatalog(criteria: [], options: []);
+
+  @override
+  Future<String> saveOption({
+    required String category,
+    required String subcategory,
+    String? id,
+    required String name,
+    required Map<String, String> values,
+    required Set<String> unavailable,
+    required List<AdminCatalogCriterion> criteria,
+  }) async => 'option-id';
 }

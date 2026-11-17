@@ -22,6 +22,10 @@ type KatalogPayload = {
     nama_pilihan: string;
     harga?: number | null;
     spesifikasi?: string | null;
+    atribut?: Record<string, string | number | boolean | null>;
+    mata_uang?: string | null;
+    sumber_url?: string | null;
+    lisensi_data?: string | null;
   }>;
   reseed?: boolean;
 };
@@ -135,12 +139,28 @@ Deno.serve(async (request: Request) => {
     ) {
       let inserted = 0;
       for (const p of payload.pilihan_katalog) {
-        const { data: sub } = await supabaseAdmin
+        const { data: kategori, error: kategoriError } = await supabaseAdmin
+          .from("kategori")
+          .select("id_kategori")
+          .eq("nama_kategori", p.nama_kategori)
+          .maybeSingle();
+        if (kategoriError) throw kategoriError;
+        if (!kategori) {
+          throw new Error(`Kategori tidak ditemukan: ${p.nama_kategori}`);
+        }
+
+        const { data: sub, error: subError } = await supabaseAdmin
           .from("sub_kategori")
           .select("id_sub_kategori")
+          .eq("id_kategori", kategori.id_kategori)
           .eq("nama_sub_kategori", p.nama_sub_kategori)
           .maybeSingle();
-        if (!sub) continue;
+        if (subError) throw subError;
+        if (!sub) {
+          throw new Error(
+            `Subkategori tidak ditemukan: ${p.nama_kategori} / ${p.nama_sub_kategori}`,
+          );
+        }
         const { error } = await supabaseAdmin
           .from("pilihan_katalog")
           .upsert(
@@ -149,6 +169,10 @@ Deno.serve(async (request: Request) => {
               nama_pilihan: p.nama_pilihan,
               harga: p.harga ?? null,
               spesifikasi: p.spesifikasi ?? null,
+              atribut: p.atribut ?? {},
+              mata_uang: p.mata_uang ?? null,
+              sumber_url: p.sumber_url ?? null,
+              lisensi_data: p.lisensi_data ?? null,
             },
             { onConflict: "id_sub_kategori,nama_pilihan" },
           );

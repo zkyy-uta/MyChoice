@@ -26,17 +26,18 @@ class AutoBalanceUseCase {
     );
 
     // If sum is already 100, return as-is
-    if ((currentSum - 100.0).abs() < 0.001) {
+    if ((currentSum - 100.0).abs() < 0.001 &&
+        weights.values.every((value) => value >= 0)) {
       return Map<String, double>.from(weights);
     }
 
     // Calculate scaling factor
     final scaleFactor = 100.0 / currentSum;
 
-    // Apply scaling to all weights
+    // Keep invalid weights at zero so they do not reduce the normalized total.
     final result = <String, double>{};
     weights.forEach((key, value) {
-      result[key] = (value * scaleFactor);
+      result[key] = value > 0 ? value * scaleFactor : 0;
     });
 
     return result;

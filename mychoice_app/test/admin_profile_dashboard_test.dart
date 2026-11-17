@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mychoice_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:mychoice_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:mychoice_app/features/admin_analytics/presentation/providers/admin_analytics_provider.dart';
+import 'package:mychoice_app/features/admin_user_management/presentation/providers/admin_user_provider.dart';
 import 'package:mychoice_app/screens/admin/dashboard/admin_dashboard_screen.dart';
 import 'package:mychoice_app/screens/admin/profile/admin_profile_screen.dart';
+import 'test_support/fake_admin_repositories.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -38,7 +41,21 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(500, 900));
-    await tester.pumpWidget(const MaterialApp(home: AdminDashboardScreen()));
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => AdminUserProvider(FakeAdminUserRepository()),
+          ),
+          ChangeNotifierProvider(
+            create: (_) =>
+                AdminAnalyticsProvider(FakeAdminAnalyticsRepository()),
+          ),
+        ],
+        child: const MaterialApp(home: AdminDashboardScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
 
     expect(find.text('New User Activity'), findsOneWidget);
     expect(find.text('Admin'), findsOneWidget);

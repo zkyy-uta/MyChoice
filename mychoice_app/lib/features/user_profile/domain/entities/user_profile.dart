@@ -7,6 +7,8 @@ class UserProfile {
     required this.role,
     required this.plan,
     required this.createdAt,
+    this.avatarPath,
+    this.avatarUrl,
   });
 
   final String id;
@@ -15,6 +17,8 @@ class UserProfile {
   final String role; // 'user' atau 'admin'
   final String plan; // 'basic' atau 'premium'
   final DateTime createdAt;
+  final String? avatarPath;
+  final String? avatarUrl;
 
   /// Apakah pengguna adalah admin.
   bool get isAdmin => role == 'admin';
@@ -30,6 +34,8 @@ class UserProfile {
     String? role,
     String? plan,
     DateTime? createdAt,
+    String? avatarPath,
+    String? avatarUrl,
   }) {
     return UserProfile(
       id: id ?? this.id,
@@ -38,6 +44,8 @@ class UserProfile {
       role: role ?? this.role,
       plan: plan ?? this.plan,
       createdAt: createdAt ?? this.createdAt,
+      avatarPath: avatarPath ?? this.avatarPath,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
     );
   }
 

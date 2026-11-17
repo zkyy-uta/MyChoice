@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mychoice_app/screens/user/comparison/mf08_manual_choice_structuring_screen.dart';
 import 'package:mychoice_app/screens/user/decision/result_screen.dart';
 import 'package:mychoice_app/screens/guest/mf04_public_home_catalog_screen.dart';
+import 'package:mychoice_app/screens/guest/guest_home_screen.dart';
 import 'package:mychoice_app/screens/onboarding/onboarding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,20 +12,20 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('onboarding opens the public MF04 catalog', (tester) async {
+  testWidgets('onboarding opens the guest home screen', (tester) async {
     await tester.binding.setSurfaceSize(const Size(800, 1000));
     await tester.pumpWidget(
       MaterialApp(
         home: const OnboardingScreen(),
-        routes: {'/public-catalog': (_) => const Mf04PublicHomeCatalogScreen()},
+        routes: {'/guest-home': (_) => const GuestHomeScreen()},
       ),
     );
 
-    await tester.tap(find.text('Jelajahi katalog tanpa login'));
+    await tester.tap(find.text('Skip'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Pilih kategori'), findsOneWidget);
-    expect(find.text('Pilihan tersimpan'), findsOneWidget);
+    expect(find.text('Explore Categories'), findsOneWidget);
+    expect(find.text('Popular Choices'), findsOneWidget);
 
     await tester.binding.setSurfaceSize(null);
   });
@@ -48,15 +49,15 @@ void main() {
     await tester.tap(find.byType(CheckboxListTile).at(3));
     await tester.pumpAndSettle();
 
-    expect(find.text('Batas pilihan tercapai'), findsOneWidget);
+    expect(find.text('Choice limit reached'), findsOneWidget);
     expect(
       find.text(
-        'Paket Basic maksimal 3 opsi. '
-        'Upgrade ke Premium untuk memilih hingga 10 opsi.',
+        'Basic plan allows a maximum of 3 options. '
+        'Upgrade to Premium to select up to 10 options.',
       ),
       findsOneWidget,
     );
-    expect(find.text('Pilihan dibandingkan (3/3)'), findsOneWidget);
+    expect(find.text('Compared choices (3/3)'), findsOneWidget);
 
     await tester.binding.setSurfaceSize(null);
   });

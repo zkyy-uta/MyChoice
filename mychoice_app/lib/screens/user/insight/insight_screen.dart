@@ -1,16 +1,30 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../features/decision_history/presentation/providers/decision_history_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
-import '../history/history_sample_data.dart';
 
-class InsightScreen extends StatelessWidget {
+class InsightScreen extends StatefulWidget {
   const InsightScreen({super.key});
+
+  @override
+  State<InsightScreen> createState() => _InsightScreenState();
+}
+
+class _InsightScreenState extends State<InsightScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<DecisionHistoryProvider>().loadHistories();
+    });
+  }
 
   void _onNavigation(BuildContext context, int index) {
     switch (index) {
@@ -29,7 +43,8 @@ class InsightScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final decisions = historySampleDecisions;
+    final historyProvider = context.watch<DecisionHistoryProvider>();
+    final decisions = historyProvider.histories;
     final decisionCount = decisions.length;
     final averageScore = decisionCount == 0
         ? 0.0
@@ -45,10 +60,12 @@ class InsightScreen extends StatelessWidget {
         ifAbsent: () => 1,
       );
       for (final entry in decision.priorities.entries) {
+        final value = entry.value;
+        if (value is! num) continue;
         priorityTotals.update(
           entry.key,
-          (total) => total + entry.value,
-          ifAbsent: () => entry.value.toDouble(),
+          (total) => total + value.toDouble(),
+          ifAbsent: () => value.toDouble(),
         );
       }
     }
@@ -89,82 +106,107 @@ class InsightScreen extends StatelessWidget {
           foregroundColor: AppColors.textPurple,
           elevation: 0,
         ),
-        body: SafeArea(
-          top: false,
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
-            children: [
-              Text(
-                'Based on your available decision history:',
-                style: AppTypography.smallSemibold.copyWith(
-                  color: AppColors.textPurple,
+        body: historyProvider.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : historyProvider.error != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        historyProvider.error!,
+                        textAlign: TextAlign.center,
+                        style: AppTypography.small.copyWith(
+                          color: AppColors.error80,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton(
+                        onPressed: historyProvider.loadHistories,
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 14),
-              _TotalDecisionsCard(count: decisionCount),
-              const SizedBox(height: 18),
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatisticCard(
-                      icon: Icons.category_outlined,
-                      label: 'Top Category',
-                      value: topCategory?.key ?? '—',
-                      detail: topCategory == null
-                          ? 'No data'
-                          : '${topCategory.value} of $decisionCount decisions',
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _StatisticCard(
-                      icon: Icons.insights_rounded,
-                      label: 'Average Score',
-                      value: decisionCount == 0
-                          ? '—'
-                          : '${(averageScore * 100).toStringAsFixed(0)}%',
-                      detail: 'Across all decisions',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              _SectionCard(
-                title: 'Your Common Priorities',
-                subtitle: 'Average weight across available decisions',
-                child: Column(
+              )
+            : SafeArea(
+                top: false,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
                   children: [
-                    for (final priority in topPriorities)
-                      _PriorityRow(
-                        name: priority.name,
-                        percent: priority.percent,
-                        maximum: topPriorities.firstOrNull?.percent ?? 1,
+                    Text(
+                      'Based on your available decision history:',
+                      style: AppTypography.smallSemibold.copyWith(
+                        color: AppColors.textPurple,
                       ),
-                    if (averagePriorities.length > 3)
-                      _PriorityRow(
-                        name: 'Other',
-                        percent: otherPercent,
-                        maximum: topPriorities.firstOrNull?.percent ?? 1,
+                    ),
+                    const SizedBox(height: 14),
+                    _TotalDecisionsCard(count: decisionCount),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _StatisticCard(
+                            icon: Icons.category_outlined,
+                            label: 'Top Category',
+                            value: topCategory?.key ?? '—',
+                            detail: topCategory == null
+                                ? 'No data'
+                                : '${topCategory.value} of $decisionCount decisions',
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _StatisticCard(
+                            icon: Icons.insights_rounded,
+                            label: 'Average Score',
+                            value: decisionCount == 0
+                                ? '—'
+                                : '${(averageScore * 100).toStringAsFixed(0)}%',
+                            detail: 'Across all decisions',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    _SectionCard(
+                      title: 'Your Common Priorities',
+                      subtitle: 'Average weight across available decisions',
+                      child: Column(
+                        children: [
+                          for (final priority in topPriorities)
+                            _PriorityRow(
+                              name: priority.name,
+                              percent: priority.percent,
+                              maximum: topPriorities.firstOrNull?.percent ?? 1,
+                            ),
+                          if (averagePriorities.length > 3)
+                            _PriorityRow(
+                              name: 'Other',
+                              percent: otherPercent,
+                              maximum: topPriorities.firstOrNull?.percent ?? 1,
+                            ),
+                        ],
                       ),
+                    ),
+                    const SizedBox(height: 14),
+                    _WhatIfCard(decisionCount: decisionCount),
+                    const SizedBox(height: 14),
+                    _DecisionPatternCard(commonPriorities: commonPriorityNames),
+                    const SizedBox(height: 14),
+                    _SectionCard(
+                      title: 'Decision Categories',
+                      subtitle: 'Share of recorded decisions by category',
+                      child: _CategoryDistributionChart(
+                        categories: rankedCategories,
+                        total: decisionCount,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
-              _WhatIfCard(decisionCount: decisionCount),
-              const SizedBox(height: 14),
-              _DecisionPatternCard(commonPriorities: commonPriorityNames),
-              const SizedBox(height: 14),
-              _SectionCard(
-                title: 'Decision Categories',
-                subtitle: 'Share of recorded decisions by category',
-                child: _CategoryDistributionChart(
-                  categories: rankedCategories,
-                  total: decisionCount,
-                ),
-              ),
-            ],
-          ),
-        ),
         bottomNavigationBar: BottomNavigation(
           selectedIndex: 2,
           onSelected: (index) => _onNavigation(context, index),

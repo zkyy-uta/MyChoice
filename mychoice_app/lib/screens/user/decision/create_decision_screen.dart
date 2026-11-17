@@ -7,6 +7,10 @@ import 'package:mychoice_app/core/theme/app_typography.dart';
 import 'package:mychoice_app/core/theme/app_spacing.dart';
 import 'package:mychoice_app/core/widgets/bottom_navigation.dart';
 import 'package:mychoice_app/core/widgets/mobile_background.dart';
+import 'package:mychoice_app/core/widgets/basic_daily_decision_limit_dialog.dart';
+import 'package:mychoice_app/features/alternative_management/domain/entities/alternative.dart';
+import 'package:mychoice_app/features/alternative_management/domain/repositories/personal_alternative_repository.dart';
+import 'package:mychoice_app/features/criteria_selection/domain/repositories/personal_criteria_repository.dart';
 import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
 import 'package:provider/provider.dart';
 import '../history/history_detail_screen.dart';
@@ -36,6 +40,8 @@ class CreateDecisionScreen extends StatefulWidget {
 }
 
 class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
+  static const int _maxComparedCriteria = 6;
+
   // Selected values
   String? _selectedCategory;
   String? _selectedSubcategory;
@@ -45,13 +51,18 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   final TextEditingController _newCriteriaController = TextEditingController();
   final Map<String, bool> _selectedCriteria = {};
   final Map<String, double> _priorities = {};
+  final List<String> _personalCriteria = [];
+  bool _isLoadingPersonalCriteria = false;
+  bool _isSavingPersonalCriteria = false;
+  bool _isCheckingDailyDecisionLimit = false;
+  String? _personalCriteriaError;
 
   // Manual option input (user-typed option not found in catalog)
   final TextEditingController _manualOptionController = TextEditingController();
-  final List<String> _manualOptions =
-      []; // user-typed options awaiting admin review
-  final Set<String> _manualOptionIds =
-      {}; // ids of manual options added to selection
+  final List<Alternative> _personalOptions = [];
+  bool _isLoadingPersonalOptions = false;
+  bool _isSavingPersonalOption = false;
+  String? _personalOptionsError;
 
   // Option specifications loaded from alternatives_catalog.json
   final Map<String, Map<String, String>> _optionSpecs = {};
@@ -226,6 +237,17 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     if (widget.initialPriorities != null) {
       _priorities.addAll(widget.initialPriorities!);
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.initialSubcategory != null && widget.initialCategory != null) {
+        unawaited(_loadPersonalOptions(widget.initialSubcategory!));
+        unawaited(
+          _loadPersonalCriteria(
+            category: widget.initialCategory!,
+            subcategory: widget.initialSubcategory!,
+          ),
+        );
+      }
+    });
     _loadOptionSpecs();
   }
 
@@ -512,18 +534,164 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     return _optionsBySubcategory[_selectedSubcategory!] ?? [];
   }
 
+  List<String> get _criteriaForPersonalOption {
+    final criteria = <String>[];
+    for (final criterion
+        in _defaultCriteriaBySubcategory[_selectedSubcategory] ?? const []) {
+      if (!criteria.contains(criterion)) criteria.add(criterion);
+    }
+    for (final criterion in _selectedCriteria.keys) {
+      if (!criteria.contains(criterion)) criteria.add(criterion);
+    }
+    return criteria;
+  }
+
+  Alternative? _personalOptionByName(String name) {
+    for (final option in _personalOptions) {
+      if (option.name == name) return option;
+    }
+    return null;
+  }
+
   void _selectCategory(String category) {
     setState(() {
       _selectedCategory = category;
       _selectedSubcategory = null; // Reset subcategory
+      _personalOptions.clear();
+      _isLoadingPersonalOptions = false;
+      _personalOptionsError = null;
+      _personalCriteria.clear();
+      _isLoadingPersonalCriteria = false;
+      _personalCriteriaError = null;
+      _selectedCriteria.clear();
+      _priorities.clear();
     });
   }
 
   void _selectSubcategory(String subcategory) {
+    final category = _selectedCategory;
     setState(() {
       _selectedSubcategory = subcategory;
+      _personalOptions.clear();
+      _personalOptionsError = null;
+      _personalCriteria.clear();
+      _isLoadingPersonalCriteria = false;
+      _personalCriteriaError = null;
     });
     _applyCriteriaForSubcategory(subcategory);
+    unawaited(_loadPersonalOptions(subcategory));
+    if (category != null) {
+      unawaited(
+        _loadPersonalCriteria(category: category, subcategory: subcategory),
+      );
+    }
+  }
+
+  Future<void> _loadPersonalOptions(String subcategory) async {
+    final repository = Provider.of<PersonalAlternativeRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null || _selectedCategory == null) {
+      if (!mounted) return;
+      setState(() {
+        _isLoadingPersonalOptions = false;
+        _personalOptionsError =
+            'Your personal catalog is unavailable. Please try again later.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoadingPersonalOptions = true;
+      _personalOptionsError = null;
+    });
+    try {
+      final options = await repository.getMyOptions(
+        category: _selectedCategory!,
+        subcategory: subcategory,
+      );
+      if (!mounted || _selectedSubcategory != subcategory) return;
+      setState(() {
+        _personalOptions
+          ..clear()
+          ..addAll(options);
+        for (final option in options) {
+          _optionSpecs[option.name] = (option.specs ?? {}).map(
+            (key, value) => MapEntry(key, value.toString()),
+          );
+        }
+        _isLoadingPersonalOptions = false;
+      });
+    } catch (error) {
+      if (!mounted || _selectedSubcategory != subcategory) return;
+      setState(() {
+        _isLoadingPersonalOptions = false;
+        _personalOptionsError = 'Could not load your saved options: $error';
+      });
+    }
+  }
+
+  Future<void> _loadPersonalCriteria({
+    required String category,
+    required String subcategory,
+  }) async {
+    final repository = Provider.of<PersonalCriteriaRepository?>(
+      context,
+      listen: false,
+    );
+    final isCurrentSubcategory =
+        _selectedCategory == category && _selectedSubcategory == subcategory;
+    if (!isCurrentSubcategory) return;
+    if (repository == null) {
+      if (!mounted) return;
+      setState(() {
+        _personalCriteriaError =
+            'Personal criteria storage is unavailable. Please try again later.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoadingPersonalCriteria = true;
+      _personalCriteriaError = null;
+    });
+    try {
+      final criteria = await repository.getMyCriteria(
+        category: category,
+        subcategory: subcategory,
+      );
+      if (!mounted ||
+          _selectedCategory != category ||
+          _selectedSubcategory != subcategory) {
+        return;
+      }
+      setState(() {
+        _personalCriteria
+          ..clear()
+          ..addAll(criteria);
+        for (final criterion in criteria) {
+          final exists = _selectedCriteria.keys.any(
+            (selected) => selected.toLowerCase() == criterion.toLowerCase(),
+          );
+          if (!exists) {
+            _selectedCriteria[criterion] = false;
+            _priorities[criterion] = 0;
+          }
+        }
+        _isLoadingPersonalCriteria = false;
+      });
+    } catch (error) {
+      if (!mounted ||
+          _selectedCategory != category ||
+          _selectedSubcategory != subcategory) {
+        return;
+      }
+      setState(() {
+        _isLoadingPersonalCriteria = false;
+        _personalCriteriaError = 'Could not load your saved criteria: $error';
+      });
+    }
   }
 
   void _applyCriteriaForSubcategory(String subcategory) {
@@ -547,6 +715,15 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         newPriorities[c] = totalDefault > 0
             ? 100.0 / defaults.length
             : 100.0 / defaults.length;
+      }
+    }
+    for (final criterion in _personalCriteria) {
+      final exists = newCriteria.keys.any(
+        (selected) => selected.toLowerCase() == criterion.toLowerCase(),
+      );
+      if (!exists) {
+        newCriteria[criterion] = false;
+        newPriorities[criterion] = 0;
       }
     }
 
@@ -789,16 +966,88 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     });
   }
 
-  void _addManualOption() {
+  Future<void> _addManualOption() async {
     final name = _manualOptionController.text.trim();
-    if (name.isEmpty || _manualOptions.contains(name)) {
-      _manualOptionController.clear();
+    if (name.isEmpty || _isSavingPersonalOption) return;
+    if (_selectedCategory == null || _selectedSubcategory == null) {
+      _showPersonalOptionMessage(
+        'Select a category and subcategory before adding an option.',
+      );
       return;
     }
+    final criteria = _criteriaForPersonalOption;
+    if (criteria.isEmpty) {
+      _showPersonalOptionMessage(
+        'Add comparison criteria for this subcategory before saving an option.',
+      );
+      return;
+    }
+    if (_availableOptions.any(
+          (option) => option.toLowerCase() == name.toLowerCase(),
+        ) ||
+        _personalOptions.any(
+          (option) => option.name.toLowerCase() == name.toLowerCase(),
+        )) {
+      _showPersonalOptionMessage(
+        'An option with this name already exists in this subcategory.',
+      );
+      return;
+    }
+
+    final repository = Provider.of<PersonalAlternativeRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null) {
+      _showPersonalOptionMessage(
+        'Your personal catalog is unavailable. Please try again later.',
+      );
+      return;
+    }
+
+    final details = await showDialog<_PersonalAlternativeDetails>(
+      context: context,
+      builder: (_) => _PersonalAlternativeDetailsDialog(
+        name: name,
+        criteria: criteria,
+        isNameEditable: false,
+      ),
+    );
+    if (details == null || !mounted) return;
+
     setState(() {
-      _manualOptions.add(name);
+      _isSavingPersonalOption = true;
     });
-    _manualOptionController.clear();
+    try {
+      final saved = await repository.addMyOption(
+        category: _selectedCategory!,
+        subcategory: _selectedSubcategory!,
+        name: details.name,
+        attributes: details.attributes,
+      );
+      if (!mounted) return;
+      setState(() {
+        _personalOptions.add(saved);
+        _optionSpecs[saved.name] = (saved.specs ?? {}).map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+        _manualOptionController.clear();
+        _isSavingPersonalOption = false;
+      });
+      _showPersonalOptionMessage('Option saved to your personal catalog.');
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isSavingPersonalOption = false;
+      });
+      _showPersonalOptionMessage('Could not save your option: $error');
+    }
+  }
+
+  void _showPersonalOptionMessage(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _addManualOptionToSelection(String option) {
@@ -808,31 +1057,160 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
       return;
     }
     setState(() {
-      _selectedOptions.add(option);
-      _manualOptionIds.add(option);
+      if (!_selectedOptions.contains(option)) _selectedOptions.add(option);
     });
   }
 
-  void _removeManualOption(String option) {
-    setState(() {
-      _manualOptions.remove(option);
-      _selectedOptions.remove(option);
-      _manualOptionIds.remove(option);
-    });
+  Future<void> _editPersonalOption(Alternative option) async {
+    final repository = Provider.of<PersonalAlternativeRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null) {
+      _showPersonalOptionMessage(
+        'Your personal catalog is unavailable. Please try again later.',
+      );
+      return;
+    }
+
+    final criteria = [
+      ..._criteriaForPersonalOption,
+      ...?option.specs?.keys.where(
+        (criterion) => !_criteriaForPersonalOption.contains(criterion),
+      ),
+    ];
+    final edited = await showDialog<_PersonalAlternativeDetails>(
+      context: context,
+      builder: (_) => _PersonalAlternativeDetailsDialog(
+        name: option.name,
+        criteria: criteria,
+        initialAttributes: option.specs ?? const {},
+      ),
+    );
+    if (edited == null || !mounted) return;
+
+    if (_availableOptions.any(
+          (name) => name.toLowerCase() == edited.name.toLowerCase(),
+        ) ||
+        _personalOptions.any(
+          (saved) =>
+              saved.id != option.id &&
+              saved.name.toLowerCase() == edited.name.toLowerCase(),
+        )) {
+      _showPersonalOptionMessage(
+        'An option with this name already exists in this subcategory.',
+      );
+      return;
+    }
+
+    try {
+      final updated = await repository.updateMyOption(
+        id: option.id,
+        name: edited.name,
+        attributes: edited.attributes,
+      );
+      if (!mounted) return;
+      setState(() {
+        final index = _personalOptions.indexWhere(
+          (saved) => saved.id == option.id,
+        );
+        if (index != -1) _personalOptions[index] = updated;
+        _optionSpecs.remove(option.name);
+        _optionSpecs[updated.name] = (updated.specs ?? {}).map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+        final selectedIndex = _selectedOptions.indexOf(option.name);
+        if (selectedIndex != -1) {
+          _selectedOptions[selectedIndex] = updated.name;
+        }
+      });
+      _showPersonalOptionMessage('Your saved option was updated.');
+    } catch (error) {
+      if (!mounted) return;
+      _showPersonalOptionMessage('Could not update your option: $error');
+    }
+  }
+
+  Future<void> _deletePersonalOption(Alternative option) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete saved option?'),
+        content: Text('Delete "${option.name}" from your personal catalog?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            key: Key('confirm-delete-personal-option-${option.id}'),
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final repository = Provider.of<PersonalAlternativeRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null) {
+      _showPersonalOptionMessage(
+        'Your personal catalog is unavailable. Please try again later.',
+      );
+      return;
+    }
+
+    try {
+      await repository.deleteMyOption(id: option.id);
+      if (!mounted) return;
+      setState(() {
+        _personalOptions.removeWhere((saved) => saved.id == option.id);
+        _optionSpecs.remove(option.name);
+        _selectedOptions.remove(option.name);
+      });
+      _showPersonalOptionMessage('Your saved option was deleted.');
+    } catch (error) {
+      if (!mounted) return;
+      _showPersonalOptionMessage('Could not delete your option: $error');
+    }
   }
 
   void _toggleCriteria(String criteria) {
-    setState(() {
-      final nowSelected = !(_selectedCriteria[criteria] ?? false);
-      _selectedCriteria[criteria] = nowSelected;
+    final nowSelected = !(_selectedCriteria[criteria] ?? false);
+    final selectedCount = _selectedCriteria.values
+        .where((value) => value)
+        .length;
+    if (nowSelected && selectedCount >= _maxComparedCriteria) {
+      showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Maximum criteria reached'),
+          content: const Text(
+            'You can compare using up to 6 criteria. Remove a selected '
+            'criterion before adding another.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
 
-      // Auto-assign priority when a criterion is turned on.
+    setState(() {
+      _selectedCriteria[criteria] = nowSelected;
       if (nowSelected) {
         _priorities.putIfAbsent(criteria, () => 10);
-        _rebalancePriorities();
       } else {
         _priorities.remove(criteria);
       }
+      _rebalancePriorities();
     });
   }
 
@@ -856,8 +1234,12 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   }
 
   double get _totalPriority {
-    return _priorities.values.fold(0, (sum, value) => sum + value);
+    return _selectedCriteria.entries
+        .where((entry) => entry.value)
+        .fold(0.0, (sum, entry) => sum + (_priorities[entry.key] ?? 0));
   }
+
+  bool get _isPriorityTotalValid => (_totalPriority - 100).abs() <= 0.01;
 
   Future<void> _saveDecision() async {
     final topOption = _selectedOptions.isNotEmpty
@@ -909,7 +1291,17 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   Future<void> _makeDecision() async {
     // User already authenticated — no gate needed for logged-in users
 
-    if (_totalPriority != 100) {
+    if (_selectedOptions.length < 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Add at least two options before making a decision.'),
+          backgroundColor: AppColors.error80,
+        ),
+      );
+      return;
+    }
+
+    if (!_isPriorityTotalValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Total priority must equal 100%!'),
@@ -917,6 +1309,34 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
         ),
       );
       return;
+    }
+
+    if (!widget.isPremium) {
+      if (_isCheckingDailyDecisionLimit) return;
+      setState(() => _isCheckingDailyDecisionLimit = true);
+      bool canCreateDecision;
+      try {
+        canCreateDecision = await context
+            .read<DecisionHistoryProvider>()
+            .canCreateDecisionToday();
+      } catch (error) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not check the daily decision limit: $error'),
+          ),
+        );
+        return;
+      } finally {
+        if (mounted) setState(() => _isCheckingDailyDecisionLimit = false);
+      }
+      if (!mounted) return;
+      if (!canCreateDecision) {
+        final action = await showBasicDailyDecisionLimitDialog(context);
+        if (!mounted) return;
+        handleBasicDailyDecisionLimitAction(context, action);
+        return;
+      }
     }
 
     final shouldCalculate = await showDialog<bool>(
@@ -939,19 +1359,13 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
     );
     if (calculationComplete != true || !mounted) return;
 
-    final rankedChoices = _selectedOptions.isNotEmpty
-        ? _selectedOptions.asMap().entries.map((entry) {
-            final score = (0.89 - entry.key * 0.06).clamp(0.50, 0.99);
-            return RankedChoice(
-              name: entry.value,
-              score: double.parse(score.toStringAsFixed(2)),
-            );
-          }).toList()
-        : const [
-            RankedChoice(name: 'Lenovo IdeaPad Slim 5', score: 0.86),
-            RankedChoice(name: 'ASUS Vivobook 14', score: 0.79),
-            RankedChoice(name: 'Acer Aspire 5', score: 0.74),
-          ];
+    final rankedChoices = _selectedOptions.asMap().entries.map((entry) {
+      final score = (0.89 - entry.key * 0.06).clamp(0.50, 0.99);
+      return RankedChoice(
+        name: entry.value,
+        score: double.parse(score.toStringAsFixed(2)),
+      );
+    }).toList();
 
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -1033,12 +1447,35 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
               _buildCriteriaCheckboxes(),
+              if (_selectedCategory == null || _selectedSubcategory == null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: Text(
+                    'Select a category and subcategory to add personal criteria.',
+                    style: AppTypography.small.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              if (_personalCriteriaError != null) ...[
+                Text(
+                  _personalCriteriaError!,
+                  style: AppTypography.small.copyWith(color: AppColors.error80),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+              ],
               const SizedBox(height: AppSpacing.md),
               SizedBox(
                 width: double.infinity,
                 height: 44,
                 child: OutlinedButton(
-                  onPressed: _showAddCriteriaDialog,
+                  onPressed:
+                      _selectedCategory == null ||
+                          _selectedSubcategory == null ||
+                          _isLoadingPersonalCriteria ||
+                          _isSavingPersonalCriteria
+                      ? null
+                      : _showAddCriteriaDialog,
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: AppColors.border),
                     shape: RoundedRectangleBorder(
@@ -1088,7 +1525,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _makeDecision,
+                  onPressed: _isCheckingDailyDecisionLimit
+                      ? null
+                      : _makeDecision,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryDark,
                     foregroundColor: Colors.white,
@@ -1099,7 +1538,9 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                     ),
                   ),
                   child: Text(
-                    'Make a Decision',
+                    _isCheckingDailyDecisionLimit
+                        ? 'Checking limit...'
+                        : 'Make a Decision',
                     style: AppTypography.buttonLarge,
                   ),
                 ),
@@ -1194,82 +1635,163 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   }
 
   void _showAddCriteriaDialog() {
+    if (_selectedCategory == null || _selectedSubcategory == null) {
+      _showPersonalOptionMessage(
+        'Select a category and subcategory before adding a criterion.',
+      );
+      return;
+    }
     _newCriteriaController.clear();
-    showDialog(
+    var isSaving = false;
+    showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.dialogRadius),
-        ),
-        title: Text(
-          'Add New Criteria',
-          style: AppTypography.sectionInnerTitle.copyWith(
-            color: AppColors.textPurple,
-            fontWeight: FontWeight.w700,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.dialogRadius),
           ),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _newCriteriaController,
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText: 'Enter criteria name (e.g., Price, Quality)',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
-                  borderSide: const BorderSide(color: AppColors.border),
+          title: Text(
+            'Add New Criteria',
+            style: AppTypography.sectionInnerTitle.copyWith(
+              color: AppColors.textPurple,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                key: const Key('add-criteria-name'),
+                controller: _newCriteriaController,
+                autofocus: true,
+                enabled: !isSaving,
+                decoration: InputDecoration(
+                  hintText: 'Enter criteria name (e.g., Price, Quality)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
+                    borderSide: const BorderSide(color: AppColors.primary88),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.md,
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
-                  borderSide: const BorderSide(color: AppColors.primary88),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.md,
+                onSubmitted: (_) => _saveNewCriteria(
+                  dialogContext,
+                  (saving) => setDialogState(() => isSaving = saving),
                 ),
               ),
-              onSubmitted: (_) => _saveNewCriteria(context),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: isSaving
+                  ? null
+                  : () => Navigator.of(dialogContext).pop(),
+              child: Text(
+                'Cancel',
+                style: AppTypography.smallSemibold.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: isSaving
+                  ? null
+                  : () => _saveNewCriteria(
+                      dialogContext,
+                      (saving) => setDialogState(() => isSaving = saving),
+                    ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary88,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
+                ),
+              ),
+              child: isSaving
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Add'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Cancel',
-              style: AppTypography.smallSemibold.copyWith(
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => _saveNewCriteria(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary88,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-              ),
-            ),
-            child: const Text('Add'),
-          ),
-        ],
       ),
     );
   }
 
-  void _saveNewCriteria(BuildContext context) {
+  Future<void> _saveNewCriteria(
+    BuildContext dialogContext,
+    void Function(bool isSaving) setDialogSaving,
+  ) async {
     final name = _newCriteriaController.text.trim();
-    if (name.isEmpty || _selectedCriteria.containsKey(name)) {
-      Navigator.of(context).pop();
+    final category = _selectedCategory;
+    final subcategory = _selectedSubcategory;
+    if (name.isEmpty) {
+      _showPersonalOptionMessage('Enter a criterion name.');
       return;
     }
+    if (category == null || subcategory == null) {
+      _showPersonalOptionMessage(
+        'Select a category and subcategory before adding a criterion.',
+      );
+      return;
+    }
+    if (_selectedCriteria.keys.any(
+      (criterion) => criterion.toLowerCase() == name.toLowerCase(),
+    )) {
+      _showPersonalOptionMessage('A criterion with this name already exists.');
+      return;
+    }
+
+    final repository = Provider.of<PersonalCriteriaRepository?>(
+      dialogContext,
+      listen: false,
+    );
+    if (repository == null) {
+      _showPersonalOptionMessage(
+        'Personal criteria storage is unavailable. Please try again later.',
+      );
+      return;
+    }
+
     setState(() {
-      _selectedCriteria[name] = false; // Not selected by default
-      _priorities[name] = 0; // Weight starts at 0 until user enables it
+      _isSavingPersonalCriteria = true;
+      _personalCriteriaError = null;
     });
-    Navigator.of(context).pop();
+    setDialogSaving(true);
+    try {
+      final savedName = await repository.addMyCriterion(
+        category: category,
+        subcategory: subcategory,
+        name: name,
+      );
+      if (!mounted) return;
+      setState(() {
+        _personalCriteria.add(savedName);
+        _selectedCriteria[savedName] = false;
+        _priorities[savedName] = 0;
+        _isSavingPersonalCriteria = false;
+      });
+      if (dialogContext.mounted) {
+        Navigator.of(dialogContext).pop();
+      }
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isSavingPersonalCriteria = false;
+        _personalCriteriaError = 'Could not save your criterion: $error';
+      });
+      if (dialogContext.mounted) setDialogSaving(false);
+      _showPersonalOptionMessage('Could not save your criterion: $error');
+    }
   }
 
   Widget _buildOptionsSection() {
@@ -1473,6 +1995,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             children: [
               Expanded(
                 child: TextField(
+                  key: const Key('personal-option-name'),
                   controller: _manualOptionController,
                   autofocus: false,
                   decoration: InputDecoration(
@@ -1506,13 +2029,17 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                     ),
                   ),
                   onSubmitted: (_) => _addManualOption(),
+                  onChanged: (_) => setState(() {}),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
               SizedBox(
                 height: 44,
                 child: OutlinedButton(
-                  onPressed: _manualOptionController.text.trim().isEmpty
+                  key: const Key('add-personal-option'),
+                  onPressed:
+                      _manualOptionController.text.trim().isEmpty ||
+                          _isSavingPersonalOption
                       ? null
                       : _addManualOption,
                   style: OutlinedButton.styleFrom(
@@ -1534,14 +2061,26 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           ),
           const SizedBox(height: AppSpacing.md),
 
-          // Manual options already added (pending admin review)
-          if (_manualOptions.isNotEmpty) ...[
+          if (_isLoadingPersonalOptions) ...[
+            const Center(child: CircularProgressIndicator()),
+            const SizedBox(height: AppSpacing.md),
+          ],
+          if (_personalOptionsError != null) ...[
+            Text(
+              _personalOptionsError!,
+              style: AppTypography.small.copyWith(color: AppColors.error80),
+            ),
+            const SizedBox(height: AppSpacing.md),
+          ],
+
+          // Saved options are private and scoped to the current account.
+          if (_personalOptions.isNotEmpty) ...[
             Container(
               padding: const EdgeInsets.all(AppSpacing.md),
               decoration: BoxDecoration(
-                color: AppColors.warning20,
+                color: AppColors.primary20,
                 borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
-                border: Border.all(color: AppColors.warning80),
+                border: Border.all(color: AppColors.border),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1549,16 +2088,16 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                   Row(
                     children: [
                       const Icon(
-                        Icons.pending_actions,
-                        color: AppColors.warning80,
+                        Icons.person_outline,
+                        color: AppColors.primary88,
                         size: 18,
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Text(
-                          'Manual options (pending admin review)',
+                          'My saved options (${_selectedSubcategory ?? ''})',
                           style: AppTypography.smallSemibold.copyWith(
-                            color: AppColors.warning80,
+                            color: AppColors.primary88,
                           ),
                         ),
                       ),
@@ -1566,16 +2105,23 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    'These options are not yet in the system catalog. '
-                    'They have been sent to the admin for review and may become '
-                    'default options for all users.',
+                    'Only you can see these options. They are saved under '
+                    'this subcategory in your account.',
                     style: AppTypography.small.copyWith(
-                      color: AppColors.warning80,
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  ..._manualOptions.map((opt) {
-                    final isSelected = _selectedOptions.contains(opt);
+                  ..._personalOptions.map((option) {
+                    final isSelected = _selectedOptions.contains(option.name);
+                    final specs = _optionSpecs[option.name];
+                    final summary =
+                        specs == null || _selectedSubcategory == null
+                        ? null
+                        : _specSummaryForSubcategory(
+                            specs,
+                            _selectedSubcategory!,
+                          );
                     return Container(
                       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                       padding: const EdgeInsets.all(AppSpacing.md),
@@ -1586,51 +2132,80 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
                         ),
                         border: Border.all(color: AppColors.border),
                       ),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.person_add,
-                                  size: 16,
-                                  color: AppColors.warning80,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.person_outline,
+                                      size: 16,
+                                      color: AppColors.primary88,
+                                    ),
+                                    const SizedBox(width: AppSpacing.xs),
+                                    Expanded(
+                                      child: Text(
+                                        option.name,
+                                        style: AppTypography.sectionInnerTitle
+                                            .copyWith(
+                                              color: AppColors.textPrimary,
+                                            ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: AppSpacing.xs),
-                                Expanded(
-                                  child: Text(
-                                    opt,
-                                    style: AppTypography.sectionInnerTitle
-                                        .copyWith(color: AppColors.textPrimary),
-                                    overflow: TextOverflow.ellipsis,
+                              ),
+                              if (isSelected)
+                                const Icon(
+                                  Icons.check_circle,
+                                  color: AppColors.primary88,
+                                  size: 20,
+                                )
+                              else
+                                IconButton(
+                                  key: Key(
+                                    'select-personal-option-${option.id}',
+                                  ),
+                                  onPressed: () =>
+                                      _addManualOptionToSelection(option.name),
+                                  icon: const Icon(
+                                    Icons.add_circle_outline,
+                                    color: AppColors.textPurple,
+                                    size: 20,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          if (isSelected)
-                            const Icon(
-                              Icons.check_circle,
-                              color: AppColors.primary88,
-                              size: 20,
-                            )
-                          else
-                            IconButton(
-                              onPressed: () => _addManualOptionToSelection(opt),
-                              icon: const Icon(
-                                Icons.add_circle_outline,
-                                color: AppColors.textPurple,
-                                size: 20,
+                              IconButton(
+                                key: Key('edit-personal-option-${option.id}'),
+                                tooltip: 'Edit ${option.name}',
+                                onPressed: () => _editPersonalOption(option),
+                                icon: const Icon(Icons.edit_outlined),
                               ),
-                            ),
-                          IconButton(
-                            onPressed: () => _removeManualOption(opt),
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: AppColors.error80,
-                              size: 20,
-                            ),
+                              IconButton(
+                                key: Key('delete-personal-option-${option.id}'),
+                                tooltip: 'Delete ${option.name}',
+                                onPressed: () => _deletePersonalOption(option),
+                                icon: const Icon(
+                                  Icons.delete_outline,
+                                  color: AppColors.error80,
+                                ),
+                              ),
+                            ],
                           ),
+                          if (summary != null && summary.isNotEmpty) ...[
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              summary,
+                              style: AppTypography.small.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ],
                       ),
                     );
@@ -1661,7 +2236,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
 
             // Selected options with remove button
             ..._selectedOptions.map((option) {
-              final isManual = _manualOptions.contains(option);
+              final isManual = _personalOptionByName(option) != null;
               final specs = _optionSpecs[option];
               final specSummary = specs != null && _selectedSubcategory != null
                   ? _specSummaryForSubcategory(specs, _selectedSubcategory!)
@@ -1801,7 +2376,10 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
   }
 
   Widget _buildTotalPriority() {
-    final isValid = _totalPriority == 100;
+    final isValid = _isPriorityTotalValid;
+    final totalLabel = isValid
+        ? '100%'
+        : '${_totalPriority.toStringAsFixed(2)}%';
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -1822,7 +2400,7 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
             ),
           ),
           Text(
-            '${_totalPriority.toInt()}%',
+            totalLabel,
             style: AppTypography.sectionTitle.copyWith(
               color: isValid ? AppColors.success80 : AppColors.error80,
             ),
@@ -1831,6 +2409,157 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
       ),
     );
   }
+}
+
+class _PersonalAlternativeDetailsDialog extends StatefulWidget {
+  const _PersonalAlternativeDetailsDialog({
+    required this.name,
+    required this.criteria,
+    this.initialAttributes = const {},
+    this.isNameEditable = true,
+  });
+
+  final String name;
+  final List<String> criteria;
+  final Map<String, dynamic> initialAttributes;
+  final bool isNameEditable;
+
+  @override
+  State<_PersonalAlternativeDetailsDialog> createState() =>
+      _PersonalAlternativeDetailsDialogState();
+}
+
+class _PersonalAlternativeDetailsDialogState
+    extends State<_PersonalAlternativeDetailsDialog> {
+  late final Map<String, TextEditingController> _controllers;
+  late final TextEditingController _nameController;
+  String? _validationMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.name);
+    _controllers = {
+      for (final criterion in widget.criteria)
+        criterion: TextEditingController(
+          text: widget.initialAttributes[criterion]?.toString() ?? '',
+        ),
+    };
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    for (final controller in _controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _save() {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      setState(() {
+        _validationMessage = 'Enter an option name.';
+      });
+      return;
+    }
+
+    final missing = _controllers.entries
+        .where((entry) => entry.value.text.trim().isEmpty)
+        .map((entry) => entry.key)
+        .toList();
+    if (missing.isNotEmpty) {
+      setState(() {
+        _validationMessage = 'Complete all fields: ${missing.join(', ')}.';
+      });
+      return;
+    }
+
+    final attributes = <String, dynamic>{};
+    for (final entry in _controllers.entries) {
+      final text = entry.value.text.trim();
+      attributes[entry.key] = double.tryParse(text.replaceAll(',', '')) ?? text;
+    }
+    Navigator.of(
+      context,
+    ).pop(_PersonalAlternativeDetails(name: name, attributes: attributes));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Option details'),
+      content: SizedBox(
+        width: 440,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                key: const Key('manual-option-name'),
+                controller: _nameController,
+                enabled: widget.isNameEditable,
+                decoration: const InputDecoration(
+                  labelText: 'Option name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              const Text(
+                'Enter a value for each criterion in this subcategory.',
+              ),
+              const SizedBox(height: AppSpacing.md),
+              ..._controllers.entries.map(
+                (entry) => Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: TextField(
+                    key: Key('manual-attribute-${entry.key}'),
+                    controller: entry.value,
+                    decoration: InputDecoration(
+                      labelText: entry.key,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ),
+              if (_validationMessage != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _validationMessage!,
+                    style: const TextStyle(color: AppColors.error80),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          key: const Key('save-personal-option'),
+          onPressed: _save,
+          child: const Text('Save to My Catalog'),
+        ),
+      ],
+    );
+  }
+}
+
+class _PersonalAlternativeDetails {
+  const _PersonalAlternativeDetails({
+    required this.name,
+    required this.attributes,
+  });
+
+  final String name;
+  final Map<String, dynamic> attributes;
 }
 
 /// Category Card Widget with image asset
@@ -2125,7 +2854,7 @@ class _DecisionReviewDialog extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'Total: ${totalPriority.toInt()}%',
+                                  'Total: ${totalPriority.round()}%',
                                   style: AppTypography.smallSemibold.copyWith(
                                     color: AppColors.textPurple,
                                   ),

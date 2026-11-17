@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -76,71 +78,77 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: MobileBackground(
-        child: Center(
-          child: AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return Opacity(
-                opacity: _fadeAnimation.value,
-                child: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: child,
-                ),
-              );
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo - Transparent (NO background!)
-                Image.asset(
-                  'assets/images/logo_mychoice.png',
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    // Fallback to icon if image not found
-                    return Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: const Icon(
-                        Icons.help_outline_rounded,
-                        size: 100,
-                        color: Colors.white,
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                // App Name with gradient text effect
-                ShaderMask(
-                  shaderCallback: (bounds) => const LinearGradient(
-                    colors: [AppColors.primary88, AppColors.primaryLight],
-                  ).createShader(bounds),
-                  child: Text(
-                    'MyChoice',
-                    style: AppTypography.screenTitle.copyWith(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final logoSize = math
+                .min(
+                  200.0,
+                  math.min(constraints.maxWidth, constraints.maxHeight * 0.3),
+                )
+                .toDouble();
+            return Center(
+              child: AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _fadeAnimation.value,
+                    child: Transform.scale(
+                      scale: _scaleAnimation.value,
+                      child: child,
                     ),
-                  ),
+                  );
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/logo_mark.png',
+                      width: logoSize,
+                      height: logoSize,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: logoSize,
+                          height: logoSize,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Icon(
+                            Icons.help_outline_rounded,
+                            size: logoSize * 0.5,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: logoSize * 0.16),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [AppColors.primary88, AppColors.primaryLight],
+                      ).createShader(bounds),
+                      child: Text(
+                        'MyChoice',
+                        style: AppTypography.screenTitle.copyWith(
+                          color: Colors.white,
+                          fontSize: logoSize * 0.2,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'Clarity Before You Decide',
+                      style: AppTypography.body.copyWith(
+                        color: AppColors.primary88.withValues(alpha: 0.8),
+                        fontSize: logoSize * 0.08,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: AppSpacing.sm),
-                // Tagline
-                Text(
-                  'Clarity Before You Decide',
-                  style: AppTypography.body.copyWith(
-                    color: AppColors.primary88.withValues(alpha: 0.8),
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

@@ -21,6 +21,23 @@ class SupabaseDecisionHistoryRepository implements DecisionHistoryRepository {
   }
 
   @override
+  Future<bool> canCreateDecisionToday() async {
+    try {
+      final response = await _client.rpc('can_create_user_decision_today');
+      if (response is! bool) {
+        throw const FormatException(
+          'Respons pemeriksaan batas keputusan tidak valid.',
+        );
+      }
+      return response;
+    } on PostgrestException catch (error) {
+      throw Exception(
+        'Gagal memeriksa batas keputusan harian: ${error.message}',
+      );
+    }
+  }
+
+  @override
   Future<DecisionHistory> createDecisionHistory({
     required String category,
     String? subcategory,
@@ -30,33 +47,41 @@ class SupabaseDecisionHistoryRepository implements DecisionHistoryRepository {
     DateTime? decisionDate,
     Map<String, dynamic>? priorities,
   }) async {
-    final model = DecisionHistoryModel(
-      id: '', // akan diisi oleh database
-      userId: _currentUserId,
-      category: category,
-      subcategory: subcategory,
-      title: title,
-      score: score,
-      finalOption: finalOption,
-      decisionDate: decisionDate ?? DateTime.now(),
-      priorities: priorities ?? const {},
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
     try {
-      final response = await _client
-          .from('decision_histories')
-          .insert(model.toInsertJson())
-          .select()
-          .single();
-
-      final created = DecisionHistoryModel.fromJson(response);
-      return created.toEntity();
-    } on PostgrestException catch (e) {
-      throw Exception('Gagal menyimpan riwayat keputusan: ${e.message}');
-    } on Object catch (e) {
-      throw Exception('Gagal menyimpan riwayat keputusan: $e');
+      final response = await _client.rpc(
+        'create_user_decision_history',
+        params: {
+          'p_category': category,
+          'p_subcategory': subcategory,
+          'p_title': title,
+          'p_score': score,
+          'p_final_option': finalOption,
+          'p_decision_date': (decisionDate ?? DateTime.now()).toIso8601String(),
+          'p_priorities': priorities ?? const {},
+        },
+      );
+      if (response is! Map) {
+        throw const FormatException(
+          'Respons penyimpanan keputusan tidak valid.',
+        );
+      }
+      return DecisionHistoryModel.fromJson(
+        Map<String, dynamic>.from(response),
+      ).toEntity();
+    } on PostgrestException catch (error) {
+      if (error.message.contains('BASIC_DAILY_DECISION_LIMIT')) {
+        throw PlanLimitExceededException(
+          message:
+              'Paket Basic hanya dapat menyimpan satu keputusan per hari '
+              '(WIB).',
+          feature: 'daily_decisions',
+          limit: 1,
+          attempted: 2,
+          code: 'BASIC_DAILY_DECISION_LIMIT',
+          originalError: error,
+        );
+      }
+      throw Exception('Gagal menyimpan riwayat keputusan: ${error.message}');
     }
   }
 

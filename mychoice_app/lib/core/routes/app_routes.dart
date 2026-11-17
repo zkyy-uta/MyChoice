@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'role_guard.dart';
+import '../../core/entities/user_plan.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
 import '../../screens/guest/guest_home_screen.dart';
 import '../../screens/guest/guest_category_detail_screen.dart';
 import '../../screens/guest/guest_create_decision_screen.dart';
@@ -37,6 +40,8 @@ import '../../screens/splash/splash_screen.dart';
 Map<String, WidgetBuilder> buildAppRoutes() {
   WidgetBuilder userRoute(WidgetBuilder builder) =>
       (context) => RoleGuard(builder: builder);
+  WidgetBuilder premiumRoute(WidgetBuilder builder) =>
+      (context) => RoleGuard(premiumOnly: true, builder: builder);
   WidgetBuilder adminRoute(WidgetBuilder builder) =>
       (context) => RoleGuard(adminOnly: true, builder: builder);
 
@@ -61,18 +66,29 @@ Map<String, WidgetBuilder> buildAppRoutes() {
       final args = ModalRoute.of(context)?.settings.arguments;
       if (args is Map) {
         return CreateDecisionScreen(
+          isPremium:
+              context.read<AuthProvider>().user?.plan.tier ==
+                  UserPlanTier.premium ||
+              context.read<AuthProvider>().user?.isAdmin == true,
           initialCategory: args['category'] as String?,
           initialSubcategory: args['subcategory'] as String?,
           initialOptions: (args['options'] as List?)?.cast<String>(),
-          initialPriorities: (args['priorities'] as Map?)
-              ?.map((k, v) => MapEntry(k as String, (v as num).toDouble())),
+          initialPriorities: (args['priorities'] as Map?)?.map(
+            (k, v) => MapEntry(k as String, (v as num).toDouble()),
+          ),
         );
       }
-      return const CreateDecisionScreen();
+      final user = context.read<AuthProvider>().user;
+      return CreateDecisionScreen(
+        isPremium:
+            user?.plan.tier == UserPlanTier.premium || user?.isAdmin == true,
+      );
     }),
-    '/continue-decision': userRoute((context) => const ContinueDecisionScreen()),
+    '/continue-decision': userRoute(
+      (context) => const ContinueDecisionScreen(),
+    ),
     '/history': userRoute((context) => const HistoryScreen()),
-    '/insight': userRoute((context) => const InsightScreen()),
+    '/insight': premiumRoute((context) => const InsightScreen()),
     '/profile': userRoute((context) => const ProfileScreen()),
     '/profile/personal-information': userRoute(
       (context) => const PersonalInformationScreen(),

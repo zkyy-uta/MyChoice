@@ -15,7 +15,7 @@
             "Display": "13.4\" OLED (1920x1200)",
             "Battery": "52Wh (9-11 hours)",
             "Weight": "1.2 kg",
-            "Price": "$1,299",
+            "Price": "Rp 20.784.000",
             "GPU": "Intel Iris Xe"
           }
         },
@@ -31,7 +31,7 @@
             "Display": "15.6\" IPS (1920x1080)",
             "Battery": "52.5Wh (7-8 hours)",
             "Weight": "1.75 kg",
-            "Price": "$649",
+            "Price": "Rp 10.384.000",
             "GPU": "AMD Radeon Graphics"
           }
         },
@@ -47,7 +47,7 @@
             "Display": "14\" OLED (2880x1800)",
             "Battery": "63Wh (12+ hours)",
             "Weight": "1.19 kg",
-            "Price": "$1,599",
+            "Price": "Rp 25.584.000",
             "GPU": "Intel Iris Xe"
           }
         },
@@ -63,7 +63,7 @@
             "Display": "15.6\" IPS (1920x1080)",
             "Battery": "42Wh (8 hours)",
             "Weight": "1.8 kg",
-            "Price": "$499",
+            "Price": "Rp 7.984.000",
             "GPU": "AMD Radeon Graphics"
           }
         },
@@ -79,7 +79,7 @@
             "Display": "14.2\" Liquid Retina XDR",
             "Battery": "17 hours",
             "Weight": "1.6 kg",
-            "Price": "$1,999",
+            "Price": "Rp 31.984.000",
             "GPU": "18-core GPU"
           }
         },
@@ -95,7 +95,7 @@
             "Display": "15.6\" IPS (1920x1080)",
             "Battery": "50Wh (8-9 hours)",
             "Weight": "1.9 kg",
-            "Price": "$549",
+            "Price": "Rp 8.784.000",
             "GPU": "Intel UHD Graphics"
           }
         },
@@ -111,7 +111,7 @@
             "Display": "16\" IPS (2560x1600, 240Hz)",
             "Battery": "80Wh (6 hours gaming)",
             "Weight": "2.2 kg",
-            "Price": "$2,199",
+            "Price": "Rp 35.184.000",
             "GPU": "NVIDIA RTX 4070"
           }
         },
@@ -127,7 +127,7 @@
             "Display": "16\" IPS (1920x1200, 60Hz)",
             "Battery": "70Wh (9-10 hours)",
             "Weight": "1.88 kg",
-            "Price": "$699",
+            "Price": "Rp 11.184.000",
             "GPU": "AMD Radeon Graphics"
           }
         },
@@ -143,7 +143,7 @@
             "Display": "14\" IPS (1920x1080, 60Hz)",
             "Battery": "57Wh (8-9 hours)",
             "Weight": "1.46 kg",
-            "Price": "$599",
+            "Price": "Rp 9.584.000",
             "GPU": "AMD Radeon Graphics"
           }
         },
@@ -159,7 +159,7 @@
             "Display": "14\" IPS (2560x1600, 90Hz)",
             "Battery": "56Wh (up to 13 hours)",
             "Weight": "1.35 kg",
-            "Price": "$999",
+            "Price": "Rp 15.984.000",
             "GPU": "Intel Iris Xe"
           }
         },
@@ -175,7 +175,7 @@
             "Display": "13.3\" OLED Touch (1920x1200)",
             "Battery": "66Wh (10+ hours)",
             "Weight": "1.35 kg",
-            "Price": "$899",
+            "Price": "Rp 14.384.000",
             "GPU": "AMD Radeon Graphics"
           }
         },
@@ -191,7 +191,7 @@
             "Display": "16\" QHD+ IPS (2560x1600, 165Hz)",
             "Battery": "99.9Wh (up to 12 hours)",
             "Weight": "1.7 kg",
-            "Price": "$1,499",
+            "Price": "Rp 23.984.000",
             "GPU": "NVIDIA RTX 4060"
           }
         },
@@ -207,7 +207,7 @@
             "Display": "16\" IPS (1920x1200, 60Hz)",
             "Battery": "60Wh (up to 10 hours)",
             "Weight": "1.7 kg",
-            "Price": "$749",
+            "Price": "Rp 11.984.000",
             "GPU": "Intel UHD Graphics"
           }
         }
@@ -228,7 +228,7 @@
             "Display": "6.1\" Super Retina XDR OLED",
             "Battery": "3,274 mAh (up to 29 hours)",
             "Weight": "187g",
-            "Price": "$999",
+            "Price": "Rp 15.984.000",
             "Camera": "48MP Main, 12MP Ultra Wide, 12MP Telephoto"
           }
         },
@@ -244,7 +244,7 @@
             "Display": "6.8\" Dynamic AMOLED (120Hz)",
             "Battery": "5,000 mAh (up to 30 hours)",
             "Weight": "218g",
-            "Price": "$1,299",
+            "Price": "Rp 20.784.000",
             "Camera": "200MP Main, 50MP Ultra Wide, 10MP Telephoto 3x, 10MP Telephoto 5x"
           }
         },
@@ -260,7 +260,7 @@
             "Display": "6.2\" OLED (120Hz)",
             "Battery": "4,700 mAh (up to 24 hours)",
             "Weight": "187g",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Camera": "50MP Main, 12MP Ultra Wide, 8MP Telephoto"
           }
         },
@@ -276,7 +276,7 @@
             "Display": "6.7\" Fluid AMOLED (120Hz)",
             "Battery": "5,400 mAh (up to 50 hours)",
             "Weight": "220g",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Camera": "50MP Main (f/1.6), 48MP Ultra Wide, 8MP Telephoto 3x"
           }
         },
@@ -292,7 +292,7 @@
             "Display": "6.36\" AMOLED (120Hz)",
             "Battery": "4,610 mAh (up to 24 hours)",
             "Weight": "181g",
-            "Price": "$699",
+            "Price": "Rp 11.184.000",
             "Camera": "50MP Main (Leica), 50MP Ultra Wide, 50MP Telephoto 3.2x"
           }
         },
@@ -308,7 +308,7 @@
             "Display": "6.67\" AMOLED (120Hz)",
             "Battery": "5,110 mAh (up to 40 hours)",
             "Weight": "218g",
-            "Price": "$399",
+            "Price": "Rp 6.384.000",
             "Camera": "50MP Main (OIS), 8MP Ultra Wide, 2MP Macro"
           }
         },
@@ -324,7 +324,7 @@
             "Display": "6.1\" Dynamic AMOLED 2X (120Hz)",
             "Battery": "4,000 mAh (up to 22 hours)",
             "Weight": "168g",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Camera": "50MP Main, 12MP Ultra Wide, 10MP Telephoto 3x"
           }
         },
@@ -340,7 +340,7 @@
             "Display": "6.73\" LTPO AMOLED (120Hz)",
             "Battery": "4,880 mAh (90W wired, 50W wireless)",
             "Weight": "223g",
-            "Price": "$899",
+            "Price": "Rp 14.384.000",
             "Camera": "50MP Leica Main, 50MP Ultra Wide, 50MP Periscope 5x"
           }
         },
@@ -356,7 +356,7 @@
             "Display": "6.74\" LTPO3 AMOLED (120Hz)",
             "Battery": "5,000 mAh (100W wired)",
             "Weight": "209g",
-            "Price": "$749",
+            "Price": "Rp 11.984.000",
             "Camera": "50MP Main (Hasselblad), 64MP Periscope, 50MP Ultra Wide"
           }
         },
@@ -372,7 +372,7 @@
             "Display": "6.78\" LTPO AMOLED (120Hz)",
             "Battery": "5,400 mAh (100W wired, 50W wireless)",
             "Weight": "225g",
-            "Price": "$849",
+            "Price": "Rp 13.584.000",
             "Camera": "50MP ZEISS Main, 50MP Periscope 5x, 50MP Ultra Wide"
           }
         },
@@ -388,7 +388,7 @@
             "Display": "6.78\" LTPO AMOLED (144Hz)",
             "Battery": "5,400 mAh (100W wired)",
             "Weight": "221g",
-            "Price": "$599",
+            "Price": "Rp 9.584.000",
             "Camera": "50MP Sony Main, 50MP Periscope 3x, 8MP Ultra Wide"
           }
         },
@@ -404,7 +404,7 @@
             "Display": "6.6\" Super AMOLED (120Hz)",
             "Battery": "5,000 mAh (25W wired)",
             "Weight": "213g",
-            "Price": "$449",
+            "Price": "Rp 7.184.000",
             "Camera": "50MP OIS Main, 12MP Ultra Wide, 5MP Macro"
           }
         },
@@ -420,7 +420,7 @@
             "Display": "6.1\" Super Retina XDR OLED",
             "Battery": "3,349 mAh (up to 20 hours video)",
             "Weight": "171g",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Camera": "48MP Main, 12MP Ultra Wide"
           }
         }
@@ -441,7 +441,7 @@
             "Display": "12.9\" Liquid Retina XDR",
             "Battery": "10,308 mAh (10 hours)",
             "Weight": "682g",
-            "Price": "$1,099",
+            "Price": "Rp 17.584.000",
             "Connectivity": "WiFi 6E + 5G optional"
           }
         },
@@ -457,7 +457,7 @@
             "Display": "14.6\" Dynamic AMOLED (120Hz)",
             "Battery": "11,200 mAh (up to 18 hours)",
             "Weight": "732g",
-            "Price": "$1,199",
+            "Price": "Rp 19.184.000",
             "Connectivity": "WiFi 6E + 5G optional"
           }
         },
@@ -473,7 +473,7 @@
             "Display": "11.5\" OLED (90Hz)",
             "Battery": "10,100 mAh (up to 16 hours)",
             "Weight": "485g",
-            "Price": "$499",
+            "Price": "Rp 7.984.000",
             "Connectivity": "WiFi 6 + 5G optional"
           }
         },
@@ -489,7 +489,7 @@
             "Display": "13\" PixelSense Touch (2880x1920)",
             "Battery": "50Wh (up to 19 hours)",
             "Weight": "879g",
-            "Price": "$1,299",
+            "Price": "Rp 20.784.000",
             "Connectivity": "WiFi 6 + optional 5G"
           }
         },
@@ -505,7 +505,7 @@
             "Display": "11\" Liquid Retina",
             "Battery": "7,134 mAh (10 hours)",
             "Weight": "481g",
-            "Price": "$599",
+            "Price": "Rp 9.584.000",
             "Connectivity": "WiFi 6E + 5G optional"
           }
         },
@@ -521,7 +521,7 @@
             "Display": "12.4\" TFT LCD (90Hz)",
             "Battery": "10,000 mAh (up to 14 hours)",
             "Weight": "507g",
-            "Price": "$299",
+            "Price": "Rp 4.784.000",
             "Connectivity": "WiFi 5 + optional LTE"
           }
         },
@@ -537,7 +537,7 @@
             "Display": "11\" Ultra Retina XDR OLED",
             "Battery": "7,272 mAh (10 hours)",
             "Weight": "444g",
-            "Price": "$999",
+            "Price": "Rp 15.984.000",
             "Connectivity": "WiFi 6E + 5G"
           }
         },
@@ -553,7 +553,7 @@
             "Display": "11\" Dynamic AMOLED 2X (120Hz)",
             "Battery": "8,400 mAh (up to 15 hours)",
             "Weight": "498g",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Connectivity": "WiFi 6E + 5G optional"
           }
         },
@@ -569,7 +569,7 @@
             "Display": "11\" IPS LCD (2880x1800, 144Hz)",
             "Battery": "8,600 mAh (67W wired)",
             "Weight": "490g",
-            "Price": "$549",
+            "Price": "Rp 8.784.000",
             "Connectivity": "WiFi 6E"
           }
         },
@@ -585,7 +585,7 @@
             "Display": "11.61\" LCD (2800x2000, 144Hz)",
             "Battery": "9,510 mAh (67W wired)",
             "Weight": "552g",
-            "Price": "$499",
+            "Price": "Rp 7.984.000",
             "Connectivity": "WiFi 6"
           }
         },
@@ -601,7 +601,7 @@
             "Display": "12.6\" AMOLED (2560x1600, 120Hz)",
             "Battery": "10,200 mAh (45W wired)",
             "Weight": "565g",
-            "Price": "$599",
+            "Price": "Rp 9.584.000",
             "Connectivity": "WiFi 6 + optional 5G"
           }
         },
@@ -617,7 +617,7 @@
             "Display": "11\" IPS (2560x1600, 120Hz)",
             "Battery": "7,250 mAh (66W wired)",
             "Weight": "449g",
-            "Price": "$649",
+            "Price": "Rp 10.384.000",
             "Connectivity": "WiFi 6"
           }
         }
@@ -637,7 +637,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "5ms",
             "HDR": "Yes (HDR10)",
-            "Price": "$2,999",
+            "Price": "Rp 47.984.000",
             "Color Gamut": "98.5% DCI-P3",
             "Ports": "2x Thunderbolt 3, USB-C, DisplayPort"
           }
@@ -653,7 +653,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "5ms",
             "HDR": "Yes",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Color Gamut": "99.5% Adobe RGB",
             "Ports": "2x DisplayPort, 2x HDMI, USB-C"
           }
@@ -669,7 +669,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "5ms",
             "HDR": "No",
-            "Price": "$499",
+            "Price": "Rp 7.984.000",
             "Color Gamut": "99% Adobe RGB",
             "Ports": "DisplayPort, 2x HDMI, USB 3.0 Hub"
           }
@@ -685,7 +685,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "5ms",
             "HDR": "Yes",
-            "Price": "$599",
+            "Price": "Rp 9.584.000",
             "Color Gamut": "100% sRGB",
             "Ports": "DisplayPort, HDMI, USB 3.1 Hub, USB-C"
           }
@@ -701,7 +701,7 @@
             "Refresh Rate": "165Hz",
             "Response Time": "1ms",
             "HDR": "Yes",
-            "Price": "$399",
+            "Price": "Rp 6.384.000",
             "Color Gamut": "98.5% DCI-P3",
             "Ports": "2x DisplayPort, HDMI, USB 3.0 Hub"
           }
@@ -717,7 +717,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "8ms",
             "HDR": "Yes",
-            "Price": "$699",
+            "Price": "Rp 11.184.000",
             "Features": "Smart Hub, Streaming Apps",
             "Ports": "HDMI 2.1, DisplayPort, USB-C, Speakers Built-in"
           }
@@ -733,7 +733,7 @@
             "Refresh Rate": "160Hz",
             "Response Time": "1ms",
             "HDR": "Yes (HDR600)",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Color Gamut": "98% DCI-P3",
             "Ports": "2x DisplayPort 1.4, HDMI 2.1, USB-A Hub"
           }
@@ -749,7 +749,7 @@
             "Refresh Rate": "240Hz",
             "Response Time": "1ms",
             "HDR": "Yes (HDR600)",
-            "Price": "$599",
+            "Price": "Rp 9.584.000",
             "Color Gamut": "95% DCI-P3",
             "Ports": "DisplayPort 1.4, 2x HDMI 2.0, USB Hub"
           }
@@ -765,7 +765,7 @@
             "Refresh Rate": "144Hz",
             "Response Time": "1ms",
             "HDR": "Yes (HDR1000)",
-            "Price": "$899",
+            "Price": "Rp 14.384.000",
             "Color Gamut": "90% DCI-P3",
             "Ports": "DisplayPort 1.4, HDMI 2.1, USB-A Hub"
           }
@@ -781,7 +781,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "5ms",
             "HDR": "Yes",
-            "Price": "$649",
+            "Price": "Rp 10.384.000",
             "Color Gamut": "99% sRGB, 99% Rec. 2020",
             "Ports": "Thunderbolt 4, DisplayPort, 2x HDMI, USB Hub"
           }
@@ -797,7 +797,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "5ms",
             "HDR": "Yes (HDR10)",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Color Gamut": "99% DCI-P3",
             "Ports": "Thunderbolt 3, DisplayPort, 2x HDMI, USB-C Hub"
           }
@@ -813,7 +813,7 @@
             "Refresh Rate": "60Hz",
             "Response Time": "4ms",
             "HDR": "Yes",
-            "Price": "$349",
+            "Price": "Rp 5.584.000",
             "Color Gamut": "107% sRGB",
             "Ports": "DisplayPort, 2x HDMI"
           }
@@ -835,7 +835,7 @@
             "GPU": "NVIDIA RTX 3060 Ti",
             "PSU": "750W 80+ Gold",
             "Case": "NZXT H510 Flow",
-            "Price": "$1,199",
+            "Price": "Rp 19.184.000",
             "Performance": "1080p Ultra 60fps"
           }
         },
@@ -851,7 +851,7 @@
             "GPU": "NVIDIA RTX 4070",
             "PSU": "850W 80+ Platinum",
             "Case": "Corsair Crystal Series 570X",
-            "Price": "$2,299",
+            "Price": "Rp 36.784.000",
             "Performance": "1440p Ultra 100+ fps"
           }
         },
@@ -867,7 +867,7 @@
             "GPU": "NVIDIA RTX 4090",
             "PSU": "1000W 80+ Platinum",
             "Case": "Alienware Aurora",
-            "Price": "$4,499",
+            "Price": "Rp 71.984.000",
             "Performance": "4K Ultra 60+ fps"
           }
         },
@@ -883,7 +883,7 @@
             "GPU": "NVIDIA RTX 4070 Ti",
             "PSU": "850W 80+ Gold",
             "Case": "MSI Trident Compact",
-            "Price": "$2,799",
+            "Price": "Rp 44.784.000",
             "Performance": "1440p Ultra 120+ fps"
           }
         },
@@ -899,7 +899,7 @@
             "GPU": "NVIDIA RTX 4070",
             "PSU": "750W 80+ Bronze",
             "Case": "IBuyPower Custom",
-            "Price": "$1,499",
+            "Price": "Rp 23.984.000",
             "Performance": "1440p High 80-100 fps"
           }
         },
@@ -915,7 +915,7 @@
             "GPU": "NVIDIA RTX 4060",
             "PSU": "650W 80+ Bronze",
             "Case": "Skytech Gaming Case",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Performance": "1080p High 60+ fps"
           }
         },
@@ -931,7 +931,7 @@
             "GPU": "NVIDIA RTX 4080",
             "PSU": "1000W 80+ Gold",
             "Case": "Lian Li O11 Dynamic EVO",
-            "Price": "$3,200",
+            "Price": "Rp 51.200.000",
             "Performance": "4K Ultra 60+ fps"
           }
         },
@@ -947,7 +947,7 @@
             "GPU": "NVIDIA RTX 4090",
             "PSU": "1200W 80+ Titanium",
             "Case": "ROG Hyperion",
-            "Price": "$5,999",
+            "Price": "Rp 95.984.000",
             "Performance": "4K Ultra 120+ fps"
           }
         },
@@ -963,7 +963,7 @@
             "GPU": "NVIDIA RTX 4090",
             "PSU": "1000W 80+ Platinum",
             "Case": "MSI MEG Compact",
-            "Price": "$5,499",
+            "Price": "Rp 87.984.000",
             "Performance": "4K Ultra 100+ fps"
           }
         },
@@ -979,7 +979,7 @@
             "GPU": "NVIDIA RTX 4080",
             "PSU": "850W 80+ Gold",
             "Case": "HP OMEN 45L Tower",
-            "Price": "$3,499",
+            "Price": "Rp 55.984.000",
             "Performance": "4K High 60+ fps"
           }
         }
@@ -1000,7 +1000,7 @@
             "Boost Clock": "6.0 GHz",
             "TDP": "125W (253W max)",
             "Socket": "LGA 1700",
-            "Price": "$559",
+            "Price": "Rp 8.944.000",
             "Generation": "14th Gen Raptor Lake Refresh"
           }
         },
@@ -1016,7 +1016,7 @@
             "Boost Clock": "5.7 GHz",
             "TDP": "170W",
             "Socket": "AM5",
-            "Price": "$549",
+            "Price": "Rp 8.784.000",
             "Generation": "Zen 4"
           }
         },
@@ -1032,7 +1032,7 @@
             "Boost Clock": "5.6 GHz",
             "TDP": "125W (253W max)",
             "Socket": "LGA 1700",
-            "Price": "$379",
+            "Price": "Rp 6.064.000",
             "Generation": "14th Gen Raptor Lake Refresh"
           }
         },
@@ -1048,7 +1048,7 @@
             "Boost Clock": "5.0 GHz",
             "TDP": "120W",
             "Socket": "AM5",
-            "Price": "$349",
+            "Price": "Rp 5.584.000",
             "Generation": "Zen 4 + 3D V-Cache"
           }
         },
@@ -1064,7 +1064,7 @@
             "Boost Clock": "5.3 GHz",
             "TDP": "125W",
             "Socket": "LGA 1700",
-            "Price": "$249",
+            "Price": "Rp 3.984.000",
             "Generation": "14th Gen Raptor Lake Refresh"
           }
         }
@@ -1084,7 +1084,7 @@
             "Boost Clock": "2.52 GHz",
             "TDP": "450W",
             "Bus": "PCIe 4.0 x16",
-            "Price": "$1,599",
+            "Price": "Rp 25.584.000",
             "Performance": "4K Ultra 100+ fps"
           }
         },
@@ -1099,7 +1099,7 @@
             "Boost Clock": "2.5 GHz",
             "TDP": "355W",
             "Bus": "PCIe 4.0 x16",
-            "Price": "$999",
+            "Price": "Rp 15.984.000",
             "Performance": "4K High 60+ fps"
           }
         },
@@ -1114,7 +1114,7 @@
             "Boost Clock": "2.51 GHz",
             "TDP": "320W",
             "Bus": "PCIe 4.0 x16",
-            "Price": "$1,199",
+            "Price": "Rp 19.184.000",
             "Performance": "4K Ultra 60+ fps"
           }
         },
@@ -1129,7 +1129,7 @@
             "Boost Clock": "2.394 GHz",
             "TDP": "315W",
             "Bus": "PCIe 4.0 x16",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Performance": "4K Medium/High 60fps"
           }
         },
@@ -1144,7 +1144,7 @@
             "Boost Clock": "2.61 GHz",
             "TDP": "285W",
             "Bus": "PCIe 4.0 x16",
-            "Price": "$799",
+            "Price": "Rp 12.784.000",
             "Performance": "1440p Ultra 100+ fps"
           }
         }
@@ -1163,7 +1163,7 @@
             "Upper": "Mesh + Leather overlays",
             "Sole": "Air Max cushioning unit",
             "Fit": "True to size",
-            "Price": "$150",
+            "Price": "Rp 2.400.000",
             "Best For": "Running, casual wear"
           }
         },
@@ -1177,7 +1177,7 @@
             "Upper": "Primeknit+",
             "Sole": "Boost midsole",
             "Fit": "True to size",
-            "Price": "$190",
+            "Price": "Rp 3.040.000",
             "Best For": "Long-distance running"
           }
         },
@@ -1191,7 +1191,7 @@
             "Upper": "Suede + Mesh",
             "Sole": "ENCAP midsole",
             "Fit": "True to size",
-            "Price": "$85",
+            "Price": "Rp 1.360.000",
             "Best For": "Casual everyday wear"
           }
         },
@@ -1205,7 +1205,7 @@
             "Upper": "Canvas",
             "Sole": "Vulcanized rubber",
             "Fit": "Runs half size large",
-            "Price": "$65",
+            "Price": "Rp 1.040.000",
             "Best For": "Casual, fashion"
           }
         },
@@ -1219,7 +1219,7 @@
             "Upper": "Canvas + Suede",
             "Sole": "Waffle outsole",
             "Fit": "True to size",
-            "Price": "$70",
+            "Price": "Rp 1.120.000",
             "Best For": "Skate, casual"
           }
         },
@@ -1233,7 +1233,7 @@
             "Upper": "Mesh + Leather",
             "Sole": "Running System technology",
             "Fit": "True to size",
-            "Price": "$110",
+            "Price": "Rp 1.760.000",
             "Best For": "Retro-style casual"
           }
         },
@@ -1247,7 +1247,7 @@
             "Upper": "Leather",
             "Sole": "EVA foam",
             "Fit": "True to size",
-            "Price": "$80",
+            "Price": "Rp 1.280.000",
             "Best For": "Classic fashion, casual"
           }
         }
@@ -1266,7 +1266,7 @@
             "Material": "Monogram Canvas",
             "Capacity": "Medium / Large",
             "Origin": "France",
-            "Price": "$1,550",
+            "Price": "Rp 24.800.000",
             "Best For": "Daily luxury use"
           }
         },
@@ -1280,7 +1280,7 @@
             "Material": "GG Supreme Canvas",
             "Capacity": "Medium",
             "Origin": "Italy",
-            "Price": "$1,180",
+            "Price": "Rp 18.880.000",
             "Best For": "Daily fashion"
           }
         },
@@ -1294,7 +1294,7 @@
             "Material": "Saffiano Leather",
             "Capacity": "Medium",
             "Origin": "USA",
-            "Price": "$278",
+            "Price": "Rp 4.448.000",
             "Best For": "Professional, daily"
           }
         },
@@ -1308,7 +1308,7 @@
             "Material": "Pebble Leather",
             "Capacity": "Small / Medium",
             "Origin": "USA",
-            "Price": "$350",
+            "Price": "Rp 5.600.000",
             "Best For": "Casual to semi-formal"
           }
         },
@@ -1322,7 +1322,7 @@
             "Material": "Ballistic Nylon",
             "Capacity": "26L",
             "Origin": "USA",
-            "Price": "$595",
+            "Price": "Rp 9.520.000",
             "Best For": "Business travel"
           }
         },
@@ -1336,7 +1336,7 @@
             "Material": "Polycarbonate",
             "Capacity": "50L (carry-on)",
             "Origin": "USA",
-            "Price": "$169",
+            "Price": "Rp 2.704.000",
             "Best For": "Travel"
           }
         },
@@ -1350,7 +1350,7 @@
             "Material": "Nylon 600D",
             "Capacity": "30L",
             "Origin": "Indonesia",
-            "Price": "Rp 450,000",
+            "Price": "Rp 450.000",
             "Best For": "Outdoor / hiking"
           }
         }
@@ -1368,7 +1368,7 @@
             "Style": "Midi A-line",
             "Material": "Viscose blend",
             "Fit": "Regular",
-            "Price": "$69",
+            "Price": "Rp 1.104.000",
             "Best For": "Office, casual"
           }
         },
@@ -1381,7 +1381,7 @@
             "Style": "Wrap",
             "Material": "Woven fabric",
             "Fit": "Regular",
-            "Price": "$35",
+            "Price": "Rp 560.000",
             "Best For": "Casual, date night"
           }
         },
@@ -1394,7 +1394,7 @@
             "Style": "Floral midi",
             "Material": "Satin",
             "Fit": "Slim",
-            "Price": "$79",
+            "Price": "Rp 1.264.000",
             "Best For": "Parties, summer"
           }
         },
@@ -1407,7 +1407,7 @@
             "Style": "Bodycon mini",
             "Material": "Jersey",
             "Fit": "Bodycon",
-            "Price": "$45",
+            "Price": "Rp 720.000",
             "Best For": "Parties, nights out"
           }
         },
@@ -1420,7 +1420,7 @@
             "Style": "Linen shift",
             "Material": "100% Linen",
             "Fit": "Relaxed",
-            "Price": "$49",
+            "Price": "Rp 784.000",
             "Best For": "Summer, casual"
           }
         }
@@ -1439,7 +1439,7 @@
             "Material": "Sterling Silver",
             "Style": "Charm",
             "Origin": "Denmark",
-            "Price": "$65",
+            "Price": "Rp 1.040.000",
             "Best For": "Gift, everyday wear"
           }
         },
@@ -1453,7 +1453,7 @@
             "Material": "Rhodium-plated + Crystal",
             "Style": "Pendant",
             "Origin": "Austria",
-            "Price": "$85",
+            "Price": "Rp 1.360.000",
             "Best For": "Special occasions"
           }
         },
@@ -1467,7 +1467,7 @@
             "Material": "Sterling Silver / 18K Gold",
             "Style": "Heart pendant",
             "Origin": "USA",
-            "Price": "$250",
+            "Price": "Rp 4.000.000",
             "Best For": "Romantic gift, luxury"
           }
         },
@@ -1481,7 +1481,7 @@
             "Material": "Stainless steel",
             "Style": "Chronograph",
             "Origin": "USA",
-            "Price": "$250",
+            "Price": "Rp 4.000.000",
             "Best For": "Professional, fashion"
           }
         },
@@ -1495,7 +1495,7 @@
             "Material": "Stainless steel",
             "Style": "Hybrid smart",
             "OS": "Wear OS",
-            "Price": "$299",
+            "Price": "Rp 4.784.000",
             "Best For": "Tech + fashion"
           }
         },
@@ -1509,7 +1509,7 @@
             "Material": "Resin + Stainless steel",
             "Style": "Sport",
             "Origin": "Japan",
-            "Price": "$130",
+            "Price": "Rp 2.080.000",
             "Best For": "Outdoor, sport"
           }
         }
@@ -1528,7 +1528,7 @@
             "Frame": "Acetate",
             "Lens": "G-15 glass",
             "UV Protection": "100% UV400",
-            "Price": "$175",
+            "Price": "Rp 2.800.000",
             "Best For": "Classic fashion"
           }
         },
@@ -1542,7 +1542,7 @@
             "Frame": "O-Matter",
             "Lens": "Plutonite",
             "UV Protection": "100% UV",
-            "Price": "$165",
+            "Price": "Rp 2.640.000",
             "Best For": "Sport, outdoor"
           }
         },
@@ -1556,7 +1556,7 @@
             "Material": "Leather",
             "Buckle": "Gold-tone GG interlocking",
             "Width": "3.8cm",
-            "Price": "$440",
+            "Price": "Rp 7.040.000",
             "Best For": "Luxury fashion"
           }
         },
@@ -1570,7 +1570,7 @@
             "Material": "Twill Silk",
             "Size": "90x90cm",
             "Origin": "France",
-            "Price": "$430",
+            "Price": "Rp 6.880.000",
             "Best For": "Luxury fashion"
           }
         },
@@ -1584,7 +1584,7 @@
             "Material": "Leather",
             "Style": "Logo",
             "Origin": "USA",
-            "Price": "$65",
+            "Price": "Rp 1.040.000",
             "Best For": "Daily accessory"
           }
         }
@@ -1603,7 +1603,7 @@
             "Fill": "ThermoBall Eco synthetic",
             "Warmth": "Medium",
             "Water Resistance": "DWR coating",
-            "Price": "$220",
+            "Price": "Rp 3.520.000",
             "Best For": "Cold weather, travel"
           }
         },
@@ -1617,7 +1617,7 @@
             "Fill": "90% Down, 10% Feather",
             "Warmth": "Medium",
             "Water Resistance": "Yes",
-            "Price": "$90",
+            "Price": "Rp 1.440.000",
             "Best For": "Travel, lightweight warmth"
           }
         },
@@ -1631,7 +1631,7 @@
             "Fill": "PrimaLoft Gold synthetic",
             "Warmth": "Medium-High",
             "Water Resistance": "H2No performance",
-            "Price": "$299",
+            "Price": "Rp 4.784.000",
             "Best For": "Outdoor, sustainability"
           }
         },
@@ -1645,7 +1645,7 @@
             "Material": "Polyester fleece",
             "Warmth": "Low-Medium",
             "Water Resistance": "Omni-Shield",
-            "Price": "$120",
+            "Price": "Rp 1.920.000",
             "Best For": "Outdoor, hiking"
           }
         },
@@ -1659,7 +1659,7 @@
             "Fill": "Synthetic",
             "Warmth": "Medium",
             "Water Resistance": "Basic",
-            "Price": "$89",
+            "Price": "Rp 1.424.000",
             "Best For": "Casual fashion"
           }
         }
@@ -1678,7 +1678,7 @@
             "Instructor": "Andrew Ng",
             "Duration": "3 months",
             "Level": "Beginner to Intermediate",
-            "Price": "$49/month",
+            "Price": "Rp 784.000/month",
             "Certificate": "Yes"
           }
         },
@@ -1692,7 +1692,7 @@
             "Instructor": "Angela Yu",
             "Duration": "65+ hours",
             "Level": "Beginner",
-            "Price": "$15 (on sale)",
+            "Price": "Rp 240.000 (on sale)",
             "Certificate": "Yes"
           }
         },
@@ -1706,7 +1706,7 @@
             "Instructor": "Google Staff",
             "Duration": "6 months",
             "Level": "Beginner",
-            "Price": "$49/month",
+            "Price": "Rp 784.000/month",
             "Certificate": "Yes (Google)"
           }
         },
@@ -1720,7 +1720,7 @@
             "Instructor": "MIT Faculty",
             "Duration": "9-12 months",
             "Level": "Advanced",
-            "Price": "$1,500 - $5,000",
+            "Price": "Rp 24.000.000 - Rp 80.000.000",
             "Certificate": "MicroMasters credential"
           }
         },
@@ -1734,7 +1734,7 @@
             "Language": "Bahasa Indonesia",
             "Duration": "30-60 hours",
             "Level": "Beginner to Intermediate",
-            "Price": "Rp 750,000",
+            "Price": "Rp 750.000",
             "Certificate": "Yes (Industry recognized ID)"
           }
         },
@@ -1762,7 +1762,7 @@
             "Tracks": "Data Science, ML, Android, etc.",
             "Duration": "3-6 months",
             "Level": "Intermediate to Advanced",
-            "Price": "$399/month",
+            "Price": "Rp 6.384.000/month",
             "Certificate": "Yes"
           }
         }
@@ -1780,7 +1780,7 @@
             "Provider": "Amazon Web Services",
             "Level": "Associate / Professional",
             "Duration": "3-6 months study",
-            "Exam Fee": "$150 - $300",
+            "Exam Fee": "Rp 2.400.000 - Rp 4.800.000",
             "Validity": "3 years",
             "Best For": "Cloud architects"
           }
@@ -1794,7 +1794,7 @@
             "Provider": "Google Cloud",
             "Level": "Professional",
             "Duration": "3-6 months study",
-            "Exam Fee": "$200",
+            "Exam Fee": "Rp 3.200.000",
             "Validity": "2 years",
             "Best For": "Cloud engineers"
           }
@@ -1808,7 +1808,7 @@
             "Provider": "Microsoft",
             "Level": "Fundamentals",
             "Duration": "1-2 months study",
-            "Exam Fee": "$165",
+            "Exam Fee": "Rp 2.640.000",
             "Validity": "Lifetime",
             "Best For": "Cloud beginners"
           }
@@ -1822,7 +1822,7 @@
             "Provider": "CompTIA",
             "Level": "Entry-level security",
             "Duration": "2-3 months study",
-            "Exam Fee": "$404",
+            "Exam Fee": "Rp 6.464.000",
             "Validity": "3 years",
             "Best For": "Cybersecurity beginners"
           }
@@ -1836,7 +1836,7 @@
             "Provider": "Cisco",
             "Level": "Associate",
             "Duration": "3-6 months study",
-            "Exam Fee": "$330",
+            "Exam Fee": "Rp 5.280.000",
             "Validity": "3 years",
             "Best For": "Network engineers"
           }
@@ -1850,7 +1850,7 @@
             "Provider": "PMI",
             "Level": "Professional",
             "Duration": "3-6 months study",
-            "Exam Fee": "$405 (member) / $555",
+            "Exam Fee": "Rp 6.480.000 (member) / Rp 8.880.000",
             "Validity": "3 years",
             "Best For": "Project managers"
           }
@@ -1869,7 +1869,7 @@
             "Location": "Indonesia (Online + Offline)",
             "Tracks": "Full Stack JS, Data Science",
             "Duration": "12 weeks",
-            "Price": "Rp 25,000,000",
+            "Price": "Rp 25.000.000",
             "ISA": "Available",
             "Best For": "Career switchers ID"
           }
@@ -1883,7 +1883,7 @@
             "Location": "Indonesia",
             "Tracks": "Digital Talent, Data Science",
             "Duration": "3-6 months",
-            "Price": "Rp 20,000,000 - 35,000,000",
+            "Price": "Rp 20.000.000 - 35.000.000",
             "ISA": "Available",
             "Best For": "Career switchers ID"
           }
@@ -1897,7 +1897,7 @@
             "Location": "Indonesia (Online)",
             "Tracks": "Software Engineering, Data Analytics",
             "Duration": "16 weeks",
-            "Price": "Rp 18,000,000 or ISA",
+            "Price": "Rp 18.000.000 or ISA",
             "ISA": "Available",
             "Best For": "Entry-level tech ID"
           }
@@ -1911,7 +1911,7 @@
             "Location": "Global (Online + Offline)",
             "Tracks": "Software Engineering, Data Science, UX",
             "Duration": "12 weeks",
-            "Price": "$14,950",
+            "Price": "Rp 239.200.000",
             "ISA": "Available",
             "Best For": "Career changers global"
           }
@@ -1925,7 +1925,7 @@
             "Location": "Global (40+ cities)",
             "Tracks": "Web Development, Data Science",
             "Duration": "9 weeks",
-            "Price": "$8,000 - $12,000",
+            "Price": "Rp 128.000.000 - Rp 192.000.000",
             "ISA": "No",
             "Best For": "Startup founders, career switchers"
           }
@@ -1939,7 +1939,7 @@
             "Location": "Global (Online + Offline)",
             "Tracks": "Web Dev, UX/UI, Data Analytics, Cybersecurity",
             "Duration": "9-24 weeks",
-            "Price": "$8,500 - $14,000",
+            "Price": "Rp 136.000.000 - Rp 224.000.000",
             "ISA": "Available",
             "Best For": "Career switchers global"
           }
@@ -1958,7 +1958,7 @@
             "Location": "Depok, Indonesia",
             "Ranking": "#1 Indonesia (QS 2024)",
             "Type": "Public",
-            "Tuition": "Rp 0 - 10,000,000/semester",
+            "Tuition": "Rp 0 - 10.000.000/semester",
             "Notable Programs": "Medical, Law, Engineering",
             "Best For": "Top Indonesian students"
           }
@@ -1972,7 +1972,7 @@
             "Location": "Bandung, Indonesia",
             "Ranking": "#2 Indonesia (QS 2024)",
             "Type": "Public",
-            "Tuition": "Rp 0 - 12,500,000/semester",
+            "Tuition": "Rp 0 - 12.500.000/semester",
             "Notable Programs": "Engineering, Architecture, Design",
             "Best For": "STEM students ID"
           }
@@ -1986,7 +1986,7 @@
             "Location": "Yogyakarta, Indonesia",
             "Ranking": "#3 Indonesia (QS 2024)",
             "Type": "Public",
-            "Tuition": "Rp 0 - 10,000,000/semester",
+            "Tuition": "Rp 0 - 10.000.000/semester",
             "Notable Programs": "Medicine, Agriculture, Social Sciences",
             "Best For": "Wide program selection"
           }
@@ -2000,7 +2000,7 @@
             "Location": "Surabaya, Indonesia",
             "Ranking": "Top 5 Indonesia",
             "Type": "Public",
-            "Tuition": "Rp 0 - 9,000,000/semester",
+            "Tuition": "Rp 0 - 9.000.000/semester",
             "Notable Programs": "Marine Engineering, Informatics",
             "Best For": "Engineering East Java"
           }
@@ -2014,7 +2014,7 @@
             "Location": "Jakarta, Indonesia",
             "Ranking": "Top 10 Indonesia",
             "Type": "Private",
-            "Tuition": "Rp 15,000,000 - 22,000,000/semester",
+            "Tuition": "Rp 15.000.000 - 22.000.000/semester",
             "Notable Programs": "Computer Science, Business, Animation",
             "Best For": "Tech & business careers"
           }
@@ -2028,7 +2028,7 @@
             "Location": "Tangerang, Indonesia",
             "Ranking": "Top Business School ID",
             "Type": "Private",
-            "Tuition": "Rp 35,000,000 - 45,000,000/semester",
+            "Tuition": "Rp 35.000.000 - 45.000.000/semester",
             "Notable Programs": "Business, Entrepreneurship",
             "Best For": "Business & startup founders"
           }
@@ -2042,7 +2042,7 @@
             "Location": "USA (Online)",
             "Ranking": "#1 World (multiple rankings)",
             "Type": "Private",
-            "Tuition": "$50,000+/year (residential)",
+            "Tuition": "Rp 800.000.000+/year (residential)",
             "Notable Programs": "Business, Law, Medicine, CS",
             "Best For": "World-class education"
           }
@@ -2056,7 +2056,7 @@
             "Location": "Cambridge, USA",
             "Ranking": "#1 Engineering World",
             "Type": "Private",
-            "Tuition": "$55,000+/year",
+            "Tuition": "Rp 880.000.000+/year",
             "Notable Programs": "Engineering, CS, Physics",
             "Best For": "STEM research & innovation"
           }
@@ -2070,7 +2070,7 @@
             "Location": "California, USA (Online courses)",
             "Ranking": "Top 5 World",
             "Type": "Private",
-            "Tuition": "$55,000+/year (residential)",
+            "Tuition": "Rp 880.000.000+/year (residential)",
             "Notable Programs": "CS, AI, Business, Medicine",
             "Best For": "Tech innovation, Silicon Valley"
           }
@@ -2089,7 +2089,7 @@
             "Provider": "LinkedIn / Microsoft",
             "Format": "Video + Quiz",
             "Catalog": "20,000+ courses",
-            "Price": "$39.99/month",
+            "Price": "Rp 639.840/month",
             "Certificate": "Yes (LinkedIn)",
             "Best For": "Professional development"
           }
@@ -2103,7 +2103,7 @@
             "Provider": "Pluralsight",
             "Format": "Video + Labs",
             "Catalog": "7,000+ courses",
-            "Price": "$29 - $45/month",
+            "Price": "Rp 464.000 - Rp 720.000/month",
             "Certificate": "Yes + Skill assessments",
             "Best For": "IT, DevOps, software engineers"
           }
@@ -2117,7 +2117,7 @@
             "Provider": "O'Reilly Media",
             "Format": "Books, Videos, Live events",
             "Catalog": "60,000+ resources",
-            "Price": "$499/year",
+            "Price": "Rp 7.984.000/year",
             "Certificate": "Yes",
             "Best For": "Software engineers, architects"
           }
@@ -2131,7 +2131,7 @@
             "Provider": "Skill Academy (Ruangguru)",
             "Format": "Video + Mentoring",
             "Language": "Bahasa Indonesia",
-            "Price": "Rp 300,000 - 1,500,000",
+            "Price": "Rp 300.000 - 1.500.000",
             "Certificate": "Yes",
             "Best For": "Indonesian learners"
           }

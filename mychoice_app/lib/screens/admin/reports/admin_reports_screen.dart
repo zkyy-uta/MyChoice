@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/models/admin_user.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
 import '../../../core/widgets/page_app_bar.dart';
+import '../../../features/admin_analytics/presentation/providers/admin_analytics_provider.dart';
+import '../../../features/admin_analytics/domain/entities/admin_review.dart';
+import '../../../features/admin_user_management/presentation/providers/admin_user_provider.dart';
 
 class AdminReportsScreen extends StatefulWidget {
   const AdminReportsScreen({super.key});
@@ -18,9 +23,46 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
   final _searchController = TextEditingController();
   int? _selectedRating;
 
-  List<_UserReview> get _visibleReviews {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) context.read<AdminAnalyticsProvider>().loadReviews();
+    });
+  }
+
+  List<_UserReview> _visibleReviews(
+    List<AdminReview> source,
+    List<AdminUser> users,
+  ) {
     final query = _searchController.text.trim().toLowerCase();
-    return _sampleReviews.where((review) {
+    final usersById = {for (final user in users) user.id: user.name};
+    final mapped = source.map((review) {
+      final date = review.createdAt;
+      final now = DateTime.now();
+      final isToday =
+          date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day;
+      final yesterday = now.subtract(const Duration(days: 1));
+      final isYesterday =
+          date.year == yesterday.year &&
+          date.month == yesterday.month &&
+          date.day == yesterday.day;
+      return _UserReview(
+        name: usersById[review.userId] ?? 'MyChoice user',
+        date: isToday
+            ? 'Today'
+            : isYesterday
+            ? 'Yesterday'
+            : '${date.day} ${_monthLabel(date.month)} ${date.year}',
+        rating: review.rating,
+        comment: review.review?.trim().isNotEmpty == true
+            ? review.review!.trim()
+            : 'No written review.',
+      );
+    });
+    return mapped.where((review) {
       final matchesQuery =
           review.name.toLowerCase().contains(query) ||
           review.comment.toLowerCase().contains(query);
@@ -30,6 +72,21 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
     }).toList();
   }
 
+  String _monthLabel(int month) => const [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][month - 1];
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -38,10 +95,16 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final reviews = _visibleReviews;
-    final averageRating =
-        _sampleReviews.map((review) => review.rating).reduce((a, b) => a + b) /
-        _sampleReviews.length;
+    final analytics = context.watch<AdminAnalyticsProvider>();
+    final users = context.watch<AdminUserProvider>().users;
+    final reviews = _visibleReviews(analytics.reviews, users);
+    final averageRating = analytics.reviews.isEmpty
+        ? 0.0
+        : analytics.reviews.fold<int>(
+                0,
+                (total, review) => total + review.rating,
+              ) /
+              analytics.reviews.length;
 
     return MobileBackground(
       child: Scaffold(
@@ -70,7 +133,7 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
                       child: _ReviewSummaryCard(
                         icon: Icons.rate_review_outlined,
                         label: 'Total Reviews',
-                        value: '${_sampleReviews.length}',
+                        value: '${analytics.reviews.length}',
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -152,7 +215,38 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
                 ),
               ),
             ),
-            if (reviews.isEmpty)
+            if (analytics.error != null)
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          analytics.error!,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.small.copyWith(
+                            color: AppColors.error80,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        OutlinedButton(
+                          onPressed: analytics.loadReviews,
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            else if (analytics.isLoading)
+              const SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (reviews.isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
                 child: Center(
@@ -371,41 +465,3 @@ class _UserReview {
   final int rating;
   final String comment;
 }
-
-const _sampleReviews = [
-  _UserReview(
-    name: 'Najwa Putri',
-    date: 'Today',
-    rating: 5,
-    comment:
-        'MyChoice makes it much easier to compare options and feel confident about my decisions.',
-  ),
-  _UserReview(
-    name: 'Bima Sakti',
-    date: 'Yesterday',
-    rating: 4,
-    comment:
-        'The comparison flow is helpful. I would love to see more product categories in the future.',
-  ),
-  _UserReview(
-    name: 'Enami Asa',
-    date: 'Oct 20, 2026',
-    rating: 5,
-    comment:
-        'Simple to use and the results help me see the pros and cons clearly.',
-  ),
-  _UserReview(
-    name: 'Raka Pratama',
-    date: 'Oct 18, 2026',
-    rating: 3,
-    comment:
-        'A useful app for making decisions. Some screens could explain the features a little more.',
-  ),
-  _UserReview(
-    name: 'Siti Aulia',
-    date: 'Oct 16, 2026',
-    rating: 5,
-    comment:
-        'I like how organized my decision history is. It is easy to revisit my choices.',
-  ),
-];

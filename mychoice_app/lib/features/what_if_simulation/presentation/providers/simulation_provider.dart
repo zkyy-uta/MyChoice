@@ -23,6 +23,9 @@ class SimulationProvider extends ChangeNotifier {
   Map<String, double> _simulatedWeights = {};
   DecisionResult? _simulatedResult;
   bool _isCalculating = false;
+  String? _error;
+  String _category = 'Technology';
+  String _subcategory = 'Decision';
 
   /// altId → rank delta (positive = improved, negative = worsened)
   Map<String, int> _rankChanges = {};
@@ -43,6 +46,9 @@ class SimulationProvider extends ChangeNotifier {
       Map.unmodifiable(_simulatedWeights);
   DecisionResult? get simulatedResult => _simulatedResult;
   bool get isCalculating => _isCalculating;
+  String? get error => _error;
+  String get category => _category;
+  String get subcategory => _subcategory;
   Map<String, int> get rankChanges => Map.unmodifiable(_rankChanges);
 
   double get totalSimulatedWeight =>
@@ -57,16 +63,21 @@ class SimulationProvider extends ChangeNotifier {
     required DecisionMatrix matrix,
     required Map<String, Criterion> criteriaMap,
     required Map<String, double> originalWeights,
+    String category = 'Technology',
+    String subcategory = 'Decision',
   }) {
     _originalResult = originalResult;
     _originalMatrix = matrix;
     _criteriaMap = criteriaMap;
+    _category = category;
+    _subcategory = subcategory;
     // Deep-copy so mutations never touch the originals
     _originalWeights = Map<String, double>.from(originalWeights);
     _simulatedWeights = Map<String, double>.from(originalWeights);
     _simulatedResult = null;
     _rankChanges = {};
     _isCalculating = false;
+    _error = null;
     _debounceTimer?.cancel();
     notifyListeners();
   }
@@ -92,6 +103,7 @@ class SimulationProvider extends ChangeNotifier {
     _simulatedWeights = Map<String, double>.from(_originalWeights);
     _simulatedResult = null;
     _rankChanges = {};
+    _error = null;
     _debounceTimer?.cancel();
     notifyListeners();
   }
@@ -110,7 +122,11 @@ class SimulationProvider extends ChangeNotifier {
   Future<void> recalculate() async {
     if (_originalMatrix == null || _originalResult == null) return;
 
+    _debounceTimer?.cancel();
     _isCalculating = true;
+    _error = null;
+    _simulatedResult = null;
+    _rankChanges = {};
     notifyListeners();
 
     try {
@@ -122,8 +138,8 @@ class SimulationProvider extends ChangeNotifier {
 
       _simulatedResult = result;
       _rankChanges = _computeRankChanges(result);
-    } catch (_) {
-      // Silently ignore simulation errors – original result is still shown
+    } catch (error) {
+      _error = error.toString();
     } finally {
       _isCalculating = false;
       notifyListeners();

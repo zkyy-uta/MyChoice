@@ -12,6 +12,9 @@ class MockDecisionHistoryRepository implements DecisionHistoryRepository {
   String? failureMessage;
 
   @override
+  Future<bool> canCreateDecisionToday() async => true;
+
+  @override
   Future<DecisionHistory> createDecisionHistory({
     required String category,
     String? subcategory,
@@ -62,7 +65,10 @@ class MockDecisionHistoryRepository implements DecisionHistoryRepository {
     if (rating < 1 || rating > 5) throw Exception('invalid rating');
     final index = _histories.indexWhere((h) => h.id == decisionHistoryId);
     if (index == -1) throw Exception('not found');
-    _histories[index] = _histories[index].copyWith(rating: rating, review: review);
+    _histories[index] = _histories[index].copyWith(
+      rating: rating,
+      review: review,
+    );
   }
 
   @override

@@ -3,13 +3,20 @@ import 'package:provider/provider.dart';
 
 import '../../features/auth/domain/entities/user.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
+import '../../core/entities/user_plan.dart';
 import '../theme/app_colors.dart';
 
 class RoleGuard extends StatefulWidget {
-  const RoleGuard({required this.builder, this.adminOnly = false, super.key});
+  const RoleGuard({
+    required this.builder,
+    this.adminOnly = false,
+    this.premiumOnly = false,
+    super.key,
+  });
 
   final WidgetBuilder builder;
   final bool adminOnly;
+  final bool premiumOnly;
 
   @override
   State<RoleGuard> createState() => _RoleGuardState();
@@ -75,6 +82,14 @@ class _RoleGuardState extends State<RoleGuard> {
                 message: 'Please use the admin dashboard for this account.',
                 route: '/admin',
                 action: 'Go to admin dashboard',
+              );
+            }
+            if (widget.premiumOnly &&
+                auth.user!.plan.tier != UserPlanTier.premium) {
+              return const _AccessRequired(
+                message: 'Insight is available to Premium members.',
+                route: '/profile/premium-plan',
+                action: 'View Premium plan',
               );
             }
 

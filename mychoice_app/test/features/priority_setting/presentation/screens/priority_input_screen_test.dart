@@ -205,8 +205,8 @@ void main() {
       );
 
       // Assert
-      expect(find.text('Set the importance'), findsOneWidget);
-      expect(find.text('100%'), findsWidgets);
+      expect(find.textContaining('Set the importance'), findsOneWidget);
+      expect(find.textContaining('100%'), findsWidgets);
     });
 
     testWidgets('should allow tapping Auto-Balance button', (

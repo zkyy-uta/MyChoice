@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../onboarding_screen.dart';
@@ -21,32 +23,38 @@ class OnboardingPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Illustration - FULL SIZE, NO CROP!
           Expanded(
-            child: Center(
-              child: Image.asset(
-                data.illustration,
-                width: double.infinity,
-                fit: BoxFit
-                    .contain, // Preserve aspect ratio, fill available space
-                alignment: Alignment.bottomCenter, // Align to bottom
-                errorBuilder: (context, error, stackTrace) {
-                  // Fallback emoji if image not found
-                  return Container(
-                    constraints: const BoxConstraints(
-                      maxWidth: 350,
-                      maxHeight: 500,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Center(
-                      child: Text('🖼️', style: const TextStyle(fontSize: 120)),
-                    ),
-                  );
-                },
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final imageWidth = math
+                    .min(constraints.maxWidth, 480.0)
+                    .toDouble();
+                final imageHeight = math
+                    .min(constraints.maxHeight, 420.0)
+                    .toDouble();
+                return Center(
+                  child: Image.asset(
+                    data.illustration,
+                    width: imageWidth,
+                    height: imageHeight,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.bottomCenter,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: imageWidth,
+                        height: imageHeight,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: const Center(
+                          child: Text('🖼️', style: TextStyle(fontSize: 120)),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ],

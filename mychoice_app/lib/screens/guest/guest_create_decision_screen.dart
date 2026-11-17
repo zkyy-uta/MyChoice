@@ -22,6 +22,8 @@ class GuestCreateDecisionScreen extends StatefulWidget {
 }
 
 class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
+  static const int _maxComparedCriteria = 6;
+
   // Selected values
   String? _selectedCategory;
   String? _selectedSubcategory;
@@ -229,8 +231,32 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
   }
 
   void _toggleCriteria(String criteria) {
+    final nowSelected = !(_selectedCriteria[criteria] ?? false);
+    final selectedCount = _selectedCriteria.values
+        .where((value) => value)
+        .length;
+    if (nowSelected && selectedCount >= _maxComparedCriteria) {
+      showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Maximum criteria reached'),
+          content: const Text(
+            'You can compare using up to 6 criteria. Remove a selected '
+            'criterion before adding another.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     setState(() {
-      _selectedCriteria[criteria] = !_selectedCriteria[criteria]!;
+      _selectedCriteria[criteria] = nowSelected;
     });
   }
 
@@ -243,6 +269,8 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
   double get _totalPriority {
     return _priorities.values.fold(0, (sum, value) => sum + value);
   }
+
+  bool get _isPriorityTotalValid => (_totalPriority - 100).abs() <= 0.01;
 
   void _showAddCriteriaDialog() {
     _newCriteriaController.clear();
@@ -263,6 +291,7 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
+              key: const Key('add-criteria-name'),
               controller: _newCriteriaController,
               autofocus: true,
               decoration: InputDecoration(
@@ -337,7 +366,17 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
       return;
     }
 
-    if (_totalPriority != 100) {
+    if (_selectedOptions.length < 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Add at least two options before making a decision.'),
+          backgroundColor: AppColors.error80,
+        ),
+      );
+      return;
+    }
+
+    if (!_isPriorityTotalValid) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Total priority must equal 100%!'),
@@ -838,7 +877,10 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
   }
 
   Widget _buildTotalPriority() {
-    final isValid = _totalPriority == 100;
+    final isValid = _isPriorityTotalValid;
+    final totalLabel = isValid
+        ? '100%'
+        : '${_totalPriority.toStringAsFixed(2)}%';
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -859,7 +901,7 @@ class _GuestCreateDecisionScreenState extends State<GuestCreateDecisionScreen> {
             ),
           ),
           Text(
-            '${_totalPriority.toInt()}%',
+            totalLabel,
             style: AppTypography.sectionTitle.copyWith(
               color: isValid ? AppColors.success80 : AppColors.error80,
             ),

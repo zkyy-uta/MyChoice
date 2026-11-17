@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
 import 'package:mychoice_app/screens/user/insight/insight_screen.dart';
+import 'test_support/fake_decision_history_repository.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   testWidgets('insight shows decision history statistics and patterns', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(390, 844));
-    await tester.pumpWidget(const MaterialApp(home: InsightScreen()));
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => DecisionHistoryProvider(
+          repository: FakeDecisionHistoryRepository(),
+        ),
+        child: const MaterialApp(home: InsightScreen()),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Your Decision Insights'), findsOneWidget);

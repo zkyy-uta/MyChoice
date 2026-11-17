@@ -30,18 +30,19 @@ class SupabaseKatalogRepository implements KatalogRepository {
     String? subKategori,
   }) async {
     try {
-      var query = _client
-          .from('pilihan_katalog')
-          .select('''
+      var query = _client.from('pilihan_katalog').select('''
             id_pilihan_katalog,
             id_sub_kategori,
             nama_pilihan,
             harga,
             spesifikasi,
             rating,
+            atribut,
+            mata_uang,
+            sumber_url,
+            lisensi_data,
             sub_kategori!inner(nama_sub_kategori, kategori!inner(nama_kategori))
-          ''')
-          .order('nama_pilihan');
+          ''');
 
       if (kategori != null && kategori.isNotEmpty) {
         query = query.eq('sub_kategori.kategori.nama_kategori', kategori);
@@ -50,7 +51,7 @@ class SupabaseKatalogRepository implements KatalogRepository {
         query = query.eq('sub_kategori.nama_sub_kategori', subKategori);
       }
 
-      final response = await query;
+      final response = await query.order('nama_pilihan');
       return _mapRows(response as List<dynamic>);
     } on PostgrestException catch (e) {
       throw Exception('Gagal memuat katalog: ${e.message}');
@@ -76,6 +77,10 @@ class SupabaseKatalogRepository implements KatalogRepository {
             harga,
             spesifikasi,
             rating,
+            atribut,
+            mata_uang,
+            sumber_url,
+            lisensi_data,
             sub_kategori!inner(nama_sub_kategori, kategori!inner(nama_kategori))
           ''')
           .eq('id_pilihan_katalog', idPilihanKatalog)
@@ -97,14 +102,31 @@ class SupabaseKatalogRepository implements KatalogRepository {
     required List<Map<String, dynamic>> pilihanKatalog,
   }) async {
     try {
-      final response = await _client.functions.invoke('seed-catalog', body: {
-        'kategori': kategori,
-        'sub_kategori': subKategori,
-        'pilihan_katalog': pilihanKatalog,
-        'reseed': true,
-      });
-      final detail = response['detail'] as Map? ?? {};
-      return detail.map((key, value) => MapEntry(key as String, (value as num).toInt()));
+      final response = await _client.functions.invoke(
+        'seed-catalog',
+        body: {
+          'kategori': kategori,
+          'sub_kategori': subKategori,
+          'pilihan_katalog': pilihanKatalog,
+          'reseed': true,
+        },
+      );
+      final body = response.data;
+      if (body is! Map || body['detail'] is! Map) {
+        throw const FormatException('Respons seeding katalog tidak valid.');
+      }
+
+      final detail = body['detail'] as Map;
+      final result = <String, int>{};
+      for (final entry in detail.entries) {
+        if (entry.key is! String || entry.value is! num) {
+          throw const FormatException(
+            'Detail respons seeding katalog tidak valid.',
+          );
+        }
+        result[entry.key as String] = (entry.value as num).toInt();
+      }
+      return result;
     } catch (e) {
       throw Exception('Gagal menjalankan seeding katalog: $e');
     }

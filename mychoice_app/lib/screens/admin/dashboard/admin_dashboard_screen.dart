@@ -1,19 +1,42 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/models/admin_user.dart';
-import '../../../core/models/admin_user_store.dart';
+import '../../../features/admin_analytics/presentation/providers/admin_analytics_provider.dart';
+import '../../../features/admin_user_management/presentation/providers/admin_user_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 
-class AdminDashboardScreen extends StatelessWidget {
+class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
 
   @override
+  State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+}
+
+class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<AdminUserProvider>().loadUsers();
+      context.read<AdminAnalyticsProvider>().loadReviews();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final usersProvider = context.watch<AdminUserProvider>();
+    final analyticsProvider = context.watch<AdminAnalyticsProvider>();
+    final users = usersProvider.users;
+    final reviews = analyticsProvider.reviews;
+    final months = _monthlyCounts(users);
+
     return Scaffold(
       backgroundColor: AppColors.surfaceLight,
       body: SafeArea(
@@ -79,20 +102,24 @@ class AdminDashboardScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Row(
-                      children: const [
+                      children: [
                         Expanded(
                           child: _SummaryCard(
                             icon: Icons.people_alt_outlined,
                             label: 'Total Users',
-                            value: '895',
+                            value: usersProvider.isLoading
+                                ? '...'
+                                : '${users.length}',
                           ),
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: _SummaryCard(
                             icon: Icons.rate_review_outlined,
                             label: 'Reviews',
-                            value: '23',
+                            value: analyticsProvider.isLoading
+                                ? '...'
+                                : '${reviews.length}',
                           ),
                         ),
                       ],
@@ -101,6 +128,34 @@ class AdminDashboardScreen extends StatelessWidget {
                 ),
               ),
             ),
+            if (usersProvider.error != null || analyticsProvider.error != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          usersProvider.error ?? analyticsProvider.error!,
+                          style: AppTypography.extraSmallSemibold.copyWith(
+                            color: AppColors.error80,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          usersProvider.loadUsers();
+                          analyticsProvider.loadReviews();
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
               sliver: SliverToBoxAdapter(
@@ -112,7 +167,7 @@ class AdminDashboardScreen extends StatelessWidget {
                       style: AppTypography.smallSemibold,
                     ),
                     Text(
-                      '2026  •  Users',
+                      'New users · monthly',
                       style: AppTypography.extraSmallSemibold.copyWith(
                         color: AppColors.primaryDark,
                       ),
@@ -138,7 +193,10 @@ class AdminDashboardScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const _ActivityChart(),
+                  child: _ActivityChart(
+                    labels: months.map((item) => item.$1).toList(),
+                    counts: months.map((item) => item.$2).toList(),
+                  ),
                 ),
               ),
             ),
@@ -165,14 +223,11 @@ class AdminDashboardScreen extends StatelessWidget {
             ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-              sliver: ValueListenableBuilder<List<AdminUser>>(
-                valueListenable: AdminUserStore.instance.users,
-                builder: (context, users, child) => SliverList.builder(
-                  itemCount: users.take(3).length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _RecentUserTile(user: users[index]),
-                  ),
+              sliver: SliverList.builder(
+                itemCount: users.take(3).length,
+                itemBuilder: (context, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _RecentUserTile(user: users[index]),
                 ),
               ),
             ),
@@ -182,6 +237,39 @@ class AdminDashboardScreen extends StatelessWidget {
       bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 0),
     );
   }
+
+  List<(String, int)> _monthlyCounts(List<AdminUser> users) {
+    final now = DateTime.now();
+    final months = List.generate(
+      5,
+      (index) => DateTime(now.year, now.month - 4 + index),
+    );
+    return months.map((month) {
+      final count = users
+          .where(
+            (user) =>
+                user.createdAt?.year == month.year &&
+                user.createdAt?.month == month.month,
+          )
+          .length;
+      return (_monthLabel(month.month), count);
+    }).toList();
+  }
+
+  String _monthLabel(int month) => const [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ][month - 1];
 }
 
 class _SummaryCard extends StatelessWidget {
@@ -236,12 +324,18 @@ class _SummaryCard extends StatelessWidget {
 }
 
 class _ActivityChart extends StatelessWidget {
-  const _ActivityChart();
+  const _ActivityChart({required this.labels, required this.counts});
+
+  final List<String> labels;
+  final List<int> counts;
 
   @override
   Widget build(BuildContext context) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
-    const values = [12, 20, 24, 31, 39];
+    final maximum = counts.fold<int>(
+      1,
+      (currentMaximum, count) =>
+          count > currentMaximum ? count : currentMaximum,
+    );
 
     return Column(
       children: [
@@ -249,23 +343,6 @@ class _ActivityChart extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(
-                width: 26,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: ['40', '30', '20', '10', '0']
-                      .map(
-                        (label) => Text(
-                          label,
-                          style: AppTypography.extraSmallSemibold.copyWith(
-                            color: AppColors.textTertiary,
-                            fontSize: 8,
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
               Expanded(
                 child: Column(
                   children: [
@@ -278,18 +355,35 @@ class _ActivityChart extends StatelessWidget {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                for (final value in values)
+                                for (final value in counts)
                                   Expanded(
                                     child: Align(
                                       alignment: Alignment.bottomCenter,
                                       child: Container(
                                         width: 16,
                                         height:
-                                            constraints.maxHeight * value / 40,
+                                            constraints.maxHeight *
+                                            value /
+                                            maximum,
                                         decoration: BoxDecoration(
                                           color: AppColors.primaryDark,
                                           borderRadius: BorderRadius.circular(
                                             5,
+                                          ),
+                                        ),
+                                        alignment: Alignment.topCenter,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 2,
+                                          ),
+                                          child: Text(
+                                            '$value',
+                                            style: AppTypography
+                                                .extraSmallSemibold
+                                                .copyWith(
+                                                  color: Colors.white,
+                                                  fontSize: 7,
+                                                ),
                                           ),
                                         ),
                                       ),
@@ -305,7 +399,7 @@ class _ActivityChart extends StatelessWidget {
                       height: 18,
                       child: Row(
                         children: [
-                          for (final month in months)
+                          for (final month in labels)
                             Expanded(
                               child: Center(
                                 child: Text(
@@ -385,7 +479,9 @@ class _RecentUserTile extends StatelessWidget {
             radius: 18,
             backgroundColor: AppColors.primary20,
             child: Text(
-              user.name.characters.first.toUpperCase(),
+              user.name.isEmpty
+                  ? 'U'
+                  : user.name.characters.first.toUpperCase(),
               style: AppTypography.smallSemibold.copyWith(
                 color: AppColors.primaryDark,
               ),

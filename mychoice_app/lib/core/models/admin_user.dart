@@ -5,19 +5,24 @@ class AdminUser {
     required this.id,
     required this.name,
     required this.email,
+    required this.role,
     required this.plan,
     required this.status,
+    this.createdAt,
   });
 
   final String id;
   final String name;
   final String email;
+  final String role;
   final String plan;
   final AdminUserStatus status;
+  final DateTime? createdAt;
 
   AdminUser copyWith({
     String? name,
     String? email,
+    String? role,
     String? plan,
     AdminUserStatus? status,
   }) {
@@ -25,53 +30,10 @@ class AdminUser {
       id: id,
       name: name ?? this.name,
       email: email ?? this.email,
+      role: role ?? this.role,
       plan: plan ?? this.plan,
       status: status ?? this.status,
+      createdAt: createdAt,
     );
   }
 }
-
-const demoAdminUsers = [
-  AdminUser(
-    id: 'USR-001',
-    name: 'Enami Asa',
-    email: 'asa.enami@gmail.com',
-    plan: 'Premium',
-    status: AdminUserStatus.active,
-  ),
-  AdminUser(
-    id: 'USR-002',
-    name: 'Bima Sakti',
-    email: 'bima.sakti@gmail.com',
-    plan: 'Premium',
-    status: AdminUserStatus.active,
-  ),
-  AdminUser(
-    id: 'USR-003',
-    name: 'Najwa',
-    email: 'najwa@gmail.com',
-    plan: 'Basic',
-    status: AdminUserStatus.inactive,
-  ),
-  AdminUser(
-    id: 'USR-004',
-    name: 'Noor Irma',
-    email: 'irma.noor@gmail.com',
-    plan: 'Premium',
-    status: AdminUserStatus.active,
-  ),
-  AdminUser(
-    id: 'USR-005',
-    name: 'Siwa Anzar',
-    email: 'siwa.anzar@gmail.com',
-    plan: 'Basic',
-    status: AdminUserStatus.active,
-  ),
-  AdminUser(
-    id: 'USR-006',
-    name: 'Victor',
-    email: 'victor@gmail.com',
-    plan: 'Basic',
-    status: AdminUserStatus.active,
-  ),
-];

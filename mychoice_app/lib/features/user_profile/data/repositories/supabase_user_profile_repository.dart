@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../domain/entities/user_profile.dart';
@@ -7,6 +9,11 @@ import '../models/user_profile_model.dart';
 /// Implementasi repository profil pengguna menggunakan Supabase.
 class SupabaseUserProfileRepository implements UserProfileRepository {
   SupabaseUserProfileRepository(this._client);
+
+  static const _profilePhotosBucket = 'profile-photos';
+  static const _maxPhotoSizeBytes = 5 * 1024 * 1024;
+  static const _profileSelect =
+      'id_pengguna,nama,email,role,plan,tanggal_dibuat,avatar_path';
 
   final SupabaseClient _client;
 
@@ -18,26 +25,27 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
     return user.id;
   }
 
+  Future<UserProfile> _profileFromRow(dynamic row) async {
+    final model = UserProfileModel.fromJson(
+      Map<String, dynamic>.from(row as Map),
+    );
+    final avatarPath = model.avatarPath;
+    final avatarUrl = avatarPath == null
+        ? null
+        : await _client.storage
+              .from(_profilePhotosBucket)
+              .createSignedUrl(avatarPath, 3600);
+    return model.toEntity().copyWith(avatarUrl: avatarUrl);
+  }
+
   @override
   Future<UserProfile> getUserProfile() async {
     final userId = _currentUserId;
 
     try {
-      // Coba via fungsi RPC terlebih dahulu
-      try {
-        final response = await _client.rpc('get_user_profile');
-        final data = response as List<dynamic>;
-        if (data.isNotEmpty) {
-          return UserProfileModel.fromJson(data.first as Map<String, dynamic>).toEntity();
-        }
-      } on Object {
-        // Jika RPC gagal, fallback ke query langsung
-      }
-
-      // Fallback: query langsung ke tabel pengguna
       final response = await _client
           .from('pengguna')
-          .select('*')
+          .select(_profileSelect)
           .eq('id_pengguna', userId)
           .maybeSingle();
 
@@ -45,7 +53,7 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
         throw Exception('Profil pengguna tidak ditemukan.');
       }
 
-      return UserProfileModel.fromJson(Map<String, dynamic>.from(response as Map)).toEntity();
+      return _profileFromRow(response);
     } on Exception {
       rethrow;
     } on Object catch (e) {
@@ -56,20 +64,73 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
   @override
   Future<UserProfile> updateProfile({required String name}) async {
     final userId = _currentUserId;
+    final normalizedName = name.trim();
+    if (normalizedName.isEmpty) {
+      throw ArgumentError('Nama depan wajib diisi.');
+    }
 
     try {
       final response = await _client
           .from('pengguna')
-          .update({'nama': name})
+          .update({'nama': normalizedName})
           .eq('id_pengguna', userId)
-          .select()
+          .select(_profileSelect)
           .single();
 
-      return UserProfileModel.fromJson(Map<String, dynamic>.from(response as Map)).toEntity();
+      return _profileFromRow(response);
     } on Exception {
       rethrow;
     } on Object catch (e) {
       throw Exception('Gagal memperbarui profil: $e');
+    }
+  }
+
+  @override
+  Future<UserProfile> updateProfilePhoto({
+    required Uint8List imageBytes,
+    required String fileName,
+  }) async {
+    final userId = _currentUserId;
+    if (imageBytes.isEmpty) {
+      throw ArgumentError('File foto kosong.');
+    }
+    if (imageBytes.length > _maxPhotoSizeBytes) {
+      throw ArgumentError('Ukuran foto maksimal 5 MB.');
+    }
+
+    final extension = fileName.split('.').last.toLowerCase();
+    const mimeTypes = {
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'png': 'image/png',
+      'webp': 'image/webp',
+    };
+    final contentType = mimeTypes[extension];
+    if (contentType == null) {
+      throw ArgumentError('Format foto harus JPG, PNG, atau WebP.');
+    }
+
+    final path = '$userId/avatar';
+
+    try {
+      await _client.storage
+          .from(_profilePhotosBucket)
+          .uploadBinary(
+            path,
+            imageBytes,
+            fileOptions: FileOptions(contentType: contentType, upsert: true),
+          );
+      final response = await _client
+          .from('pengguna')
+          .update({'avatar_path': path})
+          .eq('id_pengguna', userId)
+          .select(_profileSelect)
+          .single();
+      return _profileFromRow(response);
+    } on Exception {
+      rethrow;
+    } on Object catch (e) {
+      throw Exception('Gagal memperbarui foto profil: $e');
     }
   }
 
@@ -115,7 +176,7 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
           .select()
           .single();
 
-      return UserProfileModel.fromJson(Map<String, dynamic>.from(response as Map)).toEntity();
+      return _profileFromRow(response);
     } on Exception {
       rethrow;
     } on Object catch (e) {

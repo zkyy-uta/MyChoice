@@ -9,6 +9,7 @@ class UserProfileModel {
     required this.role,
     required this.plan,
     required this.createdAt,
+    this.avatarPath,
   });
 
   final String id;
@@ -17,6 +18,7 @@ class UserProfileModel {
   final String role;
   final String plan;
   final DateTime createdAt;
+  final String? avatarPath;
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
@@ -25,25 +27,19 @@ class UserProfileModel {
       email: json['email'] as String? ?? '',
       role: json['role'] as String? ?? 'user',
       plan: json['plan'] as String? ?? 'basic',
-      createdAt: DateTime.tryParse(json['tanggal_dibuat'] as String? ?? '') ??
+      createdAt:
+          DateTime.tryParse(json['tanggal_dibuat'] as String? ?? '') ??
           DateTime.now(),
+      avatarPath: json['avatar_path'] as String?,
     );
   }
 
   Map<String, dynamic> toUpdateJson({required String name}) {
-    return {
-      'nama': name,
-    };
+    return {'nama': name};
   }
 
-  Map<String, dynamic> toRolePlanJson({
-    String? role,
-    String? plan,
-  }) {
-    return {
-      if (role != null) 'role': role,
-      if (plan != null) 'plan': plan,
-    };
+  Map<String, dynamic> toRolePlanJson({String? role, String? plan}) {
+    return {if (role != null) 'role': role, if (plan != null) 'plan': plan};
   }
 
   UserProfile toEntity() {
@@ -54,6 +50,7 @@ class UserProfileModel {
       role: role,
       plan: plan,
       createdAt: createdAt,
+      avatarPath: avatarPath,
     );
   }
 

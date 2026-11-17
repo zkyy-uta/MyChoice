@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/basic_daily_decision_limit_dialog.dart';
 import '../../../core/widgets/mobile_background.dart';
 import 'package:mychoice_app/features/decision_history/presentation/providers/decision_history_provider.dart';
 import 'package:mychoice_app/features/keputusan/presentation/providers/keputusan_provider.dart';
@@ -82,7 +83,6 @@ class _ResultScreenState extends State<ResultScreen> {
     setState(() => saving = true);
     try {
       final historyProvider = context.read<DecisionHistoryProvider>();
-      final keputusanProvider = context.read<KeputusanProvider>();
 
       final sorted = [...widget.choices]
         ..sort((a, b) => b.score.compareTo(a.score));
@@ -98,33 +98,41 @@ class _ResultScreenState extends State<ResultScreen> {
         decisionDate: DateTime.now(),
         priorities: widget.priorities,
       );
+      if (!mounted) return;
+      if (created == null) {
+        final error = historyProvider.error ?? 'Unknown save error.';
+        if (historyProvider.errorCode == 'BASIC_DAILY_DECISION_LIMIT') {
+          final action = await showBasicDailyDecisionLimitDialog(context);
+          if (!mounted) return;
+          handleBasicDailyDecisionLimitAction(context, action);
+          return;
+        }
+        throw StateError(error);
+      }
 
       // 2. Simpan ke tabel keputusan (ERD) — tidak block jika gagal
-      if (created != null) {
-        await keputusanProvider.addKeputusan(
-          namaKategori: widget.category,
-          namaSubkategori: widget.subcategory,
-          judul: top?.name ?? widget.subcategory,
-          status: 'selesai',
-          decisionHistoryId: created.id,
-        );
-      }
+      final keputusanProvider = context.read<KeputusanProvider>();
+      await keputusanProvider.addKeputusan(
+        namaKategori: widget.category,
+        namaSubkategori: widget.subcategory,
+        judul: top?.name ?? widget.subcategory,
+        status: 'selesai',
+        decisionHistoryId: created.id,
+      );
 
-      if (created != null) {
-        historySampleDecisions.insert(
-          0,
-          HistoryDecision(
-            id: created.id,
-            category: created.category,
-            title: created.title,
-            score: created.score,
-            dateGroup: 'Today',
-            date: 'Today',
-            recordedAt: created.createdAt,
-            status: 'Decision Made',
-          ),
-        );
-      }
+      historySampleDecisions.insert(
+        0,
+        HistoryDecision(
+          id: created.id,
+          category: created.category,
+          title: created.title,
+          score: created.score,
+          dateGroup: 'Today',
+          date: 'Today',
+          recordedAt: created.createdAt,
+          status: 'Decision Made',
+        ),
+      );
 
       if (!mounted) return;
       setState(() => saved = true);
@@ -141,10 +149,10 @@ class _ResultScreenState extends State<ResultScreen> {
         '/history',
         (route) => route.settings.name == '/dashboard',
       );
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not save decision. Please retry.')),
+        SnackBar(content: Text('Could not save decision: $error')),
       );
     } finally {
       if (mounted) setState(() => saving = false);
@@ -598,6 +606,8 @@ class _ResultScreenState extends State<ResultScreen> {
                                   matrix: matrix,
                                   criteriaMap: criteriaMap,
                                   originalWeights: originalWeights,
+                                  category: widget.category,
+                                  subcategory: widget.subcategory,
                                 );
 
                                 Navigator.of(context).pushNamed('/what-if');

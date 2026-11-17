@@ -60,7 +60,7 @@ class UserPlan {
         return const UserPlan(
           tier: UserPlanTier.premium,
           maxAlternativesPerDecision: 10,
-          maxCriteriaPerDecision: 8,
+          maxCriteriaPerDecision: 6,
           maxWhatIfSimulations: 50,
           aiSuggestionsEnabled: true,
           compareFeatureEnabled: true,
@@ -73,7 +73,7 @@ class UserPlan {
         return const UserPlan(
           tier: UserPlanTier.admin,
           maxAlternativesPerDecision: 100,
-          maxCriteriaPerDecision: 50,
+          maxCriteriaPerDecision: 6,
           maxWhatIfSimulations: 1000,
           aiSuggestionsEnabled: true,
           compareFeatureEnabled: true,

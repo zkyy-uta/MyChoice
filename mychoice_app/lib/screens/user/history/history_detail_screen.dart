@@ -65,12 +65,15 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
   late TextEditingController _reviewController;
   int _selectedRating = 0;
   bool _isSaving = false;
+  bool _hasSavedReview = false;
 
   @override
   void initState() {
     super.initState();
     _reviewController = TextEditingController(text: widget.decision.review);
     _selectedRating = widget.decision.rating;
+    _hasSavedReview =
+        widget.decision.rating > 0 || widget.decision.review.trim().isNotEmpty;
   }
 
   @override
@@ -96,16 +99,17 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
 
       if (!mounted) return;
       if (success) {
+        setState(() => _hasSavedReview = true);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Ulasan dan bintang rating tersimpan.'),
+            content: Text('Review and rating saved.'),
             backgroundColor: AppColors.success80,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(provider.error ?? 'Gagal menyimpan ulasan.'),
+            content: Text(provider.error ?? 'Failed to save review.'),
             backgroundColor: AppColors.error80,
           ),
         );
@@ -114,7 +118,7 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal menyimpan ulasan: $e'),
+          content: Text('Failed to save review: $e'),
           backgroundColor: AppColors.error80,
         ),
       );
@@ -151,7 +155,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(widget.decision.icon, color: AppColors.primaryDark),
+                          Icon(
+                            widget.decision.icon,
+                            color: AppColors.primaryDark,
+                          ),
                           const SizedBox(width: AppSpacing.sm),
                           Text(
                             widget.decision.category,
@@ -166,7 +173,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                       const SizedBox(height: AppSpacing.md),
                       _DetailSection(
                         title: 'Decision Date',
-                        child: Text(widget.decision.date, style: AppTypography.small),
+                        child: Text(
+                          widget.decision.date,
+                          style: AppTypography.small,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       _DetailSection(
@@ -180,7 +190,9 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                       _DetailSection(
                         title: 'Your Priorities',
                         child: Column(
-                          children: widget.decision.priorities.entries.map((entry) {
+                          children: widget.decision.priorities.entries.map((
+                            entry,
+                          ) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 2),
                               child: Row(
@@ -212,7 +224,10 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                               color: AppColors.primary88,
                             ),
                             const SizedBox(width: AppSpacing.xs),
-                            Text(widget.decision.status, style: AppTypography.small),
+                            Text(
+                              widget.decision.status,
+                              style: AppTypography.small,
+                            ),
                           ],
                         ),
                       ),
@@ -248,8 +263,8 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                             const SizedBox(height: AppSpacing.xs),
                             Text(
                               _selectedRating == 0
-                                  ? 'Belum memberi rating'
-                                  : 'Rating: $_selectedRating bintang',
+                                  ? 'No rating yet'
+                                  : 'Rating: $_selectedRating stars',
                               style: AppTypography.small.copyWith(
                                 color: AppColors.textSecondary,
                               ),
@@ -267,12 +282,21 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                   color: AppColors.textSecondary,
                                 ),
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
-                                  borderSide: const BorderSide(color: AppColors.border),
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.inputRadius,
+                                  ),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.border,
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(AppSpacing.inputRadius),
-                                  borderSide: const BorderSide(color: AppColors.primary88, width: 1.4),
+                                  borderRadius: BorderRadius.circular(
+                                    AppSpacing.inputRadius,
+                                  ),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.primary88,
+                                    width: 1.4,
+                                  ),
                                 ),
                                 contentPadding: const EdgeInsets.symmetric(
                                   horizontal: AppSpacing.md,
@@ -287,7 +311,9 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                               width: double.infinity,
                               height: 48,
                               child: FilledButton.icon(
-                                onPressed: _isSaving ? null : _saveReviewAndRating,
+                                onPressed: _isSaving
+                                    ? null
+                                    : _saveReviewAndRating,
                                 icon: _isSaving
                                     ? const SizedBox(
                                         width: 16,
@@ -297,14 +323,18 @@ class _HistoryDetailScreenState extends State<HistoryDetailScreen> {
                                           color: Colors.white,
                                         ),
                                       )
-                                    : const Icon(
-                                        Icons.save_rounded,
+                                    : Icon(
+                                        _hasSavedReview
+                                            ? Icons.edit_outlined
+                                            : Icons.save_rounded,
                                         size: 18,
                                       ),
                                 label: Text(
                                   _isSaving
-                                      ? 'Menyimpan...'
-                                      : 'Simpan Ulasan & Rating',
+                                      ? 'Saving...'
+                                      : _hasSavedReview
+                                      ? 'Edit Review'
+                                      : 'Save Review & Rating',
                                 ),
                               ),
                             ),

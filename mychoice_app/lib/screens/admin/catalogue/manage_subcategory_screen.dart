@@ -1,7 +1,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../features/admin_catalog/domain/entities/admin_catalog_data.dart';
+import '../../../features/admin_catalog/domain/repositories/admin_catalog_repository.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
@@ -1582,27 +1585,109 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
 
   bool _showIncompleteOnly = false;
   bool _showAllOptions = false;
+  bool _isLoadingCatalog = true;
+  String? _catalogError;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSubcategoryCatalog();
+    });
+  }
+
+  Future<void> _loadSubcategoryCatalog() async {
+    final repository = Provider.of<AdminCatalogRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null) {
+      if (!mounted) return;
+      setState(() {
+        _isLoadingCatalog = false;
+        _catalogError = 'Admin catalog storage is unavailable.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoadingCatalog = true;
+      _catalogError = null;
+    });
+    try {
+      final catalog = await repository.loadSubcategory(
+        category: _category,
+        subcategory: widget.subcategory,
+      );
+      if (!mounted) return;
+
+      final criteria = catalog.criteria
+          .map(
+            (item) => _Criterion(
+              id: item.id,
+              name: item.name,
+              type: item.type,
+              unit: item.unit,
+              attributeKey: item.attributeKey,
+              icon: _iconForCriterion(item.name),
+            ),
+          )
+          .toList();
+      final options = catalog.options.map((item) {
+        final values = <String, String>{};
+        final unavailable = <String>{};
+        for (final criterion in criteria) {
+          final key = criterion.attributeKey ?? _attributeKey(criterion.name);
+          final value = key == 'harga'
+              ? item.price ?? item.attributes[key] ?? item.attributes['price']
+              : item.attributes[key] ?? item.attributes[criterion.name];
+          final text = value?.toString() ?? '';
+          if (text.toLowerCase() == 'n/a') {
+            unavailable.add(criterion.name);
+            values[criterion.name] = '';
+          } else {
+            values[criterion.name] = text;
+          }
+        }
+        return _OptionItem(
+          id: item.id,
+          name: item.name,
+          values: values,
+          unavailable: unavailable,
+        );
+      }).toList();
+
+      setState(() {
+        _criteria
+          ..clear()
+          ..addAll(criteria);
+        _options
+          ..clear()
+          ..addAll(options);
+        _isLoadingCatalog = false;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _isLoadingCatalog = false;
+        _catalogError = 'Could not load this subcategory: $error';
+      });
+    }
+  }
+
+  String _attributeKey(String name) {
+    if (name.trim().toLowerCase() == 'price') return 'harga';
+    return name
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+        .replaceAll(RegExp(r'^_+|_+$'), '');
+  }
 
   int get _incompleteCount => _options.where(_isIncomplete).length;
 
   int get _displayedOptionCount {
-    if (_category.toLowerCase() == 'education' ||
-        _category.toLowerCase() == 'fashion') {
-      return _options.length;
-    }
-
-    // Target option counts for each Technology subcategory.
-    // The count adjusts automatically when an option is added or deleted.
-    final targetCount = switch (_normalizedSubcategory) {
-      'laptop' => 15,
-      'smartphone' => 10,
-      'tablet' => 10,
-      'pc' => 5,
-      'monitor' => 5,
-      _ => 0,
-    };
-
-    return targetCount + _options.length - 3;
+    return _options.length;
   }
 
   int get _selectedSuggestionCount => _suggestedCriteria
@@ -1695,29 +1780,54 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
       body: MobileBackground(
         child: SafeArea(
           bottom: false,
-          child: Column(
-            children: [
-              _buildHeader(context),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildStatistics(),
-                      const SizedBox(height: 22),
-                      _buildCriteriaSection(),
-                      const SizedBox(height: 24),
-                      _buildSuggestionsSection(),
-                      const SizedBox(height: 24),
-                      _buildOptionsSection(),
-                    ],
+          child: _isLoadingCatalog
+              ? const Center(child: CircularProgressIndicator())
+              : _catalogError != null
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _catalogError!,
+                          textAlign: TextAlign.center,
+                          style: AppTypography.small.copyWith(
+                            color: AppColors.error80,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        OutlinedButton(
+                          onPressed: _loadSubcategoryCatalog,
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
                   ),
+                )
+              : Column(
+                  children: [
+                    _buildHeader(context),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildStatistics(),
+                            const SizedBox(height: 22),
+                            _buildCriteriaSection(),
+                            const SizedBox(height: 24),
+                            _buildSuggestionsSection(),
+                            const SizedBox(height: 24),
+                            _buildOptionsSection(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
       bottomNavigationBar: const AdminBottomNavigation(selectedIndex: 2),
@@ -2278,15 +2388,53 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
       icon: _iconForCriterion(suggestion.name),
     );
 
-    setState(() {
-      _criteria.add(newCriterion);
-
-      _suggestedCriteria.removeWhere((item) => item.name == suggestion.name);
-
-      _activeSuggestion = null;
+    _persistCriterion(newCriterion).then((savedCriterion) {
+      if (savedCriterion == null || !mounted) return;
+      setState(() {
+        _criteria.add(savedCriterion);
+        _suggestedCriteria.removeWhere((item) => item.name == suggestion.name);
+        _activeSuggestion = null;
+      });
+      _disposePopoverControllerAfterFrame();
     });
+  }
 
-    _disposePopoverControllerAfterFrame();
+  Future<_Criterion?> _persistCriterion(_Criterion criterion) async {
+    final repository = Provider.of<AdminCatalogRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null) {
+      _showCatalogMessage('Admin catalog storage is unavailable.');
+      return null;
+    }
+    try {
+      final saved = await repository.addCriterion(
+        category: _category,
+        subcategory: widget.subcategory,
+        name: criterion.name,
+        type: criterion.type,
+        unit: criterion.unit,
+      );
+      return _Criterion(
+        id: saved.id,
+        name: saved.name,
+        type: saved.type,
+        unit: saved.unit,
+        attributeKey: saved.attributeKey,
+        icon: criterion.icon,
+      );
+    } catch (error) {
+      _showCatalogMessage('Could not save this criterion: $error');
+      return null;
+    }
+  }
+
+  void _showCatalogMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   // ============================================================
@@ -3308,8 +3456,10 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
       return;
     }
 
+    final savedCriterion = await _persistCriterion(result);
+    if (savedCriterion == null || !mounted) return;
     setState(() {
-      _criteria.add(result);
+      _criteria.add(savedCriterion);
     });
   }
 
@@ -3329,7 +3479,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
 
     final unavailable = <String>{...?existing?.unavailable};
 
-    final result = await showModalBottomSheet<_OptionItem>(
+    final selectedResult = await showModalBottomSheet<_OptionItem>(
       context: context,
       isScrollControlled: true,
       useSafeArea: false,
@@ -3482,7 +3632,10 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                             FocusScope.of(sheetContext).unfocus();
                             Navigator.pop(
                               sheetContext,
-                              _OptionItem.delete(existing.name),
+                              _OptionItem.delete(
+                                existing.name,
+                                id: existing.id,
+                              ),
                             );
                           },
                           icon: const Icon(
@@ -3542,21 +3695,65 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
       },
     );
 
-    if (result == null || !mounted) return;
+    if (selectedResult == null || !mounted) return;
+    var result = selectedResult;
 
-    setState(() {
+    final repository = Provider.of<AdminCatalogRepository?>(
+      context,
+      listen: false,
+    );
+    if (repository == null) {
+      _showCatalogMessage('Admin catalog storage is unavailable.');
+      return;
+    }
+    try {
       if (result.isDeleted) {
-        _options.removeWhere((option) => option.name == result.name);
-      } else {
-        final index = existing == null ? -1 : _options.indexOf(existing);
-
-        if (index >= 0) {
-          _options[index] = result;
-        } else {
-          _options.add(result);
+        final id = result.id;
+        if (id == null) {
+          throw StateError('The saved catalog option has no database ID.');
         }
+        await repository.deleteOption(id: id);
+      } else {
+        final id = await repository.saveOption(
+          category: _category,
+          subcategory: widget.subcategory,
+          id: existing?.id,
+          name: result.name,
+          values: result.values,
+          unavailable: result.unavailable,
+          criteria: _criteria
+              .map(
+                (item) => AdminCatalogCriterion(
+                  id: item.id ?? 0,
+                  name: item.name,
+                  type: item.type,
+                  unit: item.unit,
+                  attributeKey: item.attributeKey,
+                ),
+              )
+              .toList(),
+        );
+        result = result.copyWith(id: id);
       }
-    });
+
+      if (!mounted) return;
+      setState(() {
+        if (result.isDeleted) {
+          _options.removeWhere(
+            (option) => option.id == result.id || option.name == result.name,
+          );
+        } else {
+          final index = existing == null ? -1 : _options.indexOf(existing);
+          if (index >= 0) {
+            _options[index] = result;
+          } else {
+            _options.add(result);
+          }
+        }
+      });
+    } catch (error) {
+      _showCatalogMessage('Could not save this option: $error');
+    }
   }
 
   // ============================================================
@@ -3626,15 +3823,19 @@ class _SheetControllerOwnerState extends State<_SheetControllerOwner> {
 
 class _Criterion {
   const _Criterion({
+    this.id,
     required this.name,
     required this.type,
     required this.unit,
+    this.attributeKey,
     required this.icon,
   });
 
+  final int? id;
   final String name;
   final String type;
   final String unit;
+  final String? attributeKey;
   final IconData icon;
 }
 
@@ -3654,20 +3855,30 @@ class _Suggestion {
 
 class _OptionItem {
   _OptionItem({
+    this.id,
     required this.name,
     required this.values,
     Set<String>? unavailable,
     this.isDeleted = false,
   }) : unavailable = unavailable ?? {};
 
-  factory _OptionItem.delete(String name) {
-    return _OptionItem(name: name, values: const {}, isDeleted: true);
+  factory _OptionItem.delete(String name, {String? id}) {
+    return _OptionItem(id: id, name: name, values: const {}, isDeleted: true);
   }
 
+  final String? id;
   final String name;
   final Map<String, String> values;
   final Set<String> unavailable;
   final bool isDeleted;
+
+  _OptionItem copyWith({String? id}) => _OptionItem(
+    id: id ?? this.id,
+    name: name,
+    values: values,
+    unavailable: unavailable,
+    isDeleted: isDeleted,
+  );
 }
 
 // ============================================================
