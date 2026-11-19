@@ -25,31 +25,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       subtitle: 'Clarity Before You Decide.',
       description:
           'MyChoice helps you compare various choices based on your unique needs, priorities, and conditions.',
-      illustration:
-          'assets/illustrations/onboarding_welcome.png', // Placeholder - Replace with actual illustration
+      illustration: 'assets/illustrations/onboarding_welcome.png',
+      // Anjing disambung ke bawah → bottomCenter agar kaki ketemu white card
+      imageScale: 1.2,
+      imageAlignment: Alignment.bottomCenter,
     ),
     OnboardingData(
       title: '🔍 Understand Your Needs',
       subtitle: 'Know What Matters Most',
       description:
           'Not sure what matters most? MyChoice helps you understand your needs and suggests relevant criteria.',
-      illustration:
-          'assets/illustrations/onboarding_understand.png', // Placeholder
+      illustration: 'assets/illustrations/onboarding_understand.png',
+      // Icon terlalu besar → dikecilkan
+      imageScale: 0.72,
     ),
     OnboardingData(
       title: '⚖️ Compare Your Options',
       subtitle: 'Compare Without the Confusion',
       description:
           'Compare multiple options side-by-side based on the criteria that truly matter to you.',
-      illustration:
-          'assets/illustrations/onboarding_compare.png', // Placeholder
+      illustration: 'assets/illustrations/onboarding_compare.png',
     ),
     OnboardingData(
       title: '✨ Understand the Result',
       subtitle: 'You Decide. MyChoice Helps.',
       description:
           'MyChoice delivers data-driven results tailored to your priorities, explains the reasoning, and shows how outcomes shift if your priorities change.',
-      illustration: 'assets/illustrations/onboarding_result.png', // Placeholder
+      illustration: 'assets/illustrations/onboarding_result.png',
+      // Icon terlalu besar → dikecilkan
+      imageScale: 0.72,
     ),
   ];
 
@@ -222,9 +226,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           flex: _currentPage == 0 ? 1 : 1,
                           child: ElevatedButton(
                             onPressed: _nextPage,
-                            child: Text(
-                              isLastPage ? "Let's Get Started" : 'Next',
-                              style: AppTypography.buttonLarge,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                isLastPage ? "Let's Get Started" : 'Next',
+                                style: AppTypography.buttonLarge,
+                                maxLines: 1,
+                              ),
                             ),
                           ),
                         ),
@@ -248,11 +256,17 @@ class OnboardingData {
   final String subtitle;
   final String description;
   final String illustration;
+  /// Scale multiplier applied to the base imageSize (default 1.0)
+  final double imageScale;
+  /// Alignment of the image within its container (default center)
+  final Alignment imageAlignment;
 
   const OnboardingData({
     required this.title,
     required this.subtitle,
     required this.description,
     required this.illustration,
+    this.imageScale = 1.0,
+    this.imageAlignment = Alignment.center,
   });
 }

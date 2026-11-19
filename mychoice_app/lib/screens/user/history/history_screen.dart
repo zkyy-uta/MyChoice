@@ -21,7 +21,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
   String _categoryFilter = 'All';
-  String _dateFilter = 'This Week';
+  String _dateFilter = 'All Time';
   String _statusFilter = 'All';
   DateTimeRange? _customDateRange;
 
@@ -57,13 +57,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
           _categoryFilter == 'All' ||
           decision.category == _categoryFilter ||
           (_categoryFilter == 'Education' && decision.category == 'Internship');
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day);
       final matchesDate = switch (_dateFilter) {
-        'This Week' =>
-          _dateGroupLabel(decision.createdAt) == 'Today' ||
-              _dateGroupLabel(decision.createdAt) == 'Yesterday',
+        'Today' => !decision.createdAt.isBefore(todayStart),
+        'This Week' => decision.createdAt.isAfter(
+          now.subtract(const Duration(days: 7)),
+        ),
         'This Month' =>
-          decision.createdAt.year == DateTime.now().year &&
-              decision.createdAt.month == DateTime.now().month,
+          decision.createdAt.year == now.year &&
+              decision.createdAt.month == now.month,
         'Custom' =>
           _customDateRange == null ||
               (!decision.createdAt.isBefore(_customDateRange!.start) &&
@@ -198,7 +201,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   const SizedBox(height: AppSpacing.md),
                   _FilterSection(
                     title: 'Date',
-                    options: const ['This Week', 'This Month', 'Custom'],
+                    options: const ['All Time', 'Today', 'This Week', 'This Month', 'Custom'],
                     selected: _dateFilter,
                     onSelected: (value) async {
                       setState(() => _dateFilter = value);
@@ -357,7 +360,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ],
                     ),
                     if (_categoryFilter != 'All' ||
-                        _dateFilter != 'This Week' ||
+                        _dateFilter != 'All Time' ||
                         _statusFilter != 'All') ...[
                       const SizedBox(height: AppSpacing.sm),
                       Align(
@@ -371,11 +374,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 onDeleted: () =>
                                     setState(() => _categoryFilter = 'All'),
                               ),
-                            if (_dateFilter != 'This Week')
+                            if (_dateFilter != 'All Time')
                               _ActiveFilterChip(
                                 label: _dateFilter,
                                 onDeleted: () => setState(() {
-                                  _dateFilter = 'This Week';
+                                  _dateFilter = 'All Time';
                                   _customDateRange = null;
                                 }),
                               ),

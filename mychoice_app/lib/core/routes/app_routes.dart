@@ -88,7 +88,7 @@ Map<String, WidgetBuilder> buildAppRoutes() {
       (context) => const ContinueDecisionScreen(),
     ),
     '/history': userRoute((context) => const HistoryScreen()),
-    '/insight': premiumRoute((context) => const InsightScreen()),
+    '/insight': userRoute((context) => const InsightScreen()),
     '/profile': userRoute((context) => const ProfileScreen()),
     '/profile/personal-information': userRoute(
       (context) => const PersonalInformationScreen(),

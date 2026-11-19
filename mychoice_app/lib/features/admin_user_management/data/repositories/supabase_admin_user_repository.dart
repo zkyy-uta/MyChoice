@@ -23,12 +23,18 @@ class SupabaseAdminUserRepository implements AdminUserRepository {
   @override
   Future<List<AdminUser>> getUsers() async {
     try {
-      final rows = await _client
-          .from('pengguna')
-          .select('id_pengguna,nama,email,role,plan,status_akun,tanggal_dibuat')
-          .order('tanggal_dibuat', ascending: false);
-      return (rows as List<dynamic>)
+      // RPC security definer: policy SELECT "pengguna_read_own" membatasi user
+      // biasa pada barisnya sendiri, sehingga daftar akun harus diambil lewat
+      // fungsi khusus admin.
+      final rows = await _client.rpc('admin_list_users');
+      if (rows is! List) {
+        throw const FormatException('The user directory response is invalid.');
+      }
+      return rows
           .map((row) => _mapRow(Map<String, dynamic>.from(row as Map)))
+          // Akun admin tidak ditampilkan pada dashboard maupun User Management;
+          // daftar hanya berisi akun pengguna dengan plan basic/premium.
+          .where((user) => user.role != 'admin')
           .toList();
     } on PostgrestException catch (error) {
       throw Exception('Failed to load user accounts: ${error.message}');

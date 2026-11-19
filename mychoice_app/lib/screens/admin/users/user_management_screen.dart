@@ -577,7 +577,7 @@ class _UserDetailsDialogState extends State<_UserDetailsDialog> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    user.role == 'admin' ? 'Admin' : user.plan.toUpperCase(),
+                    user.plan.toUpperCase(),
                     style: AppTypography.extraSmallSemibold.copyWith(
                       color: AppColors.primaryDark,
                     ),

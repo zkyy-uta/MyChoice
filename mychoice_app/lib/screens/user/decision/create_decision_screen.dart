@@ -676,7 +676,6 @@ class _CreateDecisionScreenState extends State<CreateDecisionScreen> {
           );
           if (!exists) {
             _selectedCriteria[criterion] = false;
-            _priorities[criterion] = 0;
           }
         }
         _isLoadingPersonalCriteria = false;

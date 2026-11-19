@@ -73,6 +73,12 @@ class AdminUserProvider extends ChangeNotifier {
 
   void _replace(AdminUser updated) {
     final index = _users.indexWhere((user) => user.id == updated.id);
-    if (index >= 0) _users[index] = updated;
+    if (index < 0) return;
+    // Akun yang dipromosikan menjadi admin keluar dari daftar pengguna.
+    if (updated.role == 'admin') {
+      _users.removeAt(index);
+    } else {
+      _users[index] = updated;
+    }
   }
 }
