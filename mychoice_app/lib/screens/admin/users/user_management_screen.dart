@@ -93,6 +93,13 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
 
     final updated = await provider.setActive(userId: user.id, active: active);
     if (!mounted) return;
+    // Akun yang baru dinonaktifkan harus tetap terlihat di daftar, termasuk
+    // ketika filter status sedang diarahkan ke "Active" saja. Daftar tetap
+    // dimuat ulang walau permintaan gagal agar status yang tampil sesuai data
+    // di database.
+    setState(() => _selectedStatuses = AdminUserStatus.values.toSet());
+    await provider.loadUsers();
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(

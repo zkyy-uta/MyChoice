@@ -63,7 +63,7 @@ Deno.serve(async (request: Request) => {
   }
 
   const { data: actor, error: actorError } = await admin
-    .from("pengguna")
+    .from("users")
     .select("role,status_akun")
     .eq("id_pengguna", authData.user.id)
     .maybeSingle();
@@ -78,7 +78,7 @@ Deno.serve(async (request: Request) => {
   }
 
   const { data: target, error: targetError } = await admin
-    .from("pengguna")
+    .from("users")
     .select("role,status_akun")
     .eq("id_pengguna", payload.targetUserId)
     .maybeSingle();
@@ -94,7 +94,7 @@ Deno.serve(async (request: Request) => {
 
   const desiredStatus = payload.active ? "aktif" : "nonaktif";
   const { error: updateError } = await admin
-    .from("pengguna")
+    .from("users")
     .update({ status_akun: desiredStatus })
     .eq("id_pengguna", payload.targetUserId);
   if (updateError) {
@@ -107,7 +107,7 @@ Deno.serve(async (request: Request) => {
   );
   if (banError) {
     const { error: rollbackError } = await admin
-      .from("pengguna")
+      .from("users")
       .update({ status_akun: target.status_akun })
       .eq("id_pengguna", payload.targetUserId);
     if (rollbackError) {

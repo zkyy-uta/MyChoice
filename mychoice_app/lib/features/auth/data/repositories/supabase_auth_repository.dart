@@ -116,7 +116,7 @@ class SupabaseAuthRepository implements AuthRepository {
 
   Future<app_user.User> _loadUser(supabase.User authUser) async {
     final profile = await _client
-        .from('pengguna')
+        .from('users')
         .select('nama, role, plan, status_akun, tanggal_dibuat')
         .eq('id_pengguna', authUser.id)
         .maybeSingle();

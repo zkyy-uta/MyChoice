@@ -23,10 +23,10 @@ class SupabaseKeputusanRepository implements KeputusanRepository {
   }) async {
     try {
       final result = await _client
-          .from('sub_kategori')
-          .select('id_sub_kategori, kategori!inner(nama_kategori)')
+          .from('subcategories')
+          .select('id_sub_kategori, categories!inner(nama_kategori)')
           .eq('nama_sub_kategori', namaSubkategori)
-          .eq('kategori.nama_kategori', namaKategori)
+          .eq('categories.nama_kategori', namaKategori)
           .maybeSingle();
 
       if (result == null) return null;
@@ -68,7 +68,7 @@ class SupabaseKeputusanRepository implements KeputusanRepository {
       };
 
       final response = await _client
-          .from('keputusan')
+          .from('decisions')
           .insert(payload)
           .select()
           .single();
@@ -95,7 +95,7 @@ class SupabaseKeputusanRepository implements KeputusanRepository {
 
     try {
       final response = await _client
-          .from('keputusan')
+          .from('decisions')
           .select()
           .eq('id_pengguna', userId)
           .order('tanggal_dibuat', ascending: false);
@@ -127,7 +127,7 @@ class SupabaseKeputusanRepository implements KeputusanRepository {
 
     try {
       await _client
-          .from('keputusan')
+          .from('decisions')
           .update({'status': status})
           .eq('id_keputusan', idKeputusan)
           .eq('id_pengguna', userId);
@@ -144,7 +144,7 @@ class SupabaseKeputusanRepository implements KeputusanRepository {
 
     try {
       await _client
-          .from('keputusan')
+          .from('decisions')
           .delete()
           .eq('id_keputusan', idKeputusan)
           .eq('id_pengguna', userId);

@@ -12,9 +12,9 @@ class SupabaseKatalogRepository implements KatalogRepository {
   List<KatalogItem> _mapRows(List<dynamic> rows) {
     return rows.map((r) {
       final m = Map<String, dynamic>.from(r as Map);
-      final sub = m['sub_kategori'] as Map?;
+      final sub = m['subcategories'] as Map?;
       final namaSubKategori = sub?['nama_sub_kategori'] as String?;
-      final kategori = sub?['kategori'] as Map?;
+      final kategori = sub?['categories'] as Map?;
       final namaKategori = kategori?['nama_kategori'] as String?;
       return KatalogItem.fromMap({
         ...m,
@@ -30,7 +30,7 @@ class SupabaseKatalogRepository implements KatalogRepository {
     String? subKategori,
   }) async {
     try {
-      var query = _client.from('pilihan_katalog').select('''
+      var query = _client.from('catalog_options').select('''
             id_pilihan_katalog,
             id_sub_kategori,
             nama_pilihan,
@@ -41,14 +41,14 @@ class SupabaseKatalogRepository implements KatalogRepository {
             mata_uang,
             sumber_url,
             lisensi_data,
-            sub_kategori!inner(nama_sub_kategori, kategori!inner(nama_kategori))
+            subcategories!inner(nama_sub_kategori, categories!inner(nama_kategori))
           ''');
 
       if (kategori != null && kategori.isNotEmpty) {
-        query = query.eq('sub_kategori.kategori.nama_kategori', kategori);
+        query = query.eq('subcategories.categories.nama_kategori', kategori);
       }
       if (subKategori != null && subKategori.isNotEmpty) {
-        query = query.eq('sub_kategori.nama_sub_kategori', subKategori);
+        query = query.eq('subcategories.nama_sub_kategori', subKategori);
       }
 
       final response = await query.order('nama_pilihan');
@@ -69,7 +69,7 @@ class SupabaseKatalogRepository implements KatalogRepository {
   Future<KatalogItem?> getById(String idPilihanKatalog) async {
     try {
       final response = await _client
-          .from('pilihan_katalog')
+          .from('catalog_options')
           .select('''
             id_pilihan_katalog,
             id_sub_kategori,
@@ -81,7 +81,7 @@ class SupabaseKatalogRepository implements KatalogRepository {
             mata_uang,
             sumber_url,
             lisensi_data,
-            sub_kategori!inner(nama_sub_kategori, kategori!inner(nama_kategori))
+            subcategories!inner(nama_sub_kategori, categories!inner(nama_kategori))
           ''')
           .eq('id_pilihan_katalog', idPilihanKatalog)
           .maybeSingle();

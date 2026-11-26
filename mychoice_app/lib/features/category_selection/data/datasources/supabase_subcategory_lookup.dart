@@ -9,10 +9,10 @@ class SupabaseSubcategoryLookup {
     required String subcategory,
   }) async {
     final row = await client
-        .from('sub_kategori')
-        .select('id_sub_kategori,kategori!inner(nama_kategori)')
+        .from('subcategories')
+        .select('id_sub_kategori,categories!inner(nama_kategori)')
         .eq('nama_sub_kategori', subcategory)
-        .eq('kategori.nama_kategori', category)
+        .eq('categories.nama_kategori', category)
         .maybeSingle();
 
     if (row == null) {
