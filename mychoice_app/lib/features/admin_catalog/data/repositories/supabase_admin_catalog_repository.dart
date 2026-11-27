@@ -24,12 +24,12 @@ class SupabaseAdminCatalogRepository implements AdminCatalogRepository {
     final subcategoryId = await _subcategoryId(category, subcategory);
     try {
       final criteriaRows = await _client
-          .from('kriteria')
+          .from('criteria')
           .select('id_kriteria,nama_kriteria,jenis_kriteria,satuan,atribut_key')
           .eq('id_sub_kategori', subcategoryId)
           .order('nama_kriteria');
       final optionRows = await _client
-          .from('pilihan_katalog')
+          .from('catalog_options')
           .select('id_pilihan_katalog,nama_pilihan,atribut,harga')
           .eq('id_sub_kategori', subcategoryId)
           .order('nama_pilihan');
@@ -81,7 +81,7 @@ class SupabaseAdminCatalogRepository implements AdminCatalogRepository {
     try {
       final attributeKey = _attributeKey(normalizedName);
       final row = await _client
-          .from('kriteria')
+          .from('criteria')
           .insert({
             'id_sub_kategori': subcategoryId,
             'nama_kriteria': normalizedName,
@@ -169,7 +169,7 @@ class SupabaseAdminCatalogRepository implements AdminCatalogRepository {
           currency: currency,
         );
         final row = await _client
-            .from('pilihan_katalog')
+            .from('catalog_options')
             .insert(payload)
             .select('id_pilihan_katalog')
             .single();
@@ -177,7 +177,7 @@ class SupabaseAdminCatalogRepository implements AdminCatalogRepository {
       }
 
       final existingRow = await _client
-          .from('pilihan_katalog')
+          .from('catalog_options')
           .select('atribut,harga,rating,mata_uang,spesifikasi')
           .eq('id_pilihan_katalog', id)
           .eq('id_sub_kategori', subcategoryId)
@@ -241,7 +241,7 @@ class SupabaseAdminCatalogRepository implements AdminCatalogRepository {
             : currency,
       );
       final row = await _client
-          .from('pilihan_katalog')
+          .from('catalog_options')
           .update(payload)
           .eq('id_pilihan_katalog', id)
           .select('id_pilihan_katalog')
@@ -280,7 +280,7 @@ class SupabaseAdminCatalogRepository implements AdminCatalogRepository {
   Future<void> deleteOption({required String id}) async {
     try {
       final rows = await _client
-          .from('pilihan_katalog')
+          .from('catalog_options')
           .delete()
           .eq('id_pilihan_katalog', id)
           .select('id_pilihan_katalog');

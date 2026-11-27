@@ -29,7 +29,7 @@ class SupabasePersonalCriteriaRepository implements PersonalCriteriaRepository {
         subcategory: subcategory,
       );
       final rows = await _client
-          .from('kriteria_personal_pengguna')
+          .from('user_personal_criteria')
           .select('nama_kriteria')
           .eq('id_pengguna', userId)
           .eq('id_sub_kategori', subcategoryId)
@@ -67,7 +67,7 @@ class SupabasePersonalCriteriaRepository implements PersonalCriteriaRepository {
         subcategory: subcategory,
       );
       final row = await _client
-          .from('kriteria_personal_pengguna')
+          .from('user_personal_criteria')
           .insert({
             'id_pengguna': userId,
             'id_sub_kategori': subcategoryId,

@@ -64,14 +64,16 @@ class SupabaseAdminUserRepository implements AdminUserRepository {
   @override
   Future<void> setActive({required String userId, required bool active}) async {
     try {
-      await _client.functions.invoke(
-        'manage-user-status',
-        body: {'targetUserId': userId, 'active': active},
+      // RPC security definer: mengubah public.users.status_akun sekaligus
+      // memblokir / mengizinkan login di auth.users.
+      await _client.rpc(
+        'admin_set_user_active',
+        params: {'p_target_user_id': userId, 'p_active': active},
       );
-    } on FunctionException catch (error) {
-      throw Exception('Failed to update account status: ${error.reasonPhrase}');
     } on PostgrestException catch (error) {
       throw Exception('Failed to update account status: ${error.message}');
+    } catch (error) {
+      throw Exception('Failed to update account status: $error');
     }
   }
 }

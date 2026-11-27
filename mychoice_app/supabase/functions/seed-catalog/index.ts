@@ -42,7 +42,7 @@ async function requireAdmin(
   const userId = userData.user.id;
 
   const { data: pengguna, error: pgError } = await admin
-    .from("pengguna")
+    .from("users")
     .select("role")
     .eq("id_pengguna", userId)
     .maybeSingle();
@@ -101,7 +101,7 @@ Deno.serve(async (request: Request) => {
         deskripsi: k.deskripsi ?? null,
       }));
       const { error } = await supabaseAdmin
-        .from("kategori")
+        .from("categories")
         .upsert(rows, { onConflict: "nama_kategori" });
       if (error) throw error;
       result.kategori = rows.length;
@@ -112,13 +112,13 @@ Deno.serve(async (request: Request) => {
       let inserted = 0;
       for (const s of payload.sub_kategori) {
         const { data: kat } = await supabaseAdmin
-          .from("kategori")
+          .from("categories")
           .select("id_kategori")
           .eq("nama_kategori", s.nama_kategori)
           .maybeSingle();
         if (!kat) continue;
         const { error } = await supabaseAdmin
-          .from("sub_kategori")
+          .from("subcategories")
           .upsert(
             {
               id_kategori: (kat as any).id_kategori,
@@ -140,7 +140,7 @@ Deno.serve(async (request: Request) => {
       let inserted = 0;
       for (const p of payload.pilihan_katalog) {
         const { data: kategori, error: kategoriError } = await supabaseAdmin
-          .from("kategori")
+          .from("categories")
           .select("id_kategori")
           .eq("nama_kategori", p.nama_kategori)
           .maybeSingle();
@@ -150,7 +150,7 @@ Deno.serve(async (request: Request) => {
         }
 
         const { data: sub, error: subError } = await supabaseAdmin
-          .from("sub_kategori")
+          .from("subcategories")
           .select("id_sub_kategori")
           .eq("id_kategori", kategori.id_kategori)
           .eq("nama_sub_kategori", p.nama_sub_kategori)
@@ -162,7 +162,7 @@ Deno.serve(async (request: Request) => {
           );
         }
         const { error } = await supabaseAdmin
-          .from("pilihan_katalog")
+          .from("catalog_options")
           .upsert(
             {
               id_sub_kategori: (sub as any).id_sub_kategori,

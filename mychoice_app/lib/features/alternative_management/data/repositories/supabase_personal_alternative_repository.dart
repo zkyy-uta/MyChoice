@@ -43,7 +43,7 @@ class SupabasePersonalAlternativeRepository
         subcategory: subcategory,
       );
       final rows = await _client
-          .from('pilihan_katalog_pengguna')
+          .from('user_catalog_options')
           .select('id_pilihan_pengguna,nama_pilihan,atribut')
           .eq('id_pengguna', userId)
           .eq('id_sub_kategori', subcategoryId)
@@ -80,7 +80,7 @@ class SupabasePersonalAlternativeRepository
         subcategory: subcategory,
       );
       final row = await _client
-          .from('pilihan_katalog_pengguna')
+          .from('user_catalog_options')
           .insert({
             'id_pengguna': userId,
             'id_sub_kategori': subcategoryId,
@@ -118,7 +118,7 @@ class SupabasePersonalAlternativeRepository
 
     try {
       final row = await _client
-          .from('pilihan_katalog_pengguna')
+          .from('user_catalog_options')
           .update({'nama_pilihan': normalizedName, 'atribut': attributes})
           .eq('id_pengguna', userId)
           .eq('id_pilihan_pengguna', id)
@@ -143,7 +143,7 @@ class SupabasePersonalAlternativeRepository
     final userId = _userId;
     try {
       final rows = await _client
-          .from('pilihan_katalog_pengguna')
+          .from('user_catalog_options')
           .delete()
           .eq('id_pengguna', userId)
           .eq('id_pilihan_pengguna', id)

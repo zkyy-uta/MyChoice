@@ -44,7 +44,7 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
 
     try {
       final response = await _client
-          .from('pengguna')
+          .from('users')
           .select(_profileSelect)
           .eq('id_pengguna', userId)
           .maybeSingle();
@@ -71,7 +71,7 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
 
     try {
       final response = await _client
-          .from('pengguna')
+          .from('users')
           .update({'nama': normalizedName})
           .eq('id_pengguna', userId)
           .select(_profileSelect)
@@ -121,7 +121,7 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
             fileOptions: FileOptions(contentType: contentType, upsert: true),
           );
       final response = await _client
-          .from('pengguna')
+          .from('users')
           .update({'avatar_path': path})
           .eq('id_pengguna', userId)
           .select(_profileSelect)
@@ -170,7 +170,7 @@ class SupabaseUserProfileRepository implements UserProfileRepository {
       }
 
       final response = await _client
-          .from('pengguna')
+          .from('users')
           .update(payload)
           .eq('id_pengguna', targetUserId)
           .select()
