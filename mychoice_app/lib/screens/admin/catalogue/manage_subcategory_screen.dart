@@ -68,6 +68,197 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
 
   String get _normalizedSubcategory => widget.subcategory.trim().toLowerCase();
 
+
+  // English UI labels only. Keep the original Supabase names and attribute keys
+  // unchanged when reading, saving, filtering, and comparing catalog data.
+  String _englishCriterionName(String name) {
+    const translations = <String, String>{
+      'harga': 'Price',
+      'harga barang': 'Price',
+      'biaya': 'Price',
+      'biaya ujian': 'Exam Fee',
+      'penyimpanan': 'Storage',
+      'kapasitas penyimpanan': 'Storage',
+      'memori penyimpanan': 'Storage',
+      'memori': 'Memory',
+      'daya tahan baterai': 'Battery Life',
+      'daya tahan baterai (jam)': 'Battery Life',
+      'umur baterai': 'Battery Life',
+      'kapasitas baterai': 'Battery Capacity',
+      'berat': 'Weight',
+      'bobot': 'Weight',
+      'ukuran layar': 'Screen Size',
+      'resolusi layar': 'Screen Resolution',
+      'kamera utama': 'Main Camera',
+      'kualitas kamera': 'Camera Quality',
+      'waktu respons': 'Response Time',
+      'kecepatan refresh': 'Refresh Rate',
+      'kecepatan penyegaran': 'Refresh Rate',
+      'masa garansi': 'Warranty',
+      'garansi': 'Warranty',
+      'jarak': 'Distance',
+      'durasi': 'Duration',
+      'lama penggunaan': 'Duration',
+      'masa berlaku': 'Validity',
+      'waktu persiapan': 'Preparation Time',
+      'biaya pendidikan': 'Tuition Fee',
+      'uang saku bulanan': 'Monthly Allowance',
+      'relevansi bidang': 'Field Relevance',
+      'rating perusahaan': 'Company Rating',
+      'peringkat perusahaan': 'Company Rating',
+      'kepuasan mahasiswa': 'Student Satisfaction',
+      'keamanan kampus': 'Campus Safety',
+      'tingkat penempatan kerja': 'Job Placement Rate',
+      'penempatan kerja': 'Job Placement',
+      'kapasitas': 'Capacity',
+      'kenyamanan': 'Comfort',
+      'ketahanan': 'Durability',
+      'daya tahan': 'Durability',
+      'bahan': 'Material',
+      'material': 'Material',
+      'kualitas bahan': 'Material Quality',
+      'gaya': 'Style',
+      'model': 'Style',
+      'kualitas kurikulum': 'Curriculum Quality',
+      'pengakuan industri': 'Industry Recognition',
+      'pengalaman instruktur': 'Instructor Experience',
+      'tingkat kelulusan': 'Completion Rate',
+      'skor cpu': 'CPU Score',
+      'skor gpu': 'GPU Score',
+    };
+    final key = name.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+    return translations[key] ?? name.trim();
+  }
+
+  String _englishCategoryName(String category) {
+    const translations = <String, String>{
+      'teknologi': 'Technology',
+      'pendidikan': 'Education',
+      'mode': 'Fashion',
+    };
+    return translations[category.trim().toLowerCase()] ?? category.trim();
+  }
+
+  String _englishSubcategoryName(String subcategory) {
+    const translations = <String, String>{
+      'kursus': 'Courses',
+      'sertifikasi': 'Certifications',
+      'tempat magang': 'Internships',
+      'magang': 'Internships',
+      'sepatu': 'Shoes',
+      'tas': 'Bags',
+      'gaun': 'Dresses',
+      'aksesoris': 'Accessories',
+      'aksesori': 'Accessories',
+      'perhiasan': 'Jewelry',
+      'jaket': 'Outerwear',
+      'bawahan': 'Bottoms',
+      'jam tangan': 'Watches',
+    };
+    return translations[subcategory.trim().toLowerCase()] ??
+        subcategory.trim();
+  }
+
+  String _englishCriterionType(String type) {
+    switch (type.trim().toLowerCase()) {
+      case 'benefit':
+      case 'manfaat':
+      case 'keuntungan':
+        return 'Benefit';
+      case 'cost':
+      case 'biaya':
+        return 'Cost';
+      default:
+        return type.trim();
+    }
+  }
+
+  String _englishUnit(String unit) {
+    const translations = <String, String>{
+      'rp': 'IDR',
+      'rupiah': 'IDR',
+      'jam': 'hours',
+      'hari': 'days',
+      'minggu': 'weeks',
+      'bulan': 'months',
+      'tahun': 'years',
+      'skala 1-5': 'scale 1-5',
+      'buah': 'items',
+      'liter': 'liters',
+      'inci': 'inches',
+      'gram': 'g',
+      'kilogram': 'kg',
+      'jam/bulan': 'hours/month',
+      'rp/bulan': 'IDR/month',
+    };
+    return translations[unit.trim().toLowerCase()] ?? unit.trim();
+  }
+
+  String _criterionDisplayUnit(_Criterion criterion) {
+    final unit = _englishUnit(criterion.unit);
+    if (unit.isEmpty && _englishCriterionName(criterion.name) == 'Price') {
+      return 'IDR';
+    }
+    return unit;
+  }
+
+  String _criterionFieldLabel(_Criterion criterion) {
+    final name = _englishCriterionName(criterion.name);
+    final unit = _criterionDisplayUnit(criterion);
+    return unit.isEmpty ? name : '$name ($unit)';
+  }
+
+  // Only validate known numeric catalog criteria. Other criteria may be text.
+  bool _isNumericCriterion(String name) {
+    const numericNames = <String>{
+      'price',
+      'exam fee',
+      'tuition fee',
+      'ram',
+      'storage',
+      'battery life',
+      'battery capacity',
+      'weight',
+      'screen size',
+      'screen resolution',
+      'main camera',
+      'response time',
+      'refresh rate',
+      'duration',
+      'distance',
+      'validity',
+      'preparation time',
+      'monthly allowance',
+      'rating',
+      'company rating',
+      'job placement rate',
+      'cpu score',
+      'gpu score',
+      'capacity',
+      'student satisfaction',
+      'campus safety',
+      'completion rate',
+      'instructor experience',
+    };
+    return numericNames.contains(_englishCriterionName(name).toLowerCase());
+  }
+
+  void _showOptionValidationError(BuildContext sheetContext, String message) {
+    showDialog<void>(
+      context: sheetContext,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Invalid Input'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   late final List<_Criterion> _criteria = _initialCriteria();
   late final List<_OptionItem> _options = _initialOptions();
   late final List<_Suggestion> _suggestedCriteria = _initialSuggestions();
@@ -1853,7 +2044,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.subcategory,
+                  _englishSubcategoryName(widget.subcategory),
                   style: AppTypography.sectionTitle.copyWith(
                     color: AppColors.primaryDark,
                     fontSize: 23,
@@ -1862,7 +2053,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                 ),
                 Text(
                   'Manage criteria and options in '
-                  '${widget.subcategory}',
+                  '${_englishSubcategoryName(widget.subcategory)}',
                   style: AppTypography.extraSmallSemibold.copyWith(
                     color: AppColors.textTertiary,
                     fontSize: 10,
@@ -1976,7 +2167,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
   }
 
   Widget _criterionCard(_Criterion criterion) {
-    final isBenefit = criterion.type == 'Benefit';
+    final isBenefit = _englishCriterionType(criterion.type) == 'Benefit';
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 15, 16, 14),
@@ -2026,7 +2217,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
           ),
           const Spacer(),
           Text(
-            criterion.name,
+            _englishCriterionName(criterion.name),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTypography.sectionInnerTitle.copyWith(
@@ -2037,7 +2228,9 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
           ),
           const SizedBox(height: 2),
           Text(
-            '${criterion.type} · ${criterion.unit}',
+            _criterionDisplayUnit(criterion).isEmpty
+                ? _englishCriterionType(criterion.type)
+                : '${_englishCriterionType(criterion.type)} · ${_criterionDisplayUnit(criterion)}',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: AppTypography.smallSemibold.copyWith(
@@ -2255,7 +2448,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          suggestion.name,
+                          _englishCriterionName(suggestion.name),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.smallSemibold.copyWith(
@@ -2266,7 +2459,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Benefit · ${suggestion.unit}',
+                          'Benefit · ${_englishUnit(suggestion.unit)}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.extraSmallSemibold.copyWith(
@@ -2486,7 +2679,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  suggestion.name,
+                  _englishCriterionName(suggestion.name),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTypography.smallSemibold.copyWith(
@@ -2741,7 +2934,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
   }
 
   IconData _iconForCriterion(String name) {
-    switch (name.toLowerCase()) {
+    switch (_englishCriterionName(name).toLowerCase()) {
       case 'battery life':
         return Icons.battery_charging_full_rounded;
       case 'screen size':
@@ -3326,7 +3519,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               return _sheetFrame(
                 sheetContext: sheetContext,
                 title: 'Add Criteria',
-                subtitle: '$_category · ${widget.subcategory}',
+                subtitle: '${_englishCategoryName(_category)} · ${_englishSubcategoryName(widget.subcategory)}',
                 maxHeightFactor: 0.78,
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -3508,8 +3701,8 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                 sheetContext: sheetContext,
                 title: existing == null ? 'Add Option' : 'Edit Option',
                 subtitle: existing == null
-                    ? '${widget.subcategory} · $_category'
-                    : '${existing.name} · ${widget.subcategory}',
+                    ? '${_englishSubcategoryName(widget.subcategory)} · ${_englishCategoryName(_category)}'
+                    : '${existing.name} · ${_englishSubcategoryName(widget.subcategory)}',
                 maxHeightFactor: 0.90,
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -3525,7 +3718,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                       const SizedBox(height: 7),
                       Text(
                         'The values below follow the criteria of '
-                        '${widget.subcategory}. Fill each one, or mark it as '
+                        '${_englishSubcategoryName(widget.subcategory)}. Fill each one, or mark it as '
                         'Not available.',
                         style: const TextStyle(
                           color: Color(0xFF929097),
@@ -3540,7 +3733,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                         children: [
                           Expanded(
                             child: _sheetFieldLabel(
-                              '${criterion.name} (${criterion.unit})',
+                              _criterionFieldLabel(criterion),
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -3590,10 +3783,12 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                         controller: controllers[criterion.name]!,
                         hintText: unavailable.contains(criterion.name)
                             ? 'Not Available'
-                            : 'Enter ${criterion.name}',
+                            : 'Enter ${_englishCriterionName(criterion.name)}',
                         enabled: !unavailable.contains(criterion.name),
                         missing: missingCriteria.contains(criterion.name),
-                        keyboardType: TextInputType.text,
+                        keyboardType: _isNumericCriterion(criterion.name)
+                            ? const TextInputType.numberWithOptions(decimal: true)
+                            : TextInputType.text,
                         onChanged: (_) => setSheetState(() {}),
                       ),
                       if (missingCriteria.contains(criterion.name)) ...[
@@ -3671,7 +3866,40 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                   onSave: () {
                     final name = nameController.text.trim();
 
-                    if (name.isEmpty) return;
+                    if (name.isEmpty) {
+                      _showOptionValidationError(
+                        sheetContext,
+                        'Option name is required.',
+                      );
+                      return;
+                    }
+
+                    for (final criterion in _criteria) {
+                      if (!_isNumericCriterion(criterion.name) ||
+                          unavailable.contains(criterion.name)) {
+                        continue;
+                      }
+
+                      final value = controllers[criterion.name]!.text.trim();
+                      if (value.isEmpty) continue; // May be incomplete.
+
+                      // Legacy text specifications can remain unchanged
+                      // while the team migrates them to numeric values.
+                      if (existing != null &&
+                          value ==
+                              (existing.values[criterion.name] ?? '').trim()) {
+                        continue;
+                      }
+
+                      final parsed = double.tryParse(value);
+                      if (parsed == null || !parsed.isFinite || parsed <= 0) {
+                        _showOptionValidationError(
+                          sheetContext,
+                          '${_englishCriterionName(criterion.name)} must be a number greater than 0.',
+                        );
+                        return;
+                      }
+                    }
 
                     FocusScope.of(sheetContext).unfocus();
                     Navigator.pop(
