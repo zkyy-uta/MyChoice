@@ -1,17 +1,304 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
+import '../../../features/admin_catalog/domain/repositories/admin_catalog_repository.dart';
 import 'manage_subcategory_screen.dart';
 
-class TechnologyScreen extends StatelessWidget {
+class TechnologyScreen extends StatefulWidget {
   const TechnologyScreen({super.key});
 
+  @override
+  State<TechnologyScreen> createState() => _TechnologyScreenState();
+}
+
+class _TechnologyScreenState extends State<TechnologyScreen> {
   static const Color _darkPurple = AppColors.textPurple;
   static const Color _plum = Color(0xFF54204F);
   static const Color _cardBackground = Color(0xFFDCE0F6);
+
+  // The actual category's subcategories are fetched from Supabase.
+  List<String> _subcategories = [];
+  Map<String, bool?> _incompleteBySubcategory = {};
+  Map<String, List<String>> _criteriaTagsBySubcategory = {};
+  bool _loadingCompleteness = true;
+  String? _loadError;
+  int? _totalCriteria;
+  int? _totalOptions;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadCompleteness();
+    });
+  }
+
+  // Fetch the full list from Production, then load each subcategory's
+  // criteria, options, and completeness through the existing repository.
+  // All queries here are read-only.
+  Future<void> _loadCompleteness() async {
+    if (!mounted) return;
+    setState(() {
+      _loadingCompleteness = true;
+      _loadError = null;
+    });
+
+    try {
+      final repository = Provider.of<AdminCatalogRepository?>(
+        context,
+        listen: false,
+      );
+      if (repository == null) {
+        throw StateError('Admin catalog repository is unavailable.');
+      }
+
+      final client = Supabase.instance.client;
+      final categoryRow = await client
+          .from('categories')
+          .select('id_kategori')
+          .eq('nama_kategori', 'Technology')
+          .maybeSingle();
+
+      if (categoryRow == null) {
+        throw StateError('Technology category was not found in the database.');
+      }
+
+      final subcategoryRows = await client
+          .from('subcategories')
+          .select('id_sub_kategori, nama_sub_kategori')
+          .eq('id_kategori', categoryRow['id_kategori'])
+          .order('id_sub_kategori', ascending: true);
+
+      final names = <String>[
+        for (final row in subcategoryRows)
+          if ((row['nama_sub_kategori'] as String?)?.trim().isNotEmpty ?? false)
+            (row['nama_sub_kategori'] as String).trim(),
+      ];
+
+      final results = await Future.wait<({
+        String name,
+        bool? incomplete,
+        int? criteria,
+        int? options,
+        List<String> tags,
+      })>(
+        names.map((subcategory) async {
+          try {
+            final catalog = await repository.loadSubcategory(
+              category: 'Technology',
+              subcategory: subcategory,
+            );
+            final incomplete = catalog.options.any((option) {
+              return catalog.criteria.any((criterion) {
+                final key = criterion.attributeKey ??
+                    _attributeKey(criterion.name);
+                final value = key == 'harga'
+                    ? option.price ??
+                        option.attributes[key] ??
+                        option.attributes['price']
+                    : option.attributes[key] ??
+                        option.attributes[criterion.name];
+                final text = value?.toString().trim() ?? '';
+                // As on the detail page, N/A is allowed; empty is incomplete.
+                return text.isEmpty;
+              });
+            });
+            return (
+              name: subcategory,
+              incomplete: incomplete,
+              criteria: catalog.criteria.length,
+              options: catalog.options.length,
+              tags: catalog.criteria
+                  .map((criterion) => _criterionTagLabel(criterion.name))
+                  .toList(),
+            );
+          } catch (error) {
+            debugPrint('Could not load Technology catalog for $subcategory: $error');
+            return (
+              name: subcategory,
+              incomplete: null,
+              criteria: null,
+              options: null,
+              tags: <String>[],
+            );
+          }
+        }),
+      );
+
+      final allLoaded = results.every(
+        (item) => item.criteria != null && item.options != null,
+      );
+      final criteriaTotal = allLoaded
+          ? results.fold<int>(0, (total, item) => total + item.criteria!)
+          : null;
+      final optionsTotal = allLoaded
+          ? results.fold<int>(0, (total, item) => total + item.options!)
+          : null;
+
+      if (!mounted) return;
+      setState(() {
+        _subcategories = names;
+        _incompleteBySubcategory = {
+          for (final item in results) item.name: item.incomplete,
+        };
+        _criteriaTagsBySubcategory = {
+          for (final item in results) item.name: item.tags,
+        };
+        _totalCriteria = criteriaTotal;
+        _totalOptions = optionsTotal;
+        _loadingCompleteness = false;
+      });
+    } catch (error) {
+      debugPrint('Could not load Technology subcategories: $error');
+      if (!mounted) return;
+      setState(() {
+        _subcategories = [];
+        _incompleteBySubcategory = {};
+        _criteriaTagsBySubcategory = {};
+        _totalCriteria = null;
+        _totalOptions = null;
+        _loadError = 'Could not load Technology subcategories. Please retry.';
+        _loadingCompleteness = false;
+      });
+    }
+  }
+
+  // Keep the existing icons; new subcategories get a generic technology icon.
+  IconData _iconForSubcategory(String name) {
+    switch (name.toLowerCase().trim()) {
+      case 'laptop':
+        return Icons.laptop_mac_rounded;
+      case 'smartphone':
+        return Icons.smartphone_rounded;
+      case 'tablet':
+        return Icons.tablet_mac_rounded;
+      case 'gaming pc':
+        return Icons.desktop_windows_rounded;
+      case 'monitor':
+        return Icons.monitor_rounded;
+      default:
+        return Icons.devices_other_rounded;
+    }
+  }
+
+  // Translate only the criterion tags shown on Technology cards.
+  // Database names and attribute keys remain unchanged for read/status/CRUD.
+  String _criterionTagLabel(String name) {
+    const translations = <String, String>{
+      'harga': 'Price',
+      'harga barang': 'Price',
+      'biaya': 'Price',
+      'biaya ujian': 'Exam Fee',
+      'penyimpanan': 'Storage',
+      'kapasitas penyimpanan': 'Storage',
+      'memori penyimpanan': 'Storage',
+      'memori': 'Memory',
+      'daya tahan baterai': 'Battery Life',
+      'daya tahan baterai (jam)': 'Battery Life',
+      'umur baterai': 'Battery Life',
+      'kapasitas baterai': 'Battery Capacity',
+      'berat': 'Weight',
+      'bobot': 'Weight',
+      'ukuran layar': 'Screen Size',
+      'resolusi layar': 'Screen Resolution',
+      'kamera utama': 'Main Camera',
+      'kualitas kamera': 'Camera Quality',
+      'waktu respons': 'Response Time',
+      'kecepatan refresh': 'Refresh Rate',
+      'kecepatan penyegaran': 'Refresh Rate',
+      'masa garansi': 'Warranty',
+      'garansi': 'Warranty',
+      'jarak': 'Distance',
+      'durasi': 'Duration',
+      'lama penggunaan': 'Duration',
+      'masa berlaku': 'Validity',
+      'waktu persiapan': 'Preparation Time',
+      'biaya pendidikan': 'Tuition Fee',
+      'uang saku bulanan': 'Monthly Allowance',
+      'relevansi bidang': 'Field Relevance',
+      'rating perusahaan': 'Company Rating',
+      'peringkat perusahaan': 'Company Rating',
+      'kepuasan mahasiswa': 'Student Satisfaction',
+      'keamanan kampus': 'Campus Safety',
+      'tingkat penempatan kerja': 'Job Placement Rate',
+      'penempatan kerja': 'Job Placement',
+      'kapasitas': 'Capacity',
+      'kenyamanan': 'Comfort',
+      'ketahanan': 'Durability',
+      'daya tahan': 'Durability',
+      'bahan': 'Material',
+      'material': 'Material',
+      'kualitas bahan': 'Material Quality',
+      'gaya': 'Style',
+      'model': 'Style',
+      'kualitas kurikulum': 'Curriculum Quality',
+      'pengakuan industri': 'Industry Recognition',
+      'pengalaman instruktur': 'Instructor Experience',
+      'tingkat kelulusan': 'Completion Rate',
+      'skor cpu': 'CPU Score',
+      'skor gpu': 'GPU Score',
+      'sertifikat': 'Certificate',
+      'bahasa': 'Language',
+      'ukuran': 'Size',
+      'ukuran pakaian': 'Clothing Size',
+      'ukuran sepatu': 'Shoe Size',
+      'potongan': 'Cut',
+      'petunjuk perawatan': 'Care Instructions',
+      'instruksi perawatan': 'Care Instructions',
+      'jenis bahan': 'Material Type',
+      'warna': 'Color',
+      'asal produk': 'Product Origin',
+      'bahan pengisi': 'Filling Material',
+      'biaya kuliah': 'Tuition Fee',
+      'clock speed': 'Clock Speed',
+      'durasi belajar': 'Study Duration',
+      'fitur': 'Features',
+      'format': 'Format',
+      'gpu': 'GPU',
+      'isa tersedia': 'ISA Available',
+      'jalur belajar': 'Learning Paths',
+      'jenis': 'Type',
+      'jenis institusi': 'Institution Type',
+      'jenis panel': 'Panel Type',
+      'jenis sepatu': 'Shoe Type',
+      'jumlah core': 'Core Count',
+      'ketahanan air': 'Water Resistance',
+      'kinerja': 'Performance',
+      'konsumsi daya': 'Power Consumption',
+      'layar': 'Display',
+      'level': 'Level',
+      'lokasi': 'Location',
+      'peringkat': 'Ranking',
+      'program unggulan': 'Featured Programs',
+      'prosesor': 'Processor',
+      'ram': 'RAM',
+      'refresh rate': 'Refresh Rate',
+      'resolusi': 'Resolution',
+      'socket': 'Socket',
+      'tdp': 'TDP',
+      'vram': 'VRAM',
+    };
+    final key = name.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+    return translations[key] ?? name.trim();
+  }
+
+  String _attributeKey(String name) {
+    if (name.trim().toLowerCase() == 'price') return 'harga';
+    return name
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
+        .replaceAll(RegExp(r'^_+|_+$'), '');
+  }
+
+  bool? _statusFor(String subcategory) => _loadingCompleteness
+      ? null
+      : _incompleteBySubcategory[subcategory];
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +319,28 @@ class TechnologyScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          _statCard('5', 'Subcategories'),
+                          _statCard(
+                            _loadingCompleteness
+                                ? '...'
+                                : (_loadError != null
+                                    ? '—'
+                                    : _subcategories.length.toString()),
+                            'Subcategories',
+                          ),
                           const SizedBox(width: 8),
-                          _statCard('23', 'Criteria'),
+                          _statCard(
+                            _loadingCompleteness
+                                ? '...'
+                                : (_totalCriteria?.toString() ?? '—'),
+                            'Criteria',
+                          ),
                           const SizedBox(width: 8),
-                          _statCard('45', 'Options'),
+                          _statCard(
+                            _loadingCompleteness
+                                ? '...'
+                                : (_totalOptions?.toString() ?? '—'),
+                            'Options',
+                          ),
                         ],
                       ),
                       const SizedBox(height: 22),
@@ -50,58 +354,40 @@ class TechnologyScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
 
-                      // 1. LAPTOP
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Laptop',
-                        icon: Icons.laptop_mac_rounded,
-                        incomplete: true,
-                      ),
-
-                      // 2. SMARTPHONE
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Smartphone',
-                        icon: Icons.smartphone_rounded,
-                        incomplete: false,
-                      ),
-
-                      // 3. TABLET
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Tablet',
-                        icon: Icons.tablet_mac_rounded,
-                        incomplete: false,
-                      ),
-
-                      // 4. Gaming PC
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Gaming PC',
-                        icon: Icons.desktop_windows_rounded,
-                        incomplete: false,
-                        criteriaTags: const [
-                          'Price',
-                          'RAM',
-                          'Storage',
-                          'CPU Score',
-                        ],
-                      ),
-
-                      // 5. MONITOR
-                      _subcategoryCard(
-                        context: context,
-                        name: 'Monitor',
-                        icon: Icons.monitor_rounded,
-                        incomplete: false,
-                        criteriaTags: const [
-                          'Price',
-                          'Screen Size',
-                          'Refresh Rate',
-                          'Response Time',
-                          'Resolution',
-                        ],
-                      ),
+                      if (_loadingCompleteness && _subcategories.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 28),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      if (_loadError != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_loadError!),
+                              const SizedBox(height: 8),
+                              OutlinedButton(
+                                onPressed: _loadCompleteness,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (!_loadingCompleteness &&
+                          _loadError == null &&
+                          _subcategories.isEmpty)
+                        const Text('No subcategories found.'),
+                      for (final subcategory in _subcategories)
+                        _subcategoryCard(
+                          context: context,
+                          name: subcategory,
+                          icon: _iconForSubcategory(subcategory),
+                          incomplete: _statusFor(subcategory),
+                          criteriaTags:
+                              _criteriaTagsBySubcategory[subcategory] ??
+                                  const <String>[],
+                        ),
                     ],
                   ),
                 ),
@@ -212,7 +498,7 @@ class TechnologyScreen extends StatelessWidget {
     required BuildContext context,
     required String name,
     required IconData icon,
-    required bool incomplete,
+    required bool? incomplete,
     List<String>? criteriaTags,
   }) {
     final allTags = criteriaTags ?? const ['Price', 'RAM', 'Storage', 'Weight'];
@@ -286,19 +572,27 @@ class TechnologyScreen extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: incomplete
-                            ? const Color(0xFFF5E0BC)
-                            : const Color(0xFFB8F0B0),
+                        color: incomplete == null
+                            ? const Color(0xFFEDECF6)
+                            : incomplete
+                                ? const Color(0xFFF5E0BC)
+                                : const Color(0xFFB8F0B0),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Text(
-                        incomplete
-                            ? '1 Option Incomplete'
-                            : 'All Options Complete',
+                        incomplete == null
+                            ? (_loadingCompleteness
+                                ? 'Checking status...'
+                                : 'Status unavailable')
+                            : incomplete
+                                ? 'Options Incomplete'
+                                : 'All Options Complete',
                         style: TextStyle(
-                          color: incomplete
-                              ? const Color(0xFF6E5520)
-                              : const Color(0xFF2E6B33),
+                          color: incomplete == null
+                              ? _plum
+                              : incomplete
+                                  ? const Color(0xFF6E5520)
+                                  : const Color(0xFF2E6B33),
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
                         ),
@@ -308,13 +602,16 @@ class TechnologyScreen extends StatelessWidget {
                     SizedBox(
                       height: 36,
                       child: FilledButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
+                        onPressed: () async {
+                          await Navigator.of(context).push(
                             MaterialPageRoute<void>(
-                              builder: (context) =>
-                                  ManageSubcategoryScreen(subcategory: name),
+                              builder: (context) => ManageSubcategoryScreen(
+                                category: 'Technology',
+                                subcategory: name,
+                              ),
                             ),
                           );
+                          if (mounted) await _loadCompleteness();
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.white,

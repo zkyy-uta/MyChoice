@@ -125,9 +125,62 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
       'tingkat kelulusan': 'Completion Rate',
       'skor cpu': 'CPU Score',
       'skor gpu': 'GPU Score',
+      // Additional UI-only labels found in the live catalogue.
+      // Do not change the original database names/attribute keys.
+      'sertifikat': 'Certificate',
+      'bahasa': 'Language',
+      'ukuran': 'Size',
+      'ukuran pakaian': 'Clothing Size',
+      'ukuran sepatu': 'Shoe Size',
+      'potongan': 'Cut',
+      'petunjuk perawatan': 'Care Instructions',
+      'instruksi perawatan': 'Care Instructions',
+      'jenis bahan': 'Material Type',
+      'warna': 'Color',
     };
     final key = name.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
     return translations[key] ?? name.trim();
+  }
+
+
+  // UI-only translations for the remaining Supabase criterion names.
+  // Keep _englishCriterionName unchanged for existing numeric validation.
+  // Never send these translated labels as criterion names or attribute keys.
+  String _displayCriterionName(String name) {
+    const additionalTranslations = <String, String>{
+      'asal produk': 'Product Origin',
+      'bahan pengisi': 'Filling Material',
+      'biaya kuliah': 'Tuition Fee',
+      'clock speed': 'Clock Speed',
+      'durasi belajar': 'Study Duration',
+      'fitur': 'Features',
+      'format': 'Format',
+      'gpu': 'GPU',
+      'isa tersedia': 'ISA Available',
+      'jalur belajar': 'Learning Paths',
+      'jenis': 'Type',
+      'jenis institusi': 'Institution Type',
+      'jenis panel': 'Panel Type',
+      'jenis sepatu': 'Shoe Type',
+      'jumlah core': 'Core Count',
+      'ketahanan air': 'Water Resistance',
+      'kinerja': 'Performance',
+      'konsumsi daya': 'Power Consumption',
+      'layar': 'Display',
+      'level': 'Level',
+      'lokasi': 'Location',
+      'peringkat': 'Ranking',
+      'program unggulan': 'Featured Programs',
+      'prosesor': 'Processor',
+      'ram': 'RAM',
+      'refresh rate': 'Refresh Rate',
+      'resolusi': 'Resolution',
+      'socket': 'Socket',
+      'tdp': 'TDP',
+      'vram': 'VRAM',
+    };
+    final key = name.trim().toLowerCase().replaceAll(RegExp(r'\s+'), ' ');
+    return additionalTranslations[key] ?? _englishCriterionName(name);
   }
 
   String _englishCategoryName(String category) {
@@ -203,7 +256,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
   }
 
   String _criterionFieldLabel(_Criterion criterion) {
-    final name = _englishCriterionName(criterion.name);
+    final name = _displayCriterionName(criterion.name);
     final unit = _criterionDisplayUnit(criterion);
     return unit.isEmpty ? name : '$name ($unit)';
   }
@@ -2151,7 +2204,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
             crossAxisCount: 2,
             crossAxisSpacing: 12,
             mainAxisSpacing: 14,
-            childAspectRatio: 1.04,
+            childAspectRatio: 0.88,
           ),
           itemBuilder: (context, index) {
             return _criterionCard(_criteria[index]);
@@ -2216,14 +2269,18 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
             ],
           ),
           const Spacer(),
-          Text(
-            _englishCriterionName(criterion.name),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppTypography.sectionInnerTitle.copyWith(
-              color: _dark,
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
+          Tooltip(
+            message: _displayCriterionName(criterion.name),
+            child: Text(
+              _displayCriterionName(criterion.name),
+              maxLines: 2,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.sectionInnerTitle.copyWith(
+                color: _dark,
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           const SizedBox(height: 2),
@@ -2231,7 +2288,8 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
             _criterionDisplayUnit(criterion).isEmpty
                 ? _englishCriterionType(criterion.type)
                 : '${_englishCriterionType(criterion.type)} · ${_criterionDisplayUnit(criterion)}',
-            maxLines: 1,
+            maxLines: 2,
+            softWrap: true,
             overflow: TextOverflow.ellipsis,
             style: AppTypography.smallSemibold.copyWith(
               color: AppColors.textTertiary,
@@ -2447,14 +2505,18 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          _englishCriterionName(suggestion.name),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTypography.smallSemibold.copyWith(
-                            color: _dark,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
+                        Tooltip(
+                          message: _displayCriterionName(suggestion.name),
+                          child: Text(
+                            _displayCriterionName(suggestion.name),
+                            maxLines: 2,
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTypography.smallSemibold.copyWith(
+                              color: _dark,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -2678,14 +2740,18 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  _englishCriterionName(suggestion.name),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.smallSemibold.copyWith(
-                    color: _dark,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
+                child: Tooltip(
+                  message: _displayCriterionName(suggestion.name),
+                  child: Text(
+                    _displayCriterionName(suggestion.name),
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.smallSemibold.copyWith(
+                      color: _dark,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ),
@@ -3162,13 +3228,17 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  option.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTypography.smallSemibold.copyWith(
-                    color: _dark,
-                    fontSize: 11,
+                Tooltip(
+                  message: option.name,
+                  child: Text(
+                    option.name,
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.smallSemibold.copyWith(
+                      color: _dark,
+                      fontSize: 11,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -3783,7 +3853,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                         controller: controllers[criterion.name]!,
                         hintText: unavailable.contains(criterion.name)
                             ? 'Not Available'
-                            : 'Enter ${_englishCriterionName(criterion.name)}',
+                            : 'Enter ${_displayCriterionName(criterion.name)}',
                         enabled: !unavailable.contains(criterion.name),
                         missing: missingCriteria.contains(criterion.name),
                         keyboardType: _isNumericCriterion(criterion.name)
@@ -3895,7 +3965,7 @@ class _ManageSubcategoryScreenState extends State<ManageSubcategoryScreen> {
                       if (parsed == null || !parsed.isFinite || parsed <= 0) {
                         _showOptionValidationError(
                           sheetContext,
-                          '${_englishCriterionName(criterion.name)} must be a number greater than 0.',
+                          '${_displayCriterionName(criterion.name)} must be a number greater than 0.',
                         );
                         return;
                       }

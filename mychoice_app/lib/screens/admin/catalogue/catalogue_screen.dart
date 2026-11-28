@@ -1,19 +1,125 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/widgets/admin_bottom_navigation.dart';
 import '../../../core/widgets/mobile_background.dart';
 import '../../../core/widgets/page_app_bar.dart';
+import '../../../features/admin_catalog/domain/repositories/admin_catalog_repository.dart';
 import 'technology_screen.dart';
 import 'education_screen.dart';
 import 'fashion_screen.dart';
 
-class CatalogueScreen extends StatelessWidget {
+// Totals for one category. Null means the corresponding count could not be read.
+typedef _CategoryCounts = ({int? subcategories, int? criteria});
+
+class CatalogueScreen extends StatefulWidget {
   const CatalogueScreen({super.key});
 
+  @override
+  State<CatalogueScreen> createState() => _CatalogueScreenState();
+}
+
+class _CatalogueScreenState extends State<CatalogueScreen> {
   static const Color _darkPurple = AppColors.textPurple;
   static const Color _categoryCardBackground = Color(0xFFDCE0F6);
+  static const _categoryNames = <String>['Technology', 'Education', 'Fashion'];
+
+  Map<String, _CategoryCounts> _countsByCategory = {};
+  bool _loadingCounts = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _loadCounts();
+    });
+  }
+
+  // Read-only: use the same Supabase category/subcategory lookup and catalog
+  // repository as the Technology, Education, and Fashion detail screens.
+  Future<void> _loadCounts() async {
+    if (!mounted) return;
+    setState(() => _loadingCounts = true);
+
+    final repository = Provider.of<AdminCatalogRepository?>(
+      context,
+      listen: false,
+    );
+    final client = Supabase.instance.client;
+
+    final results = await Future.wait<MapEntry<String, _CategoryCounts>>(
+      _categoryNames.map((category) async {
+        try {
+          final categoryRow = await client
+              .from('categories')
+              .select('id_kategori')
+              .eq('nama_kategori', category)
+              .maybeSingle();
+
+          if (categoryRow == null) {
+            throw StateError('$category category was not found in Supabase.');
+          }
+
+          final subcategoryRows = await client
+              .from('subcategories')
+              .select('nama_sub_kategori')
+              .eq('id_kategori', categoryRow['id_kategori'])
+              .order('nama_sub_kategori');
+
+          final names = <String>[
+            for (final row in subcategoryRows)
+              if ((row['nama_sub_kategori'] as String?)?.trim().isNotEmpty ?? false)
+                (row['nama_sub_kategori'] as String).trim(),
+          ];
+
+          // If one catalog fails, keep the valid subcategory count but do not
+          // display a misleading partial Criteria total.
+          int? criteriaTotal;
+          if (repository != null) {
+            try {
+              final criteriaCounts = await Future.wait<int>(
+                names.map((subcategory) async {
+                  final catalog = await repository.loadSubcategory(
+                    category: category,
+                    subcategory: subcategory,
+                  );
+                  return catalog.criteria.length;
+                }),
+              );
+              criteriaTotal = criteriaCounts.fold<int>(
+                0,
+                (total, count) => total + count,
+              );
+            } catch (error) {
+              debugPrint('Could not load $category criteria totals: $error');
+            }
+          } else {
+            debugPrint('Admin catalog repository unavailable for $category.');
+          }
+
+          return MapEntry<String, _CategoryCounts>(
+            category,
+            (subcategories: names.length, criteria: criteriaTotal),
+          );
+        } catch (error) {
+          debugPrint('Could not load $category category totals: $error');
+          return MapEntry<String, _CategoryCounts>(
+            category,
+            (subcategories: null, criteria: null),
+          );
+        }
+      }),
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _countsByCategory = Map<String, _CategoryCounts>.fromEntries(results);
+      _loadingCounts = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +151,6 @@ class CatalogueScreen extends StatelessWidget {
                         context: context,
                         title: 'Technology',
                         icon: Icons.laptop_mac_rounded,
-                        criteria: 23,
-                        subcategories: 7,
                         illustration: Icons.laptop_mac_outlined,
                         illustrationSize: 90,
                         illustrationTop: 70,
@@ -63,8 +167,6 @@ class CatalogueScreen extends StatelessWidget {
                         context: context,
                         title: 'Education',
                         icon: Icons.school_outlined,
-                        criteria: 11,
-                        subcategories: 5,
                         illustration: Icons.school_outlined,
                         illustrationSize: 94,
                         illustrationTop: 68,
@@ -79,8 +181,6 @@ class CatalogueScreen extends StatelessWidget {
                         context: context,
                         title: 'Fashion',
                         icon: Icons.checkroom_outlined,
-                        criteria: 19,
-                        subcategories: 5,
                         illustration: Icons.checkroom_outlined,
                         illustrationSize: 90,
                         illustrationTop: 70,
@@ -116,8 +216,6 @@ class CatalogueScreen extends StatelessWidget {
     required BuildContext context,
     required String title,
     required IconData icon,
-    required int criteria,
-    required int subcategories,
     required IconData illustration,
     required List<IconData> subcategoryIcons,
     List<String?> customSubcategoryIcons = const [],
@@ -127,6 +225,16 @@ class CatalogueScreen extends StatelessWidget {
     double illustrationTop = 82,
     double illustrationRight = 28,
   }) {
+    final counts = _countsByCategory[title];
+    final subcategoryCount = _loadingCounts ? null : counts?.subcategories;
+    final criteriaCount = _loadingCounts ? null : counts?.criteria;
+    final subcategoryLabel = _loadingCounts
+        ? '...'
+        : (subcategoryCount?.toString() ?? '—');
+    final criteriaLabel = _loadingCounts
+        ? '...'
+        : (criteriaCount?.toString() ?? '—');
+
     return Container(
       height: 158,
       width: double.infinity,
@@ -151,27 +259,28 @@ class CatalogueScreen extends StatelessWidget {
           // Disable hover/focus overlay so every card keeps the same color.
           hoverColor: Colors.transparent,
           focusColor: Colors.transparent,
-          onTap: () {
+          onTap: () async {
             if (title == 'Technology') {
-              Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute<void>(
                   builder: (_) => const TechnologyScreen(),
                 ),
               );
             } else if (title == 'Education') {
-              Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute<void>(
                   builder: (_) => const EducationScreen(),
                 ),
               );
             } else if (title == 'Fashion') {
-              Navigator.push(
+              await Navigator.push(
                 context,
                 MaterialPageRoute<void>(builder: (_) => const FashionScreen()),
               );
             }
+            if (mounted) await _loadCounts();
           },
           child: Stack(
             children: [
@@ -234,7 +343,7 @@ class CatalogueScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                '$subcategories Subcategories',
+                                '$subcategoryLabel Subcategories',
                                 style: AppTypography.extraSmallSemibold
                                     .copyWith(
                                       color: _darkPurple,
@@ -249,7 +358,7 @@ class CatalogueScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '$criteria Criteria',
+                      '$criteriaLabel Criteria',
                       style: AppTypography.extraSmallSemibold.copyWith(
                         color: _darkPurple.withValues(alpha: 0.55),
                         fontSize: 9,
@@ -269,7 +378,7 @@ class CatalogueScreen extends StatelessWidget {
                         // CHANGED: overlapping subcategory circles (+N included)
                         _buildSubcategoryStack(
                           icons: subcategoryIcons,
-                          total: subcategories,
+                          total: subcategoryCount,
                           customIcons: customSubcategoryIcons,
                         ),
                         const Spacer(),
@@ -305,7 +414,7 @@ class CatalogueScreen extends StatelessWidget {
   // Overlapping circles: [icon][icon][icon][+N], like the Figma design.
   Widget _buildSubcategoryStack({
     required List<IconData> icons,
-    required int total,
+    required int? total,
     required List<String?> customIcons,
   }) {
     const double size = 38;
@@ -313,8 +422,13 @@ class CatalogueScreen extends StatelessWidget {
     const double step = size - overlap;
     const colors = [Color(0xFFDDBBFA), Color(0xFFFFD9B9), Color(0xFFF5BFD9)];
 
-    final visible = icons.length < 3 ? icons.length : 3;
-    final hasMore = total > 3;
+    // When counts are loading, keep the original decorative preview icons.
+    // Once loaded, do not show more previews than the actual subcategory count.
+    final maxPreview = icons.length < 3 ? icons.length : 3;
+    final visible = total == null
+        ? maxPreview
+        : (total < maxPreview ? total : maxPreview);
+    final hasMore = total != null && total > visible;
     final count = visible + (hasMore ? 1 : 0);
 
     final children = <Widget>[
@@ -340,7 +454,7 @@ class CatalogueScreen extends StatelessWidget {
             ),
             alignment: Alignment.center,
             child: Text(
-              '+${total - 3}',
+              '+${total! - visible}',
               style: AppTypography.extraSmallSemibold.copyWith(
                 color: const Color(0xFF54204F),
                 fontSize: 14,
