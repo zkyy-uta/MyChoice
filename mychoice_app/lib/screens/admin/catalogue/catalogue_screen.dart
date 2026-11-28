@@ -454,7 +454,7 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
             ),
             alignment: Alignment.center,
             child: Text(
-              '+${total! - visible}',
+              '+${total - visible}',
               style: AppTypography.extraSmallSemibold.copyWith(
                 color: const Color(0xFF54204F),
                 fontSize: 14,
